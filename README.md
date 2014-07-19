@@ -6,8 +6,37 @@ JavaAPIからネットワーク接続したmbedを制御することができま
 mbedJSはこちらからダウンロードしてください。
 https://mbed.org/users/nyatla/code/mbedJS/
 
+特徴
+---------------
+- mbedJSの動作するmbedシリーズ、LPCXpressoシリーズのMCUをLAN経由で制御することができます。
+- mbedSDKとほぼ同一なクラスベースAPIを提供します。
+- 最大1000Hz程度のRPCコールができます。
+
 使いかた
 ---------------
 - mbedJSをセットアップしたmbed、又はLPCXpressoを準備してください。
 - mbedJS Java APIのmasterパッケージをダウンロードしてください。
-- mbedJSのexampleにサンプルがあります。
+- mbedJSのexampleにLEDBlinkのサンプルがあります。LEDをチカチカさせてみましょう。
+
+
+サンプル
+---------------
+Lチカのサンプルコードは以下のように書けます。
+
+public class LEDBlink{
+	public static void main(String args[]){
+		try {
+			Mcu mcu=new Mcu("192.168.128.39");
+			DigitalOut a=new DigitalOut(mcu,PinName.LED1);
+			for(int i=0;i<10000;i++){
+				a.write(i%2);
+				Thread.sleep(100);
+			}
+			mcu.close();
+			System.out.println("done");
+		} catch (InterruptedException|MiMicJsException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
