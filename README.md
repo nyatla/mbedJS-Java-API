@@ -26,7 +26,7 @@ Lチカのサンプルコードは以下のように書けます。
     public class LEDBlink{
     	public static void main(String args[]){
     		try {
-    			Mcu mcu=new Mcu("192.168.128.39");
+    			Mcu mcu=new Mcu("192.168.0.39");//mbedJS IP Address
     			DigitalOut a=new DigitalOut(mcu,PinName.LED1);
     			for(int i=0;i<10000;i++){
     				a.write(i%2);
