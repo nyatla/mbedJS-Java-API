@@ -23,6 +23,9 @@ https://mbed.org/users/nyatla/code/mbedJS/
 ---------------
 Lチカのサンプルコードは以下のように書けます。
 
+    import jp.nyatla.mimic.mbedjs.*;
+    import jp.nyatla.mimic.mbedjs.javaapi.*;
+    
     public class LEDBlink{
     	public static void main(String args[]){
     		try {
