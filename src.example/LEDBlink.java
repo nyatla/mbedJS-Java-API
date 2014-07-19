@@ -17,7 +17,6 @@
  */
 
 
-import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
 
 /**
@@ -35,7 +34,7 @@ public class LEDBlink{
 			}
 			mcu.close();
 			System.out.println("done");
-		} catch (InterruptedException|MiMicJsException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

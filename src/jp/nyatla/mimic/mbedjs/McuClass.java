@@ -33,11 +33,11 @@ public class McuClass{
 		this._rpc_class_name=i_rpc_class_name;
 		this._mcu=i_mcu;
 	}
-	protected JsonRpcResult rawRpc(String i_function,String i_params) throws MiMicJsException
+	protected JsonRpcResult rawRpc(String i_function,String i_params) throws MbedJsException
 	{
 		return this._mcu.rpc(this._rpc_class_name+":"+i_function,i_params==null?"":i_params);
 	}
-	protected JsonRpcResult rawRpc(String i_function) throws MiMicJsException
+	protected JsonRpcResult rawRpc(String i_function) throws MbedJsException
 	{
 		return this.rawRpc(i_function,null);
 	}

@@ -38,45 +38,45 @@ public class JsonRpcResult
 	{
 		return this._result==null;
 	}
-	public int getId() throws MiMicJsException
+	public int getId() throws MbedJsException
 	{
 		return this._id;
 	}
-	public int getUInt32(int i_idx) throws MiMicJsException
+	public int getUInt32(int i_idx) throws MbedJsException
 	{
 		if(this._result!=null){
 			long l=this._result.getLong(i_idx);
 			return (int)(l&0xffffffff);
 		}
-		throw new MiMicJsException();
+		throw new MbedJsException();
 	}	
-	public int getInt32(int i_idx) throws MiMicJsException
+	public int getInt32(int i_idx) throws MbedJsException
 	{
 		if(this._result!=null){
 			return this._result.getInt(i_idx);
 		}
-		throw new MiMicJsException();
+		throw new MbedJsException();
 	}
-	public byte getByte(int i_idx) throws MiMicJsException
+	public byte getByte(int i_idx) throws MbedJsException
 	{
 		if(this._result!=null){
 			return (byte) this._result.getInt(i_idx);
 		}
-		throw new MiMicJsException();
+		throw new MbedJsException();
 	}
-	public byte[] getBytes(int i_idx) throws MiMicJsException
+	public byte[] getBytes(int i_idx) throws MbedJsException
 	{
 		if(this._result!=null){
 			return JsonRpcUtils.bstr2ByteArray(this._result.getString(i_idx));
 		}
-		throw new MiMicJsException();
+		throw new MbedJsException();
 	}
-	public String getString(int i_idx) throws MiMicJsException
+	public String getString(int i_idx) throws MbedJsException
 	{
 		if(this._result!=null){
 			return this._result.getString(i_idx);
 		}
-		throw new MiMicJsException();
+		throw new MbedJsException();
 	}
 	
 }

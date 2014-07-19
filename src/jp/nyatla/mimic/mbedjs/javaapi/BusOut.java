@@ -20,7 +20,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * BusOutクラスです。
@@ -33,9 +33,9 @@ public class BusOut extends McuBindClass
 	 * @param i_mcu
 	 * @param i_pins
 	 * バスを構成するピン識別子。最大16個までのpin番号を指定できます。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public BusOut(Mcu i_mcu,int... i_pins) throws MiMicJsException
+	public BusOut(Mcu i_mcu,int... i_pins) throws MbedJsException
 	{
 		super(i_mcu,"mbedJS:BusOut");
 		String p;
@@ -52,23 +52,23 @@ public class BusOut extends McuBindClass
 		}
 		JsonRpcResult r=this.rawRpc("_new1",p);
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void write(int i_value) throws MiMicJsException
+	public void write(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("write",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}	
-	public int read() throws MiMicJsException
+	public int read() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getUInt32(0);
 	}

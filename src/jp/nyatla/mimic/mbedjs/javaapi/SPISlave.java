@@ -20,57 +20,57 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * SPISlaveクラスです。
  * <a href="https://mbed.org/handbook/SPISlave">mbed::SPISlave</a>と同等の機能を持ちます。
  */
 public class SPISlave extends McuBindClass{
-	public SPISlave(Mcu i_mcu,int i_mosi_pin,int i_miso_pin,int i_sclk_pin,int i_ssel_pin) throws MiMicJsException{
+	public SPISlave(Mcu i_mcu,int i_mosi_pin,int i_miso_pin,int i_sclk_pin,int i_ssel_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:SPISlave");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d,%d,%d",
 			JsonRpcUtils.intToJuint32(i_mosi_pin),JsonRpcUtils.intToJuint32(i_miso_pin),
 			JsonRpcUtils.intToJuint32(i_sclk_pin),JsonRpcUtils.intToJuint32(i_ssel_pin)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}	
-	public void frequency(int i_value) throws MiMicJsException{
+	public void frequency(int i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("frequency",String.format("%d",i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void format(int i_bits,int i_mode) throws MiMicJsException{
+	public void format(int i_bits,int i_mode) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("format",String.format("%d,%d",i_bits,i_mode));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public int read() throws MiMicJsException
+	public int read() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public int receive() throws MiMicJsException
+	public int receive() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("receive");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public void reply(int i_v) throws MiMicJsException
+	public void reply(int i_v) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("reply",Integer.toString(i_v));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

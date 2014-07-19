@@ -21,7 +21,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * AnalogOutクラスです。
@@ -29,33 +29,33 @@ import jp.nyatla.mimic.mbedjs.MiMicJsException;
  */
 public class AnalogOut extends McuBindClass
 {
-	public AnalogOut(Mcu i_mcu,int i_pin) throws MiMicJsException
+	public AnalogOut(Mcu i_mcu,int i_pin) throws MbedJsException
 	{
 		super(i_mcu,"mbedJS:AnalogOut");
 		JsonRpcResult r=this.rawRpc("_new1",JsonRpcUtils.toUint32String(i_pin));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void write(double i_value) throws MiMicJsException{
+	public void write(double i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("write_fx",Integer.toString((int)Math.round(i_value*10000)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}	
-	public void write_u16(int i_value) throws MiMicJsException{
+	public void write_u16(int i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("write_u16",JsonRpcUtils.toUint32String(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public float read() throws MiMicJsException{
+	public float read() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read_fx");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return ((float)r.getInt32(0))/10000;
 	}

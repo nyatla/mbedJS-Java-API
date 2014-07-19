@@ -37,38 +37,38 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * SPIクラスです。
  * <a href="https://mbed.org/handbook/SPI">mbed::SPI</a>と同等の機能を持ちます。
  */
 public class SPI extends McuBindClass{
-	public SPI(Mcu i_mcu,int i_mosi_pin,int i_miso_pin,int i_sclk_pin) throws MiMicJsException{
+	public SPI(Mcu i_mcu,int i_mosi_pin,int i_miso_pin,int i_sclk_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:SPI");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d,%d,%d",JsonRpcUtils.intToJuint32(i_mosi_pin),JsonRpcUtils.intToJuint32(i_miso_pin),JsonRpcUtils.intToJuint32(i_sclk_pin),JsonRpcUtils.intToJuint32(PinName.NC)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public int write(int i_value) throws MiMicJsException{
+	public int write(int i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("write",String.format("%d",i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}	
-	public void frequency(int i_value) throws MiMicJsException{
+	public void frequency(int i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("frequency",String.format("%d",i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void format(int i_bits,int i_mode) throws MiMicJsException{
+	public void format(int i_bits,int i_mode) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("format",String.format("%d,%d",i_bits,i_mode));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

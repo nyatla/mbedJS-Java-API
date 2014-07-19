@@ -20,24 +20,24 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * PortInクラスです。
  * <a href="https://mbed.org/handbook/PortIn">mbed::PortIn</a>と同等の機能を持ちます。
  */
 public class PortIn extends McuBindClass{
-	public PortIn(Mcu i_mcu,int i_port,int i_mask) throws MiMicJsException{
+	public PortIn(Mcu i_mcu,int i_port,int i_mask) throws MbedJsException{
 		super(i_mcu,"mbedJS:PortIn");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_port),JsonRpcUtils.intToJuint32(i_mask)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public int read() throws MiMicJsException{
+	public int read() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}/*

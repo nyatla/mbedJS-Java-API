@@ -19,7 +19,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 
 import jp.nyatla.mimic.mbedjs.JsonRpc;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * MCUをリモートインスタンスとして管理します。
@@ -47,7 +47,7 @@ public class Mcu
 	}
 	private final String RPC_CLASS="mbedJS:Mcu";
 	private JsonRpc _rpc;
-	public Mcu(String i_addr) throws MiMicJsException
+	public Mcu(String i_addr) throws MbedJsException
 	{
 		this._rpc=new JsonRpc("ws://"+i_addr+"/rpc/");
 	}
@@ -55,9 +55,9 @@ public class Mcu
 	 * mbedJSのgetInfo関数を実行します。
 	 * @return
 	 * Mcuの情報を返します。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public GetInfoResult getInfo() throws MiMicJsException{
+	public GetInfoResult getInfo() throws MbedJsException{
 		JsonRpcResult r=this.rpc(RPC_CLASS+":getInfo","");
 		GetInfoResult ret=new GetInfoResult();
 		ret.version	=r.getString(0);
@@ -74,10 +74,10 @@ public class Mcu
 		try {
 			//今んところcloseと同じ。
 			this._rpc.close();
-		} catch (MiMicJsException e) {
+		} catch (MbedJsException e) {
 		}
 	}
-	public void close() throws MiMicJsException{
+	public void close() throws MbedJsException{
 		this._rpc.close();
 	}
 	/**
@@ -90,9 +90,9 @@ public class Mcu
 	 * params:[]の中にそのまま表示されます。
 	 * @return
 	 * 発行したRPCメッセージのid値です。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public JsonRpcResult rpc(String i_method,String i_params) throws MiMicJsException{
+	public JsonRpcResult rpc(String i_method,String i_params) throws MbedJsException{
 		int id=this._rpc.rpc(i_method, i_params);
 		return this._rpc.waitForResult(id);
 	}

@@ -22,36 +22,38 @@ import java.net.URISyntaxException;
 
 public class JsonRpc
 {
-	private MiMicJsWebSocket _ws;
+	private MbedJsWebSocket _ws;
 	StringBuffer _rx=new StringBuffer();
-	public JsonRpc(String i_url) throws MiMicJsException
+	public JsonRpc(String i_url) throws MbedJsException
 	{
 		try {
-			this._ws=new MiMicJsWebSocket(new URI(i_url));
+			this._ws=new MbedJsWebSocket(new URI(i_url));
 			if(!this._ws.connectBlocking()){
-				throw new MiMicJsException();
+				throw new MbedJsException();
 			}
-		} catch (InterruptedException|MiMicJsException | URISyntaxException e){
-			throw new MiMicJsException(e);
+		} catch (InterruptedException e){
+			throw new MbedJsException(e);
+		} catch (URISyntaxException e) {
+			throw new MbedJsException(e);
 		}
 		this._idx=0;
 	}
 	public int _idx;
-	public int rpc(String i_method, String i_params) throws MiMicJsException
+	public int rpc(String i_method, String i_params) throws MbedJsException
 	{
 		int idx=this._idx;
 		this._ws.send(String.format("{\"jsonrpc\":\"2.0\",\"method\":\"%s\",\"params\":[%s],\"id\":%d}",i_method,i_params,idx));
 		this._idx++;
 		return idx;
 	}
-	public JsonRpcResult waitForResult(int id) throws MiMicJsException
+	public JsonRpcResult waitForResult(int id) throws MbedJsException
 	{
 		int rxst=0;
 		for(;;){
 			try {
 				this._rx.append(this._ws.recvBlocking());
 			} catch (InterruptedException e) {
-				throw new MiMicJsException(e);
+				throw new MbedJsException(e);
 			}
 			int l=this._rx.length();
 			//ストリームからJSONを抽出。"のエスケープには対応しない。
@@ -84,12 +86,12 @@ public class JsonRpc
 			}
 		}
 	}
-	public void close() throws MiMicJsException
+	public void close() throws MbedJsException
 	{
 		try {
 			this._ws.closeBlocking();
 		} catch (InterruptedException e) {
-			throw new MiMicJsException(e);
+			throw new MbedJsException(e);
 		}
 	}
 	public static void main(String args[]){
@@ -98,7 +100,7 @@ public class JsonRpc
 			rpc.rpc("mbedJS:Mcu:getInfo", "");
 			rpc.waitForResult(1);
 			rpc.close();
-		} catch (MiMicJsException e) {
+		} catch (MbedJsException e) {
 			e.printStackTrace();
 		}
 	}

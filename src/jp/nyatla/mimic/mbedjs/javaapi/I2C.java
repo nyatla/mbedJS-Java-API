@@ -20,7 +20,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * IC2クラスです。
@@ -36,64 +36,64 @@ public class I2C  extends McuBindClass
 			this.data=i_data;
 		}
 	}
-	public I2C(Mcu i_mcu,int i_sda_pin,int i_scl_pin) throws MiMicJsException{
+	public I2C(Mcu i_mcu,int i_sda_pin,int i_scl_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:I2C");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_sda_pin),JsonRpcUtils.intToJuint32(i_scl_pin)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void frequency(int i_hz) throws MiMicJsException{
+	public void frequency(int i_hz) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("frequency",Integer.toString(i_hz));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public ReadResult read(int i_address,int i_length,boolean i_repeated) throws MiMicJsException{
+	public ReadResult read(int i_address,int i_length,boolean i_repeated) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read1",String.format("%d,%d,%d",i_address,i_length,i_repeated?1:0));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return new ReadResult(r.getInt32(0),r.getBytes(1));
 	}
-	public int read(int i_ack) throws MiMicJsException
+	public int read(int i_ack) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read2",String.format("%d",i_ack));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public int write(int i_address,byte[] i_data,boolean i_repeated) throws MiMicJsException{
+	public int write(int i_address,byte[] i_data,boolean i_repeated) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("write1",String.format("%d,\"%s\",%d",i_address,JsonRpcUtils.byteArray2Bstr(i_data),i_repeated?1:0));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public int write(int i_ack) throws MiMicJsException
+	public int write(int i_ack) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read2",String.format("%d",i_ack));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public void start() throws MiMicJsException
+	public void start() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("start");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void stop() throws MiMicJsException
+	public void stop() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("stop");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

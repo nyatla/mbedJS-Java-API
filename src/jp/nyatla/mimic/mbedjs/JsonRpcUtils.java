@@ -25,13 +25,13 @@ public class JsonRpcUtils
 	 * BSTRをByte配列へ変換します。
 	 * @param i_bstr
 	 * @return
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public static byte[] bstr2ByteArray(String i_bstr) throws MiMicJsException
+	public static byte[] bstr2ByteArray(String i_bstr) throws MbedJsException
 	{
 		int l=i_bstr.length();
 		if(l%2!=0){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		byte[] ret=new byte[l/2];
 		for(int i=0;i<l;i+=2){
@@ -43,9 +43,9 @@ public class JsonRpcUtils
 	 * Byte配列をBSTRへ変換します。
 	 * @param i_data
 	 * @return
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public static String byteArray2Bstr(byte[] i_data) throws MiMicJsException
+	public static String byteArray2Bstr(byte[] i_data) throws MbedJsException
 	{
 		StringBuffer ret=new StringBuffer();
 		for(int i=0;i<i_data.length;i++){
@@ -59,11 +59,11 @@ public class JsonRpcUtils
 		}
 		return ret.toString();
 	}
-	public static int[] bstr2IntArray(String i_bstr) throws MiMicJsException
+	public static int[] bstr2IntArray(String i_bstr) throws MbedJsException
 	{
 		int l=i_bstr.length();
 		if(l%8!=0){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		int[] ret=new int[l/8];
 		for(int i=0;i<l;i+=8){
@@ -73,7 +73,7 @@ public class JsonRpcUtils
 		}
 		return ret;
 	}	
-	public static String intArray2Bstr(int[] i_data) throws MiMicJsException
+	public static String intArray2Bstr(int[] i_data) throws MbedJsException
 	{
 		StringBuffer ret=new StringBuffer();
 		for(int i=0;i<i_data.length;i++){
@@ -100,7 +100,7 @@ public class JsonRpcUtils
 			int[] t2=bstr2IntArray("010000000002000001234567ff0000f1");
 			String s2=intArray2Bstr(t2);
 			System.out.println(s2);
-		} catch (MiMicJsException e) {
+		} catch (MbedJsException e) {
 			e.printStackTrace();
 		}
 	}

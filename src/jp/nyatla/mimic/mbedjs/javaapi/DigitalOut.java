@@ -20,40 +20,40 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * DigitalOutクラスです。
  * <a href="https://mbed.org/handbook/DigitalIn">mbed::DigitalOut</a>と同等の機能を持ちます。
  */
 public class DigitalOut extends McuBindClass{
-	public DigitalOut(Mcu i_mcu,int i_pin,int i_val) throws MiMicJsException{
+	public DigitalOut(Mcu i_mcu,int i_pin,int i_val) throws MbedJsException{
 		super(i_mcu,"mbedJS:DigitalOut");
 		JsonRpcResult r=this.rawRpc("_new2",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_pin),i_val));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public DigitalOut(Mcu i_mcu,int i_pin) throws MiMicJsException{
+	public DigitalOut(Mcu i_mcu,int i_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:DigitalOut");
 		JsonRpcResult r=this.rawRpc("_new1",JsonRpcUtils.toUint32String(i_pin));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void write(int i_value) throws MiMicJsException{
+	public void write(int i_value) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("write",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public int read() throws MiMicJsException{
+	public int read() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}

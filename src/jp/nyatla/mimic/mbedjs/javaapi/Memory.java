@@ -21,7 +21,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * MCUのメモリを操作するクラスです。
@@ -39,13 +39,13 @@ public class Memory extends McuClass{
 	 * 読出しサイズです。
 	 * @return
 	 * 読みだしたデータを格納した配列です。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public byte[] read(int i_addr,int i_size) throws MiMicJsException
+	public byte[] read(int i_addr,int i_size) throws MbedJsException
 	{
 		JsonRpcResult r=this.rawRpc("read",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_addr),JsonRpcUtils.intToJuint32(i_size)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getBytes(0);
 	}
@@ -55,13 +55,13 @@ public class Memory extends McuClass{
 	 * 書き込み先のメモリアドレスです。
 	 * @param i_data
 	 * 書き込むデータです。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public void write(int i_addr,byte[] i_data) throws MiMicJsException
+	public void write(int i_addr,byte[] i_data) throws MbedJsException
 	{
 		JsonRpcResult r=this.rawRpc("write",String.format("%d,\"%s\"",JsonRpcUtils.intToJuint32(i_addr),JsonRpcUtils.byteArray2Bstr(i_data)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
@@ -74,13 +74,13 @@ public class Memory extends McuClass{
 	 * 多分200バイトくらいが限界です。
 	 * @return
 	 * 読みだした値を格納した配列です。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public int[] read32(int i_addr,int i_size) throws MiMicJsException
+	public int[] read32(int i_addr,int i_size) throws MbedJsException
 	{
 		JsonRpcResult r=this.rawRpc("read",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_addr),JsonRpcUtils.intToJuint32(i_size)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return JsonRpcUtils.bstr2IntArray(r.getString(0));
 	}
@@ -90,13 +90,13 @@ public class Memory extends McuClass{
 	 * 書き込み先の先頭アドレスを指定します。4バイト境界で指定してください。
 	 * @param i_data
 	 * 書き込むデータの配列です。最大要素数は40個くらいです。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public void write32(int i_addr,int[] i_data) throws MiMicJsException
+	public void write32(int i_addr,int[] i_data) throws MbedJsException
 	{
 		JsonRpcResult r=this.rawRpc("write",String.format("%d,\"%s\"",JsonRpcUtils.intToJuint32(i_addr),JsonRpcUtils.intArray2Bstr(i_data)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

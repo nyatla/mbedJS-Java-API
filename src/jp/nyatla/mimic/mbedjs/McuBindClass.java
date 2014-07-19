@@ -29,7 +29,7 @@ public class McuBindClass extends McuClass{
 	{
 		super(i_mcu,i_rpc_class_name);
 	}
-	public void dispose() throws MiMicJsException
+	public void dispose() throws MbedJsException
 	{
 		this.classRpc("dispose",Integer.toString(this._remote_instance_id));
 	}
@@ -39,9 +39,9 @@ public class McuBindClass extends McuClass{
 	 * MiMicRPCの関数名フィールドに指定する値です。
 	 * @param i_params
 	 * @return
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	protected JsonRpcResult classRpc(String i_function,String i_params) throws MiMicJsException
+	protected JsonRpcResult classRpc(String i_function,String i_params) throws MbedJsException
 	{
 		if(i_params==null){
 			return this._mcu.rpc(this._rpc_class_name+":"+i_function,Integer.toString(this._remote_instance_id));
@@ -49,12 +49,12 @@ public class McuBindClass extends McuClass{
 			return this._mcu.rpc(this._rpc_class_name+":"+i_function,Integer.toString(this._remote_instance_id)+","+i_params);
 		}
 	}
-	protected JsonRpcResult classRpc(String i_function) throws MiMicJsException
+	protected JsonRpcResult classRpc(String i_function) throws MbedJsException
 	{
 		return this.classRpc(i_function,null);
 	}
 	
-	public final void setRemoteInstance(int i_remote_instance_id) throws MiMicJsException
+	public final void setRemoteInstance(int i_remote_instance_id) throws MbedJsException
 	{
 		this._remote_instance_id=i_remote_instance_id;
 	}

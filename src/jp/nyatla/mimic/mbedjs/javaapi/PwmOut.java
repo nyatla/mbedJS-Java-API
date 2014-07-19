@@ -20,81 +20,81 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * PwmOutクラスです。
  * <a href="https://mbed.org/handbook/PwmOut">mbed::PwmOut</a>と同等の機能を持ちます。
  */
 public class PwmOut extends McuBindClass{
-	public PwmOut(Mcu i_mcu,int i_pin) throws MiMicJsException{
+	public PwmOut(Mcu i_mcu,int i_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:PwmOut");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d",JsonRpcUtils.intToJuint32(i_pin)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void write(float i_value) throws MiMicJsException
+	public void write(float i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("write_fx",Integer.toString(Math.round(i_value*10000)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public float read() throws MiMicJsException
+	public float read() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read_fx");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return ((float)r.getInt32(0))/10000f;
 	}
-	public void period(float i_value) throws MiMicJsException
+	public void period(float i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("period_fx",Integer.toString(Math.round(i_value*10000)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void period_ms(int i_value) throws MiMicJsException
+	public void period_ms(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("period_ms",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void period_us(int i_value) throws MiMicJsException
+	public void period_us(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("period_us",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void pulsewidth(float i_value) throws MiMicJsException
+	public void pulsewidth(float i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("pulsewidth_fx",Integer.toString(Math.round(i_value*10000)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void pulsewidth_ms(int i_value) throws MiMicJsException
+	public void pulsewidth_ms(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("pulsewidth_ms",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void pulsewidth_us(int i_value) throws MiMicJsException
+	public void pulsewidth_us(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("pulsewidth_us",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}/*

@@ -21,7 +21,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * BusInクラスです。
  * <a href="https://mbed.org/handbook/BusIn">mbed::BusIn</a>と同等の機能を持ちます。
@@ -33,9 +33,9 @@ public class BusIn extends McuBindClass
 	 * @param i_mcu
 	 * @param i_pins
 	 * バスを構成するピン識別子。最大16個までのpin番号を指定できます。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public BusIn(Mcu i_mcu,int... i_pins) throws MiMicJsException
+	public BusIn(Mcu i_mcu,int... i_pins) throws MbedJsException
 	{
 		super(i_mcu,"mbedJS:BusIn");
 		String p;
@@ -52,23 +52,23 @@ public class BusIn extends McuBindClass
 		}
 		JsonRpcResult r=this.rawRpc("_new1",p);
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public int read() throws MiMicJsException
+	public int read() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public void mode(int i_pin_mode) throws MiMicJsException
+	public void mode(int i_pin_mode) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("mode",Integer.toString(i_pin_mode));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

@@ -20,32 +20,32 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * DigitalInクラスです。
  * <a href="https://mbed.org/handbook/DigitalIn">mbed::DigitalIn</a>と同等の機能を持ちます。
  */
 public class DigitalIn extends McuBindClass{
-	public DigitalIn(Mcu i_mcu,int i_pin) throws MiMicJsException{
+	public DigitalIn(Mcu i_mcu,int i_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:DigitalIn");
 		JsonRpcResult r=this.rawRpc("_new1",JsonRpcUtils.toUint32String(i_pin));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public int read() throws MiMicJsException{
+	public int read() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public void mode(int i_pin_mode) throws MiMicJsException{
+	public void mode(int i_pin_mode) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("mode",Integer.toString(i_pin_mode));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

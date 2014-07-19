@@ -20,7 +20,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
  * PwmOutクラスです。
  * <a href="https://mbed.org/handbook/Serial">mbed::Serial</a>と同等の機能を持ちます。
@@ -32,18 +32,18 @@ public class Serial extends McuBindClass{
 	public final static int Forced1=3;
 	public final static int Forced0=4;
 	
-	public Serial(Mcu i_mcu,int i_tx_pin,int i_rx_pin) throws MiMicJsException{
+	public Serial(Mcu i_mcu,int i_tx_pin,int i_rx_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:Serial");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_tx_pin),JsonRpcUtils.intToJuint32(i_rx_pin)));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void format(int i_bits,int i_parity,int i_stop_bit) throws MiMicJsException{
+	public void format(int i_bits,int i_parity,int i_stop_bit) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("format",String.format("%d,%d,%d",i_bits,i_parity,i_stop_bit));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
@@ -60,69 +60,69 @@ public class Serial extends McuBindClass{
 	 * @return　{int}
 	 * Callbackモードの時はRPCメソッドのインデクスを返します。
 	 */
-	public void format(int i_bits,int i_parity) throws MiMicJsException{
+	public void format(int i_bits,int i_parity) throws MbedJsException{
 		this.format(i_bits, i_parity,1);
 	}
-	public void format(int i_bits) throws MiMicJsException{
+	public void format(int i_bits) throws MbedJsException{
 		this.format(i_bits,None,1);
 	}
-	public void format() throws MiMicJsException{
+	public void format() throws MbedJsException{
 		this.format(8,None,1);
 	}
-	public boolean readable() throws MiMicJsException{
+	public boolean readable() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("readable");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0)==0?false:true;
 	}
-	public boolean writeable() throws MiMicJsException{
+	public boolean writeable() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("writeable");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0)==0?false:true;
 	}
-	public void send_break() throws MiMicJsException{
+	public void send_break() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("send_break");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public int putc(int i_c) throws MiMicJsException{
+	public int putc(int i_c) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("putc",Integer.toString(i_c));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public int puts(String i_s) throws MiMicJsException{
+	public int puts(String i_s) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("puts","\""+i_s+"\"");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public int getc() throws MiMicJsException{
+	public int getc() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("getc");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getInt32(0);
 	}
-	public String gets(int i_len) throws MiMicJsException{
+	public String gets(int i_len) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("gets",Integer.toString(i_len));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getString(0);
 	}
-	public void baud(int i_baudrate) throws MiMicJsException
+	public void baud(int i_baudrate) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("baud",Integer.toString(i_baudrate));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}

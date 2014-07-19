@@ -21,7 +21,7 @@ package jp.nyatla.mimic.mbedjs.javaapi;
 import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
-import jp.nyatla.mimic.mbedjs.MiMicJsException;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
 
 /**
  * BusInOutクラスです。
@@ -34,9 +34,9 @@ public class BusInOut extends McuBindClass
 	 * @param i_mcu
 	 * @param i_pins
 	 * バスを構成するピン識別子。最大16個までのpin番号を指定できます。
-	 * @throws MiMicJsException
+	 * @throws MbedJsException
 	 */
-	public BusInOut(Mcu i_mcu,int... i_pins) throws MiMicJsException
+	public BusInOut(Mcu i_mcu,int... i_pins) throws MbedJsException
 	{
 		super(i_mcu,"mbedJS:BusInOut");
 		String p;
@@ -53,47 +53,47 @@ public class BusInOut extends McuBindClass
 		}
 		JsonRpcResult r=this.rawRpc("_new1",p);
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		this.setRemoteInstance(r.getInt32(0));
 	}
-	public void write(int i_value) throws MiMicJsException
+	public void write(int i_value) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("write",Integer.toString(i_value));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}	
-	public int read() throws MiMicJsException
+	public int read() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("read");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return r.getUInt32(0);
 	}
-	public void mode(int i_pin_mode) throws MiMicJsException
+	public void mode(int i_pin_mode) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("mode",Integer.toString(i_pin_mode));
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}	
-	public void input() throws MiMicJsException
+	public void input() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("input");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
-	public void output() throws MiMicJsException
+	public void output() throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("output");
 		if(r.isError()){
-			throw new MiMicJsException();
+			throw new MbedJsException();
 		}
 		return;
 	}
