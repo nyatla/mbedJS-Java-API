@@ -23,20 +23,20 @@ https://mbed.org/users/nyatla/code/mbedJS/
 ---------------
 Lチカのサンプルコードは以下のように書けます。
 
-public class LEDBlink{
-	public static void main(String args[]){
-		try {
-			Mcu mcu=new Mcu("192.168.128.39");
-			DigitalOut a=new DigitalOut(mcu,PinName.LED1);
-			for(int i=0;i<10000;i++){
-				a.write(i%2);
-				Thread.sleep(100);
-			}
-			mcu.close();
-			System.out.println("done");
-		} catch (InterruptedException|MiMicJsException e) {
-			e.printStackTrace();
-		}
-	}
-}
+    public class LEDBlink{
+    	public static void main(String args[]){
+    		try {
+    			Mcu mcu=new Mcu("192.168.128.39");
+    			DigitalOut a=new DigitalOut(mcu,PinName.LED1);
+    			for(int i=0;i<10000;i++){
+    				a.write(i%2);
+    				Thread.sleep(100);
+    			}
+    			mcu.close();
+    			System.out.println("done");
+    		} catch (InterruptedException|MiMicJsException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
 
