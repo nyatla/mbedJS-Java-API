@@ -31,12 +31,12 @@ public class Mcu
 	/**
 	 * {@link Mcu#getInfo()}の戻り値を格納するクラスです。
 	 */
-	public final class GetInfoResult{
-		public final class GetInfoResult_Mcu{
+	public static class GetInfoResult{
+		public class GetInfoResult_Mcu{
 			/**MCUチップの名前です。*/
-			String name;
+			public String name;
 			/**イーサネットペリフェラルの名前です*/
-			String eth;
+			public String eth;
 		}
 		/**バージョン情報です*/
 		public String version;

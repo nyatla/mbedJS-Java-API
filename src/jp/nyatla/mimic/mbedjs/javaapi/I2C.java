@@ -28,7 +28,7 @@ import jp.nyatla.mimic.mbedjs.MbedJsException;
  */
 public class I2C  extends McuBindClass
 {
-	public class ReadResult{
+	public static class ReadResult{
 		public final int ack;
 		public final byte[] data;
 		protected ReadResult(int i_ack,byte[] i_data){

@@ -28,14 +28,6 @@ import jp.nyatla.mimic.mbedjs.MbedJsException;
  */
 public class I2CSlave  extends McuBindClass
 {
-	public class ReadResult{
-		public final int ack;
-		public final byte[] data;
-		protected ReadResult(int i_ack,byte[] i_data){
-			this.ack=i_ack;
-			this.data=i_data;
-		}
-	}
 	public I2CSlave(Mcu i_mcu,int i_sda_pin,int i_scl_pin) throws MbedJsException{
 		super(i_mcu,"mbedJS:I2CSlave");
 		JsonRpcResult r=this.rawRpc("_new1",String.format("%d,%d",JsonRpcUtils.intToJuint32(i_sda_pin),JsonRpcUtils.intToJuint32(i_scl_pin)));
@@ -58,12 +50,12 @@ public class I2CSlave  extends McuBindClass
 		}
 		return;
 	}	
-	public ReadResult read(int i_length) throws MbedJsException{
+	public I2C.ReadResult read(int i_length) throws MbedJsException{
 		JsonRpcResult r=this.classRpc("read1",String.format("%d",i_length));
 		if(r.isError()){
 			throw new MbedJsException();
 		}
-		return new ReadResult(r.getInt32(0),r.getBytes(1));
+		return new I2C.ReadResult(r.getInt32(0),r.getBytes(1));
 	}
 	public int read() throws MbedJsException
 	{
