@@ -66,6 +66,16 @@ public class Mcu
 		ret.mcu.name=r.getString(3);
 		return ret;
 	}
+	/**
+	 * 指定idのリモートインスタンスを削除します。
+	 * @param i_oid
+	 * @return
+	 * @throws MbedJsException
+	 */
+	public boolean dispseObject(int i_oid) throws MbedJsException{
+		JsonRpcResult r=this.rpc(RPC_CLASS+":disposeObject",Integer.toString(i_oid));
+		return r.getInt32(0)==0?false:true;
+	}
 
 	/**
 	 * RPCセッションをシャットダウンしてMCUを解放します。

@@ -29,9 +29,9 @@ public class McuBindClass extends McuClass{
 	{
 		super(i_mcu,i_rpc_class_name);
 	}
-	public void dispose() throws MbedJsException
+	public boolean dispose() throws MbedJsException
 	{
-		this.classRpc("dispose",Integer.toString(this._remote_instance_id));
+		return this._mcu.dispseObject(this._remote_instance_id);
 	}
 	/**
 	 * 1番目の引数にremote instance idを持つRPCコールを発行します。
