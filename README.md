@@ -1,15 +1,16 @@
 mbedJS-Java-API
 ===============
 
-mbedJSのJavaインタフェイスライブラリです。
+
+mbedJSのJavaインタフェイスライブラリです。  
 Javaからネットワーク接続したmbedを制御することができます。
 
-mbedJSはこちらからダウンロードしてください。
-https://mbed.org/users/nyatla/code/mbedJS/
+mbedJSはこちらからダウンロードしてください。  
+mbedJS(mbed.org) https://mbed.org/users/nyatla/code/mbedJS/
 
+mbedJS-Java-APIはMiMic Projectで開発しています。  
+MiMic Project http://nyatla.jp/mimic/wp/
 
-mbedJS-Java-APIはMiMic Projectで開発しています。
-http://nyatla.jp/mimic/wp/
 
 特徴
 ---------------
