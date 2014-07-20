@@ -22,7 +22,7 @@ import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
 import jp.nyatla.mimic.mbedjs.MbedJsException;
 /**
- * PwmOutクラスです。
+ * Serialクラスです。
  * <a href="https://mbed.org/handbook/Serial">mbed::Serial</a>と同等の機能を持ちます。
  */
 public class Serial extends McuBindClass{
