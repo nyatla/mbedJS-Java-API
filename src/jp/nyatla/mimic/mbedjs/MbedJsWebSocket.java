@@ -39,12 +39,13 @@ public class MbedJsWebSocket extends WebSocketClient
 	private final static int ST_CLOSE=4;
 	private final static int ST_ERROR=5;
 
-	private StringBuffer _sb=new StringBuffer();
+	private StringBuffer _sb;
 //	ArrayList<String> _s;
 	int _status;
 	public MbedJsWebSocket(URI i_uri) throws MbedJsException
 	{
 		super(i_uri,new Draft_17());
+		this._sb=new StringBuffer();
 		this._status=ST_NONE;
 	}
 	public String recvBlocking() throws MbedJsException,InterruptedException
@@ -55,7 +56,9 @@ public class MbedJsWebSocket extends WebSocketClient
 			}
 			//キューにたまってたらそれを返す。
 			if(this._sb.length()>0){
-				return this._sb.toString();
+				String r=this._sb.toString();
+				this._sb.delete(0,this._sb.length());
+				return r;
 			}
 			//無ければ待つ
 			this._status=ST_WAIT_RECV;

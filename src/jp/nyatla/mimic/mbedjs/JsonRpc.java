@@ -23,10 +23,11 @@ import java.net.URISyntaxException;
 public class JsonRpc
 {
 	private MbedJsWebSocket _ws;
-	StringBuffer _rx=new StringBuffer();
+	private StringBuffer _rx;
 	public JsonRpc(String i_url) throws MbedJsException
 	{
 		try {
+			this._rx=new StringBuffer();
 			this._ws=new MbedJsWebSocket(new URI(i_url));
 			if(!this._ws.connectBlocking()){
 				throw new MbedJsException();
