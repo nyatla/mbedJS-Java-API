@@ -5,6 +5,7 @@ package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
+import java.util.*;
 
 /**
  * このプログラムはhttp://mbed.org/users/simon/code/TextLCD/
@@ -20,6 +21,16 @@ public class TextLCD{
 		LCD20x2,
 		LCD20x4
 	}
+	
+	private void sleep_ms(long i_ms){
+		
+		Date d1 = new Date();
+		Date d2 = new Date();
+		while(d2.getTime() < (d1.getTime()+i_ms)){
+			d2 = new Date();
+		}
+		return;
+	}
 	private Mcu _mcu;
 	private DigitalOut _rs;
 	private DigitalOut _e;
@@ -29,36 +40,34 @@ public class TextLCD{
 	private int _row;
 	/**
 	 * LCDディスプレイの表示
-	 * @param mcu
-	 * @param rs
-	 * @param ee
-	 * @param d0
-	 * @param d1
-	 * @param d2
-	 * @param d3
-	 * @param type LCD機種
-	 * @throws InterruptedException 
+	 * @param i_mcu
+	 * @param i_rs
+	 * @param i_ee
+	 * @param i_d0
+	 * @param i_d1
+	 * @param i_d2
+	 * @param i_d3
+	 * @param i_type LCD機種
 	 */
-	public TextLCD(Mcu mcu , int rs, int ee,
-	int d0, int d1, int d2, int d3,LCDType type) throws MbedJsException, InterruptedException
+	public TextLCD(Mcu i_mcu , int i_rs, int i_ee,
+	int i_d0, int i_d1, int i_d2, int i_d3,LCDType i_type) throws MbedJsException
 	{
-		_type = type;
-		_mcu = mcu;
-		_rs = new DigitalOut(_mcu , rs);
-		_e  = new DigitalOut(_mcu , ee);
-		_d  = new BusOut(_mcu , d0, d1, d2, d3);
+		this._type = i_type;
+		this._mcu = i_mcu;
+		this._rs = new DigitalOut(_mcu , i_rs);
+		this._e  = new DigitalOut(_mcu , i_ee);
+		this._d  = new BusOut(_mcu , i_d0, i_d1, i_d2, i_d3);
 		
-		_e.write(1);
-		_rs.write(0);
+		this._e.write(1);
+		this._rs.write(0);
 		
-		Thread.sleep(15);
-		
+		this.sleep_ms(15);
 		for(int i=0 ; i<3 ; i++){
 			writeByte(0x3);
-			Thread.sleep(2);
+			this.sleep_ms(2);
 		}
 		writeByte(0x2);
-		Thread.sleep(1);
+		this.sleep_ms(1);
 		
 		writeCommand(0x28);
 		writeCommand(0x0C);
@@ -68,57 +77,55 @@ public class TextLCD{
 	}
 	public void dispose() throws MbedJsException
 	{
-		_rs.write(0);
-		_e.write(0);
-		
+		this._rs.dispose();
+		this._e.dispose();
+		this._d.dispose();
 	}
 	/**
 	 * キャラクタを1文字表示する
-	 * @param c 文字
+	 * @param i_ch 文字
 	 * @return
-	 * @throws InterruptedException 
 	 * @throws MbedJsException 
 	 */
-	public int putc(int c) throws MbedJsException, InterruptedException
+	public int putc(int i_ch) throws MbedJsException
 	{
 		// 改行処理
-		if(c == '\n'){
-			_column = 0;
-			_row ++;
-			if(_row >= rows()){
-				_row = 0;
+		if(i_ch == '\n'){
+			this._column = 0;
+			this._row ++;
+			if(this._row >= rows()){
+				this._row = 0;
 			}
 		}else{
-			character(_column , _row , c);
-			_column++;
-			if(_column >= columns()){
-				_column = 0;
-				_row ++ ;
-				if(_row >= rows()){
-					_row = 0;
+			character(this._column , this._row , i_ch);
+			this._column++;
+			if(this._column >= columns()){
+				this._column = 0;
+				this._row ++ ;
+				if(this._row >= rows()){
+					this._row = 0;
 				}
 			}
 		}
-		return c;
+		return i_ch;
 	}
 	/**
 	 * カーソルの位置を移動する
-	 * @param column 
-	 * @param row
+	 * @param i_column 
+	 * @param i_row
 	 */
-	public void locate(int column , int row){
-		_column = column;
-		_row = row;
+	public void locate(int i_column , int i_row){
+		this._column = i_column;
+		this._row = i_row;
 	}
 	/**
 	 * 画面をクリアする
-	 * @throws InterruptedException 
 	 * @throws MbedJsException 
 	 */
-	public void cls() throws InterruptedException, MbedJsException
+	public void cls() throws MbedJsException
 	{
 		writeCommand(0x01);
-		Thread.sleep(1);
+		this.sleep_ms(1);
 		locate( 0 , 0);
 		
 	}
@@ -128,7 +135,7 @@ public class TextLCD{
 	 */
 	public int rows()
 	{
-		switch(_type){
+		switch(this._type){
 		case LCD20x4:
 			return 4;
 		case LCD16x2:
@@ -143,7 +150,7 @@ public class TextLCD{
 	 * @return
 	 */
 	public int columns(){
-		switch(_type){
+		switch(this._type){
 		case LCD20x4:
 		case LCD20x2:
 			return 20;
@@ -155,92 +162,95 @@ public class TextLCD{
 	}
 	/**
 	 * 書き込むアドレスを決定する
-	 * @param column
-	 * @param row
+	 * @param i_column
+	 * @param i_row
 	 * @return
 	 */
-	int address(int column , int row){
-		switch (_type){
+	int address(int i_column , int i_row){
+		switch (this._type){
 		case LCD20x4:
-			switch(row){
+			switch(i_row){
 			case 0:
-				return 0x80 + column;
+				return 0x80 + i_column;
 			case 1:
-				return 0xc0 + column;
+				return 0xc0 + i_column;
 			case 2:
-				return 0x94 + column;
+				return 0x94 + i_column;
 			case 3:
-				return 0xd4 + column;
+				return 0xd4 + i_column;
 			}
 		case LCD16x2B:
-			return 0x80 + (row * 40) +column;
+			return 0x80 + (i_row * 40) +i_column;
 		case LCD16x2:
 		case LCD20x2:
-			return 0x80+(row * 0x40) +column;
+			return 0x80+(i_row * 0x40) +i_column;
 		}
-		return 0x80 + (row*0x40) + column;
+		return 0x80 + (i_row*0x40) + i_column;
 	}
 	/**
 	 * 文字を表示する
-	 * @param column 行 
-	 * @param row 列
-	 * @param c 文字
-	 * @throws InterruptedException 
+	 * @param i_column 行 
+	 * @param i_row 列
+	 * @param i_ch 文字
 	 * @throws MbedJsException 
 	 */
-	void character(int column , int row , int c) throws MbedJsException, InterruptedException
+	void character(int i_column , int i_row , int i_ch) throws MbedJsException
 	{
-		int a = address(column , row);
+		int a = address(i_column , i_row);
 		writeCommand(a);
-		writeData(c);
+		writeData(i_ch);
 	}
 	/**
 	 * 1バイト書き込み
-	 * @param value
+	 * @param i_value
 	 * @throws MbedJsException 
-	 * @throws InterruptedException 
 	 */
-	void writeByte(int value) throws MbedJsException, InterruptedException
+	void writeByte(int i_value) throws MbedJsException
 	{
-		_d.write(value >> 4);
-		Thread.sleep(1);
-		_e.write(0);
-		Thread.sleep(1);
-		_e.write(1);
-		_d.write(value >> 0);
-		Thread.sleep(1);
-		_e.write(0);
-		Thread.sleep(1);
-		_e.write(1);
+		this._d.write(i_value >> 4);
+		this.sleep_ms(1);
+		
+		this._e.write(0);
+		this.sleep_ms(1);
+		
+		this._e.write(1);
+		this._d.write(i_value >> 0);
+		this.sleep_ms(1);
+		
+		this._e.write(0);
+		this.sleep_ms(1);
+		
+		this._e.write(1);
 	
 	}
 	/**
 	 * コマンドを送る
-	 * @param command
-	 * @throws InterruptedException 
+	 * @param i_command
 	 * @throws MbedJsException 
 	 */
-	void writeCommand(int command) throws MbedJsException, InterruptedException
+	void writeCommand(int i_command) throws MbedJsException
 	{
-		_rs.write(0);
-		writeByte(command);
+		this._rs.write(0);
+		writeByte(i_command);
 	}
 	/**
 	 * データを送る
-	 * @param data
+	 * @param i_data
 	 * @throws MbedJsException 
-	 * @throws InterruptedException 
 	 */
-	void writeData(int data) throws MbedJsException, InterruptedException{
-		_rs.write(1);
-		writeByte(data);
+	void writeData(int i_data) throws MbedJsException
+	{
+		this._rs.write(1);
+		writeByte(i_data);
 	}
 	
-	public static void main(String args[]) throws MbedJsException, InterruptedException
+	public static void main(String args[]) throws MbedJsException
 	{
+		
 		Mcu mcu = new Mcu("10.0.0.2");
 		TextLCD lcd = new TextLCD(mcu , PinName.p24, PinName.p26,
 				PinName.p27, PinName.p28, PinName.p29, PinName.p30,LCDType.LCD16x2 );
+		lcd.sleep_ms(1000);
 		lcd.putc('T');
 		lcd.putc('E');
 		lcd.putc('S');
@@ -248,5 +258,6 @@ public class TextLCD{
 	
 		mcu.close();
 		System.out.println("done");
+		
 	}
 }
