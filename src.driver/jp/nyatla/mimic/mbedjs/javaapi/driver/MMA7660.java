@@ -6,7 +6,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 
-public class MMA8451Q {
+public class MMA7660 {
 	private final I2C _i2c;
 	private final int _addr;
 	/** I2Cを内部生成したか*/
@@ -24,7 +24,7 @@ public class MMA8451Q {
 	 * @param i_address
 	 * @throws MbedJsException
 	 */
-	public MMA8451Q(I2C i_i2c,int i_address) throws MbedJsException
+	public MMA7660(I2C i_i2c,int i_address) throws MbedJsException
 	{
 		this._is_attached=false;
 		this._i2c=i_i2c;
@@ -39,7 +39,7 @@ public class MMA8451Q {
 	 * @param i_address
 	 * @throws MbedJsException
 	 */
-	public MMA8451Q(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
+	public MMA7660(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
 		this._is_attached=true;
 		this._i2c=new I2C(i_mcu, sda, scl);
@@ -108,4 +108,5 @@ public class MMA8451Q {
 			e.printStackTrace();
 		}
 	}
+
 }
