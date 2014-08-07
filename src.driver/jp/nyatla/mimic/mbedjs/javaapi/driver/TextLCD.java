@@ -1,5 +1,27 @@
+/* mbed TextLCD Library, for a 4-bit LCD based on HD44780
+ * Copyright (c) 2007-2010, sford, http://mbed.org
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 /**
- * 
+ * modified by hara41
+ * modified by nyatla
  */
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
@@ -10,24 +32,25 @@ import java.util.*;
 /**
  * このプログラムはhttp://mbed.org/users/simon/code/TextLCD/
  * をmbedJS-Javaに移植したものです。
- * 
- * @author hara4_000
  *
  */
 public class TextLCD{
-	public enum LCDType {
-		LCD16x2,
-		LCD16x2B,
-		LCD20x2,
-		LCD20x4
-	}
+	public final static int LCD16x2	=1;
+	public final static int LCD16x2B=2;
+	public final static int LCD20x2	=3;
+	public final static int LCD20x4	=4;
 	
-	private void sleep_ms(long i_ms){
-		
-		Date d1 = new Date();
-		Date d2 = new Date();
-		while(d2.getTime() < (d1.getTime()+i_ms)){
-			d2 = new Date();
+	/**
+	 * ms単位のスリープ
+	 * @param i_ms
+	 * @throws MbedJsException
+	 */
+	private void sleep_ms(long i_ms) throws MbedJsException
+	{
+		try {
+			this.wait(i_ms);
+		} catch (InterruptedException e) {
+			throw new MbedJsException(e);
 		}
 		return;
 	}
@@ -35,28 +58,35 @@ public class TextLCD{
 	private DigitalOut _rs;
 	private DigitalOut _e;
 	private BusOut _d;
-	private LCDType _type;
+	private int _lcd_type;
 	private int _column;
 	private int _row;
 	/**
-	 * LCDディスプレイの表示
+	 * A TextLCD interface for driving 4-bit HD44780-based LCDs
+	 * LCDインスタンスを生成します。
 	 * @param i_mcu
-	 * @param i_rs
-	 * @param i_ee
-	 * @param i_d0
-	 * @param i_d1
-	 * @param i_d2
-	 * @param i_d3
-	 * @param i_type LCD機種
+	 * @param i_rs_pin
+	 * Instruction/data control line
+	 * @param i_ee_pin
+	 * Enable line (clock)
+	 * @param i_d0_pin
+	 * Data lines for using as a 4-bit interface(0)
+	 * @param i_d1_pin
+	 * Data lines for using as a 4-bit interface(1)
+	 * @param i_d2_pin
+	 * Data lines for using as a 4-bit interface(2)
+	 * @param i_d3_pin
+	 * Data lines for using as a 4-bit interface(3)
+	 * @param i_lcd_type LCD
 	 */
-	public TextLCD(Mcu i_mcu , int i_rs, int i_ee,
-	int i_d0, int i_d1, int i_d2, int i_d3,LCDType i_type) throws MbedJsException
+	public TextLCD(Mcu i_mcu , int i_rs_pin, int i_ee_pin,
+	int i_d0_pin, int i_d1_pin, int i_d2_pin, int i_d3_pin,int i_lcd_type) throws MbedJsException
 	{
-		this._type = i_type;
+		this._lcd_type = i_lcd_type;
 		this._mcu = i_mcu;
-		this._rs = new DigitalOut(_mcu , i_rs);
-		this._e  = new DigitalOut(_mcu , i_ee);
-		this._d  = new BusOut(_mcu , i_d0, i_d1, i_d2, i_d3);
+		this._rs = new DigitalOut(_mcu , i_rs_pin);
+		this._e  = new DigitalOut(_mcu , i_ee_pin);
+		this._d  = new BusOut(_mcu , i_d0_pin, i_d1_pin, i_d2_pin, i_d3_pin);
 		
 		this._e.write(1);
 		this._rs.write(0);
@@ -81,6 +111,15 @@ public class TextLCD{
 		this._e.dispose();
 		this._d.dispose();
 	}
+	public int puts(String i_s) throws MbedJsException
+	{
+		int i=0;
+		for(;i<i_s.length();i++){
+			int v=i_s.charAt(i);
+			this.putc((v>255)?'?':v);
+		}
+		return i;
+	}
 	/**
 	 * キャラクタを1文字表示する
 	 * @param i_ch 文字
@@ -93,16 +132,16 @@ public class TextLCD{
 		if(i_ch == '\n'){
 			this._column = 0;
 			this._row ++;
-			if(this._row >= rows()){
+			if(this._row >= this.rows()){
 				this._row = 0;
 			}
 		}else{
-			character(this._column , this._row , i_ch);
+			this.character(this._column , this._row , i_ch);
 			this._column++;
-			if(this._column >= columns()){
+			if(this._column >= this.columns()){
 				this._column = 0;
 				this._row ++ ;
-				if(this._row >= rows()){
+				if(this._row >= this.rows()){
 					this._row = 0;
 				}
 			}
@@ -124,9 +163,9 @@ public class TextLCD{
 	 */
 	public void cls() throws MbedJsException
 	{
-		writeCommand(0x01);
+		this.writeCommand(0x01);
 		this.sleep_ms(1);
-		locate( 0 , 0);
+		this.locate( 0 , 0);
 		
 	}
 	/**
@@ -135,30 +174,31 @@ public class TextLCD{
 	 */
 	public int rows()
 	{
-		switch(this._type){
+		switch(this._lcd_type){
 		case LCD20x4:
 			return 4;
 		case LCD16x2:
 		case LCD16x2B:
 		case LCD20x2:
+		default:
 			return 2;
 		}
-		return 0;
 	}
 	/**
 	 * 列
 	 * @return
+	 * @throws MbedJsException 
 	 */
 	public int columns(){
-		switch(this._type){
+		switch(this._lcd_type){
 		case LCD20x4:
 		case LCD20x2:
 			return 20;
 		case LCD16x2:
 		case LCD16x2B:
+		default:
 			return 16;
 		}
-		return 0;
 	}
 	/**
 	 * 書き込むアドレスを決定する
@@ -167,7 +207,7 @@ public class TextLCD{
 	 * @return
 	 */
 	int address(int i_column , int i_row){
-		switch (this._type){
+		switch (this._lcd_type){
 		case LCD20x4:
 			switch(i_row){
 			case 0:
@@ -194,18 +234,18 @@ public class TextLCD{
 	 * @param i_ch 文字
 	 * @throws MbedJsException 
 	 */
-	void character(int i_column , int i_row , int i_ch) throws MbedJsException
+	protected void character(int i_column , int i_row , int i_ch) throws MbedJsException
 	{
-		int a = address(i_column , i_row);
-		writeCommand(a);
-		writeData(i_ch);
+		int a = this.address(i_column , i_row);
+		this.writeCommand(a);
+		this.writeData(i_ch);
 	}
 	/**
 	 * 1バイト書き込み
 	 * @param i_value
 	 * @throws MbedJsException 
 	 */
-	void writeByte(int i_value) throws MbedJsException
+	protected void writeByte(int i_value) throws MbedJsException
 	{
 		this._d.write(i_value >> 4);
 		this.sleep_ms(1);
@@ -228,33 +268,32 @@ public class TextLCD{
 	 * @param i_command
 	 * @throws MbedJsException 
 	 */
-	void writeCommand(int i_command) throws MbedJsException
+	protected void writeCommand(int i_command) throws MbedJsException
 	{
 		this._rs.write(0);
-		writeByte(i_command);
+		this.writeByte(i_command);
 	}
 	/**
 	 * データを送る
 	 * @param i_data
 	 * @throws MbedJsException 
 	 */
-	void writeData(int i_data) throws MbedJsException
+	protected void writeData(int i_data) throws MbedJsException
 	{
 		this._rs.write(1);
-		writeByte(i_data);
+		this.writeByte(i_data);
 	}
 	
 	public static void main(String args[]) throws MbedJsException
 	{
-		
 		Mcu mcu = new Mcu("10.0.0.2");
 		TextLCD lcd = new TextLCD(mcu , PinName.p24, PinName.p26,
-				PinName.p27, PinName.p28, PinName.p29, PinName.p30,LCDType.LCD16x2 );
-		lcd.sleep_ms(1000);
+				PinName.p27, PinName.p28, PinName.p29, PinName.p30,TextLCD.LCD16x2);
 		lcd.putc('T');
 		lcd.putc('E');
 		lcd.putc('S');
 		lcd.putc('T');
+		lcd.puts("STRING");
 	
 		mcu.close();
 		System.out.println("done");
