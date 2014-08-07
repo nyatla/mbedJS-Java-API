@@ -51,12 +51,171 @@ public class MMA7660 {
 	{
 		this._i2c.write(this._addr,new byte[]{0x2a,0x01},false);
 	}
-
+	
 	public void dispose() throws MbedJsException{
 		if(this._is_attached){
 			this._i2c.dispose();
 		}
 	}
+	// 
+	enum Orientation{
+		Up,
+		Down,
+		Right,
+		Left,
+		Back,
+		Front,
+		Unknown
+	}
+	private int MMA7660_ADDRESS     =0x98;
+	private float MMA7660_SENSITIVITY =21.33f;
+	 
+	private byte MMA7660_XOUT_R      =0x00;
+	private byte MMA7660_YOUT_R      =0x01;
+	private byte MMA7660_ZOUT_R      =0x02;
+	private byte MMA7660_TILT_R      =0x03;
+	private byte MMA7660_INT_R       =0x06;
+	private byte MMA7660_MODE_R      =0x07;
+	private byte MMA7660_SR_R        =0x08;
+	private synchronized void sleep_ms(long i_ms) throws MbedJsException
+	{
+		try {
+			this.wait(i_ms);
+		} catch (InterruptedException e) {
+			throw new MbedJsException(e);
+		}
+		return;
+	}
+	
+	public boolean testConnection()
+	{
+		int ret = this._i2c.write(this._addr ,new byte[]{null}, false);
+		if (ret == 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public void setActive(boolean state)
+	{
+		this.active = state;
+		char modereg = read()
+	}
+	public void readData(int[] data)
+	{
+		
+	}
+	public void readData(float[] data)
+	{
+		
+	}
+	public float x(){
+		
+	}
+	public float y(){
+		
+	}
+	public float z(){
+		
+	}
+	public void setSampleRate(int samplerate)
+	{
+		
+	}
+	
+	public Orientation getSide()
+	{
+
+		byte[] str = {this.MMA7660_TILT_R};
+		byte tiltreg = this.read(str);
+		tiltreg &= 0x03;
+		if(tiltreg == 0x01)
+			return Orientation.Left;
+		if(tiltreg == 0x02)
+			return Orientation.Right;
+		return Orientation.Unknown;		
+	}
+	public Orientation getOrientation()
+	{
+		byte[] str = {this.MMA7660_TILT_R};
+		byte tiltreg = this.read(str);
+		tiltreg &= 0x07<<2;
+		tiltreg >>=2;
+		if(tiltreg == 0x01)
+			return Orientation.Left;
+		if(tiltreg == 0x02)
+			return Orientation.Right;
+		if(tiltreg == 0x05)
+			return Orientation.Down;
+		if(tiltreg == 0x06)
+			return Orientation.Up;
+		return Orientation.Unknown;
+			
+	}
+	private void write(byte address,byte data)
+	{
+		byte[] temp ={address,data};
+		
+		try {
+			this._i2c.write(this._addr, temp , false);
+		} catch (MbedJsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	private byte[] read(byte address)
+	{
+		I2C.ReadResult retval = null;
+		try {
+			this._i2c.write(this._addr , new byte[]{address} , true);
+			retval = this._i2c.read(this._addr ,1, false);
+			
+		} catch (MbedJsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return retval.data;
+	}
+	private byte[] read(int address ,int length)
+	{
+		 int[] data;
+		this._i2c.write(this._addr,new byte[]{address}, true);
+		data = this._i2c.read(this._addr, false);
+	}
+	private float getSingle(int number)
+	{
+		boolean active_old = this.active;
+		
+		if(!this.active){
+			this.setActive(true);
+			try {
+				sleep_ms(12 + (long)(1000 / this.samplerate) );
+			} catch (MbedJsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		byte temp;
+		boolean alert;
+		do{
+			alert = false;
+			temp = read(this.MMA7660_XOUT_R+number);
+			if(temp > 63)
+				alert =true;
+			if(temp > 31)
+				temp +=128+64;
+		}while(alert);
+		if(!active_old)
+			setActive(false);
+		
+		return temp / this.MMA7660_SENSITIVITY;
+		
+	}
+	private boolean active;
+	private float samplerate=1; 
+	//-----------------------------------------------------
 	public int getWhoAmI() throws MbedJsException
 	{
 		this._i2c.write(this._addr,new byte[]{0x0d},true);
