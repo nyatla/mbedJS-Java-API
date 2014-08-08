@@ -6,7 +6,9 @@ import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 
-public class MMA8451Q {
+public class MMA8451Q
+{
+	public final static int I2C_ADDRESS=0x98;
 	private final I2C _i2c;
 	private final int _addr;
 	/** I2Cを内部生成したか*/
@@ -96,7 +98,7 @@ public class MMA8451Q {
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");
-			MMA8451Q a=new MMA8451Q(mcu,PinName.p28,PinName.p27,0x98);
+			MMA8451Q a=new MMA8451Q(mcu,PinName.p28,PinName.p27,I2C_ADDRESS);
 			System.out.println("whoami="+a.getWhoAmI());
 			System.out.println("x="+a.getAccX());
 			System.out.println("y="+a.getAccY());

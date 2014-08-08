@@ -11,6 +11,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.*;
  */
 public class LM75B
 {
+	public final static int I2C_ADDRESS=0x90; 
 	private final I2C _i2c;
 	private final int _addr;
 	/** I2Cを内部生成したか*/
