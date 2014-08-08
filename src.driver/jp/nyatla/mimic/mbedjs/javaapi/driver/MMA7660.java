@@ -55,16 +55,15 @@ public class MMA7660
 			this._i2c.dispose();
 		}
 	}
-	// 
-	enum Orientation{
-		Up,
-		Down,
-		Right,
-		Left,
-		Back,
-		Front,
-		Unknown
-	}
+	public final static int Up		=0;
+	public final static int Down	=1;
+	public final static int Right	=2;
+	public final static int Left	=3;
+	public final static int Back	=4;
+	public final static int Front	=5;
+	public final static int Unknown	=6;
+
+
 	public final static int I2C_ADDRESS     =0x98;
 	private final static float MMA7660_SENSITIVITY =21.33f;
 	 
@@ -179,31 +178,40 @@ public class MMA7660
 		this._samplerate = rates[sampleLoc];
 		this.setActive(active_old);
 	}
-	
-	public Orientation getSide() throws MbedJsException
+	/**
+	 * 	
+	 * @return Left,Right
+	 * @throws MbedJsException
+	 */
+	public int getSide() throws MbedJsException
 	{
 		int tiltreg = this.read(MMA7660_TILT_R);
 		tiltreg &= 0x03;
 		if(tiltreg == 0x01)
-			return Orientation.Left;
+			return Left;
 		if(tiltreg == 0x02)
-			return Orientation.Right;
-		return Orientation.Unknown;		
+			return Right;
+		return Unknown;		
 	}
-	public Orientation getOrientation() throws MbedJsException
+	/**
+	 * 
+	 * @return Left,Right,Up,Down,Unknown
+	 * @throws MbedJsException
+	 */
+	public int getOrientation() throws MbedJsException
 	{
 		int tiltreg = this.read(MMA7660_TILT_R);
 		tiltreg &= 0x07<<2;
 		tiltreg >>=2;
 		if(tiltreg == 0x01)
-			return Orientation.Left;
+			return Left;
 		if(tiltreg == 0x02)
-			return Orientation.Right;
+			return Right;
 		if(tiltreg == 0x05)
-			return Orientation.Down;
+			return Down;
 		if(tiltreg == 0x06)
-			return Orientation.Up;
-		return Orientation.Unknown;
+			return Up;
+		return Unknown;
 			
 	}
 	private void write(byte i_address,byte i_data) throws MbedJsException
