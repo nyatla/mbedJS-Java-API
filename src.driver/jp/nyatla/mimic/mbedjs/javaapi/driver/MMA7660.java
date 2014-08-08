@@ -11,13 +11,15 @@ public class MMA7660 {
 	private final int _addr;
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
+	/*
 	private float toInt14f(byte[] i_v){
 	    int t = ((0x000000ff & i_v[0]) << 6) | ((0x000000ff & i_v[1]) >> 2);
 	    if (t > 16383/2){
 	    	t -= 16383;
 	    }
 	    return t/4096f;
-	}	
+	}
+	*/	
 	/**
 	 * 既存のI2Cに追加する場合
 	 * @param i_i2c
@@ -89,9 +91,9 @@ public class MMA7660 {
 		return;
 	}
 	
-	public boolean testConnection()
+	public boolean testConnection() throws MbedJsException
 	{
-		int ret = this._i2c.write(this._addr ,new byte[]{null}, false);
+		int ret = this._i2c.write(this._addr ,new byte[]{0x00}, false);
 		if (ret == 0){
 			return true;
 		}else{
@@ -101,15 +103,15 @@ public class MMA7660 {
 	public void setActive(boolean state)
 	{
 		this.active = state;
-		byte modereg = this.read(this.MMA7660_MODE_R);
+		int modereg = this.read(this.MMA7660_MODE_R);
 		modereg &=~(1<<0);
 		
-		if(modereg && (1<<2)){
+		//if((modereg?true:false) && ((1<<2)?true:false)){
 			modereg &= ~(1<<2);
-			this.write(this.MMA7660_MODE_R, modereg);
-		}
-		modereg +=state;
-		write(this.MMA7660_MODE_R,modereg);
+			this.write(this.MMA7660_MODE_R, (byte) modereg);
+		//}
+		modereg +=state?1:0;
+		write(this.MMA7660_MODE_R,(byte) modereg);
 		
 	}
 	public int[] readData_int() throws MbedJsException
@@ -120,7 +122,7 @@ public class MMA7660 {
 			this.setActive(true);
 			this.sleep_ms(12+(long)(1000/samplerate) );
 		}
-		byte [] temp;
+		int [] temp;
 		boolean alert;
 		
 		do{
@@ -166,7 +168,7 @@ public class MMA7660 {
 		int[] rates={120 , 64 , 32 , 16 , 8 , 4, 2, 1};
 		int sampleLoc = 0;
 		int sampleError = 10000;
-		byte temp;
+		int temp;
 		for(int i=0 ; i<8 ; i++){
 			temp = (byte) Math.abs(rates[i] - samplerate);
 			if(temp<sampleError){
@@ -178,14 +180,14 @@ public class MMA7660 {
 		temp =this.read(this.MMA7660_SR_R);
 		temp &=~0x07;
 		temp |= sampleLoc;
-		write(this.MMA7660_SR_R , temp);
+		write(this.MMA7660_SR_R , (byte)temp);
 		this.samplerate = rates[sampleLoc];
 		setActive(active_old);
 	}
 	
 	public Orientation getSide()
 	{
-		byte tiltreg = this.read(this.MMA7660_TILT_R);
+		int tiltreg = this.read(this.MMA7660_TILT_R);
 		tiltreg &= 0x03;
 		if(tiltreg == 0x01)
 			return Orientation.Left;
@@ -195,7 +197,7 @@ public class MMA7660 {
 	}
 	public Orientation getOrientation()
 	{
-		byte tiltreg = this.read(this.MMA7660_TILT_R);
+		int tiltreg = this.read(this.MMA7660_TILT_R);
 		tiltreg &= 0x07<<2;
 		tiltreg >>=2;
 		if(tiltreg == 0x01)
@@ -265,7 +267,7 @@ public class MMA7660 {
 		boolean alert;
 		do{
 			alert = false;
-			temp = this.read(this.MMA7660_XOUT_R+(byte)number);
+			temp = this.read((byte)(this.MMA7660_XOUT_R+number));
 			if(temp > 63)
 				alert =true;
 			if(temp > 31)
@@ -288,8 +290,8 @@ public class MMA7660 {
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");
 			MMA7660 a=new MMA7660(mcu,PinName.p28,PinName.p27,0x98);
-			if(a.testConnection())
-				System.out.println("detect");
+			if(!a.testConnection())
+				System.out.println("Can't detect");
 			System.out.println("x="+a.x());
 			System.out.println("y="+a.y());
 			System.out.println("z="+a.z());
