@@ -45,7 +45,7 @@ public class TextLCD{
 	 * @param i_ms
 	 * @throws MbedJsException
 	 */
-	private void sleep_ms(long i_ms) throws MbedJsException
+	private synchronized void sleep_ms(long i_ms) throws MbedJsException
 	{
 		try {
 			this.wait(i_ms);

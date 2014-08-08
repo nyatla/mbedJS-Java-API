@@ -95,8 +95,8 @@ public class MMA8451Q {
 	 */
 	public static void main(String args[]){
 		try {
-			Mcu mcu=new Mcu("192.168.128.39");
-			MMA8451Q a=new MMA8451Q(mcu,PinName.p28,PinName.p27,0x90);
+			Mcu mcu=new Mcu("10.0.0.2");
+			MMA8451Q a=new MMA8451Q(mcu,PinName.p28,PinName.p27,0x98);
 			System.out.println("whoami="+a.getWhoAmI());
 			System.out.println("x="+a.getAccX());
 			System.out.println("y="+a.getAccY());
