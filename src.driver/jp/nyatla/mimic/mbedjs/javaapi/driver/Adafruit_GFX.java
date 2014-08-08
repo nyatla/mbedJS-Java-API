@@ -6,6 +6,7 @@ public class Adafruit_GFX {
 	{
 		return (1<<(i_bit));
 	}
+	private 
 	public Adafruit_GFX(short w , short h) {
 		
 		
@@ -18,7 +19,7 @@ public class Adafruit_GFX {
 	{
 		
 	}
-	int _putc(int value){
+	int _putc(byte value){
 		return writeChar(value);}
 	int _getc(){ 
 		return -1;}
@@ -450,10 +451,6 @@ public class Adafruit_GFX {
 	protected byte  rotation;
 	protected boolean  wrap; // If set, 'wrap' text at right edge of display
 
-	    //------------------------------------------
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
-	}
 
 }
