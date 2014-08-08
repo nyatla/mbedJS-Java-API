@@ -44,11 +44,13 @@ public class MMA7660 {
 		this._is_attached=true;
 		this._i2c=new I2C(i_mcu, sda, scl);
 		this._addr=i_address;
-		this._i2c.frequency(100000);
+		this._i2c.frequency(1000);
 		this._initDevice();
 	}
 	private void _initDevice() throws MbedJsException
 	{
+		this.setActive(true);
+		this.samplerate = 64;
 		this._i2c.write(this._addr,new byte[]{0x2a,0x01},false);
 	}
 	
@@ -99,35 +101,91 @@ public class MMA7660 {
 	public void setActive(boolean state)
 	{
 		this.active = state;
-		char modereg = read()
-	}
-	public void readData(int[] data)
-	{
+		byte modereg = this.read(this.MMA7660_MODE_R);
+		modereg &=~(1<<0);
+		
+		if(modereg && (1<<2)){
+			modereg &= ~(1<<2);
+			this.write(this.MMA7660_MODE_R, modereg);
+		}
+		modereg +=state;
+		write(this.MMA7660_MODE_R,modereg);
 		
 	}
-	public void readData(float[] data)
+	public int[] readData_int() throws MbedJsException
 	{
+		int [] retval = new int[3];
+		boolean active_old = this.active;
+		if(!this.active){
+			this.setActive(true);
+			this.sleep_ms(12+(long)(1000/samplerate) );
+		}
+		byte [] temp;
+		boolean alert;
 		
+		do{
+			alert = false;
+			temp = this.read(MMA7660_XOUT_R, 3);
+			for(int i=0 ; i<3 ;i++){
+				if(temp[i] > 63)
+					alert = true;
+				if(temp[i] > 31)
+					temp[i] +=128+64;
+				retval[i] = temp[i];
+			}
+		}while(alert);
+		
+		if(!active_old)
+			setActive(false);
+		return retval;
+	}
+	public float[] readData() throws MbedJsException
+	{
+		float[] retval= new float[3];
+		int[] intdata = new int[3];
+		intdata = this.readData_int();
+		for (int i=0 ;i<3 ; i++)
+		{
+			retval[i] = intdata[i]/this.MMA7660_SENSITIVITY;
+		}
+		return retval;
 	}
 	public float x(){
-		
+		return this.getSingle(0);
 	}
 	public float y(){
-		
+		return this.getSingle(1);
 	}
 	public float z(){
-		
+		return this.getSingle(2);
 	}
 	public void setSampleRate(int samplerate)
 	{
+		boolean active_old = this.active;
+		setActive(false);
+		int[] rates={120 , 64 , 32 , 16 , 8 , 4, 2, 1};
+		int sampleLoc = 0;
+		int sampleError = 10000;
+		byte temp;
+		for(int i=0 ; i<8 ; i++){
+			temp = (byte) Math.abs(rates[i] - samplerate);
+			if(temp<sampleError){
+				sampleLoc = i;
+				sampleError = temp;
+			}
+		}
 		
+		temp =this.read(this.MMA7660_SR_R);
+		temp &=~0x07;
+		temp |= sampleLoc;
+		write(this.MMA7660_SR_R , temp);
+		this.samplerate = rates[sampleLoc];
+		setActive(active_old);
 	}
 	
 	public Orientation getSide()
 	{
-
-		byte[] str = {this.MMA7660_TILT_R};
-		byte tiltreg = this.read(str);
+		byte tiltreg = this.read(this.MMA7660_TILT_R);
 		tiltreg &= 0x03;
 		if(tiltreg == 0x01)
 			return Orientation.Left;
@@ -137,8 +195,7 @@ public class MMA7660 {
 	}
 	public Orientation getOrientation()
 	{
-		byte[] str = {this.MMA7660_TILT_R};
-		byte tiltreg = this.read(str);
+		byte tiltreg = this.read(this.MMA7660_TILT_R);
 		tiltreg &= 0x07<<2;
 		tiltreg >>=2;
 		if(tiltreg == 0x01)
@@ -164,7 +221,7 @@ public class MMA7660 {
 		}
 		
 	}
-	private byte[] read(byte address)
+	private int read(byte address)
 	{
 		I2C.ReadResult retval = null;
 		try {
@@ -175,13 +232,20 @@ public class MMA7660 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return retval.data;
+		return (int)retval.data[0];
 	}
-	private byte[] read(int address ,int length)
+	private int[] read(byte address ,int length) throws MbedJsException
 	{
-		 int[] data;
+		I2C.ReadResult ret;
 		this._i2c.write(this._addr,new byte[]{address}, true);
-		data = this._i2c.read(this._addr, false);
+		ret = this._i2c.read(this._addr, length, false);
+		
+		int[] retval= new int [length];
+		for(int i = 0;i<length ; i++)
+		{
+			retval[i] = (int)ret.data[i];
+		}
+		return retval;
 	}
 	private float getSingle(int number)
 	{
@@ -197,11 +261,11 @@ public class MMA7660 {
 			}
 		}
 		
-		byte temp;
+		int temp;
 		boolean alert;
 		do{
 			alert = false;
-			temp = read(this.MMA7660_XOUT_R+number);
+			temp = this.read(this.MMA7660_XOUT_R+(byte)number);
 			if(temp > 63)
 				alert =true;
 			if(temp > 31)
@@ -216,38 +280,6 @@ public class MMA7660 {
 	private boolean active;
 	private float samplerate=1; 
 	//-----------------------------------------------------
-	public int getWhoAmI() throws MbedJsException
-	{
-		this._i2c.write(this._addr,new byte[]{0x0d},true);
-		I2C.ReadResult ret=this._i2c.read(this._addr,1,false);
-		return ret.data[0]&0xffffffff;
-	};
-	private float getXX(byte i_reg) throws MbedJsException
-	{
-		this._i2c.write(this._addr,new byte[]{i_reg},true);
-		I2C.ReadResult ret=this._i2c.read(this._addr,2,false);
-		return toInt14f(ret.data);
-	};
-	public float getAccX() throws MbedJsException
-	{	
-		return this.getXX((byte)0x01);
-	};
-	public float getAccY() throws MbedJsException
-	{	
-		return this.getXX((byte)0x03);
-	};
-	public float getAccZ() throws MbedJsException
-	{	
-		return this.getXX((byte)0x05);
-	};
-	public Vector3d getAccAllAxis() throws MbedJsException
-	{
-		return new Vector3d(
-			this.getXX((byte)0x01),
-			this.getXX((byte)0x03),
-			this.getXX((byte)0x05)
-		);
-	}
 	/**
 	 * テストケース
 	 * @param args
@@ -255,12 +287,12 @@ public class MMA7660 {
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");
-			MMA8451Q a=new MMA8451Q(mcu,PinName.p28,PinName.p27,0x98);
-			System.out.println("whoami="+a.getWhoAmI());
-			System.out.println("x="+a.getAccX());
-			System.out.println("y="+a.getAccY());
-			System.out.println("z="+a.getAccZ());
-			System.out.println("all="+a.getAccAllAxis());
+			MMA7660 a=new MMA7660(mcu,PinName.p28,PinName.p27,0x98);
+			if(a.testConnection())
+				System.out.println("detect");
+			System.out.println("x="+a.x());
+			System.out.println("y="+a.y());
+			System.out.println("z="+a.z());
 			mcu.close();
 			System.out.println("done");
 		} catch (Exception e) {
