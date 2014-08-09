@@ -8,7 +8,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.PinName;
  * Port from https://mbed.org/components/MMA7660/
  * @author hara41
  */
-public class MMA7660
+public class MMA7660 extends DriverBaseClass
 {
 	private final I2C _i2c;
 	private final int _addr;
@@ -74,15 +74,6 @@ public class MMA7660
 	private final static byte MMA7660_INT_R       =0x06;
 	private final static byte MMA7660_MODE_R      =0x07;
 	private final static byte MMA7660_SR_R        =0x08;
-	private synchronized void sleep_ms(long i_ms) throws MbedJsException
-	{
-		try {
-			this.wait(i_ms);
-		} catch (InterruptedException e) {
-			throw new MbedJsException(e);
-		}
-		return;
-	}
 	
 	public boolean testConnection() throws MbedJsException
 	{

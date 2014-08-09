@@ -6,7 +6,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 
-public class MMA8451Q
+public class MMA8451Q extends DriverBaseClass
 {
 	public final static int I2C_ADDRESS=0x98;
 	private final I2C _i2c;

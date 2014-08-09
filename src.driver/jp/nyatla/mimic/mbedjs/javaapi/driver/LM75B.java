@@ -9,7 +9,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.*;
  * @author hara4_000
  * 
  */
-public class LM75B
+public class LM75B extends DriverBaseClass
 {
 	public final static int I2C_ADDRESS=0x90; 
 	private final I2C _i2c;
