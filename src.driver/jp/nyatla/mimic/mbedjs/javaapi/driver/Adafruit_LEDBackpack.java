@@ -25,7 +25,7 @@ public class Adafruit_LEDBackpack {
 	private final static short HT16K33_CMD_BRIGHTNESS =0x0E;
 	
 	private final I2C _i2c;
-	private final int i2c_addr;
+	private int i2c_addr;
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
 	
@@ -45,9 +45,10 @@ public class Adafruit_LEDBackpack {
 		this.i2c_addr=i_address;
 		this._i2c.frequency(1000);
 	}
-	public void begin(byte i_addr)
+	public void begin(byte i_addr) throws MbedJsException
 	{
-		  this.i2c_addr = i_addr << 1;
+		int addr = i_addr & 0xff;
+		  this.i2c_addr = addr << 1;
 		 
 		  byte[] foo= new byte[1];
 		  foo[0] = 0x21;
@@ -58,7 +59,7 @@ public class Adafruit_LEDBackpack {
 		  
 		  this.setBrightness(15); // max brightness
 	}
-	public void setBrightness(byte i_bright) throws MbedJsException
+	public void setBrightness(int i_bright) throws MbedJsException
 	{
 		  if (i_bright > 15) i_bright = 15;
 		  byte c = (byte) (0xE0 | i_bright);

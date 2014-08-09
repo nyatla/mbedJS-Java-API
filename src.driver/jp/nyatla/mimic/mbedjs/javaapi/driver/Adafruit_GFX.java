@@ -1,17 +1,42 @@
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
-public class Adafruit_GFX {
+import jp.nyatla.mimic.mbedjs.javaapi.I2C;
+import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 
+public class Adafruit_GFX extends Adafruit_LEDBackpack
+{
+	private static final short BLACK = 0;
+	private static final short WHITE = 1;
 	private int _BV(int i_bit)
 	{
 		return (1<<(i_bit));
 	}
-	private 
-	public Adafruit_GFX(short w , short h) {
-		
+	 
+	public Adafruit_GFX(I2C i_i2c,int i_address , short w , short h) {
+		super(i_i2c, i_address);
+		this._init(w, h);
 		
 	}
-	public void drawPixel(short x , short y , short color)
+	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address, short w , short h) {
+		super(i_mcu, i_sda, i_scl, i_address);
+		this._init(w, h);
+		
+	}
+	private void _init(short w, short h)
+	{
+		this._rawWidth=w;
+        this._rawHeight=h;
+        this._width=w;
+        this._height = h;
+        this.cursor_x = 0;
+        this.cursor_y = 0;
+        this.textcolor = this.WHITE;
+        this.textbgcolor = this.BLACK;
+        this.textsize = 1;
+        this.rotation = 0;
+        this.wrap =true;
+	}
+	public void drawPixel(int x , int y , short color)
 	{
 		
 	}
@@ -29,23 +54,36 @@ public class Adafruit_GFX {
 	    //short steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
 	    boolean steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
 	    
+
+    	short t;
 	    if (steep)
 	    {
-	        swap(x0, y0);
-	        swap(x1, y1);
+	    	t = x0;
+	    	x0 = y0;
+	    	y0 = t;
+	    	
+	        t = x1;
+	    	x1 = y1;
+	    	y1 = t;
+	    	
 	    }
 	    
 	    if (x0 > x1)
 	    {
-	        swap(x0, x1);
-	        swap(y0, y1);
+	    	t =x0;
+	    	x0 = x1;
+	    	x1= t;
+	    	
+	    	t = y0;
+	    	y0 = y1;
+	    	y1 = t;
 	    }
 	    
 	    short dx, dy;
-	    dx = x1 - x0;
-	    dy = abs(y1 - y0);
+	    dx = (short) (x1 - x0);
+	    dy = (short) Math.abs(y1 - y0);
 	    
-	    short err = dx / 2;
+	    short err = (short) (dx / 2);
 	    short ystep;
 	    
 	    if (y0 < y1)
@@ -71,28 +109,28 @@ public class Adafruit_GFX {
 	public void drawFastVLine(short x, short y, short h, short color)
 	{
 	    // stupidest version - update in subclasses if desired!
-	    drawLine(x, y, x, y+h-1, color);
+	    this.drawLine(x, y, x, (short) (y+h-1), color);
 	}
 	public void drawFastHLine(short x, short y, short w, short color)
 	{
 	    // stupidest version - update in subclasses if desired!
-	    drawLine(x, y, x+w-1, y, color);
+		this.drawLine(x, y, (short) (x+w-1), y, color);
 	}
 	public void drawRect(short x, short y, short w, short h, short color)
 	{
-	    drawFastHLine(x, y, w, color);
-	    drawFastHLine(x, y+h-1, w, color);
-	    drawFastVLine(x, y, h, color);
-	    drawFastVLine(x+w-1, y, h, color);		
+		this.drawFastHLine(x, y, w, color);
+		this.drawFastHLine(x, (short) (y+h-1), w, color);
+		this.drawFastVLine(x, y, h, color);
+		this.drawFastVLine((short) (x+w-1), y, h, color);		
 	}
 	public void fillRect(short x, short y, short w, short h, short color)
 	{
 	    // stupidest version - update in subclasses if desired!
 	    for (short i=x; i<x+w; i++)
-	        drawFastVLine(i, y, h, color); 
+	    	this.drawFastVLine(i, y, h, color); 
 	}
 	public void fillScreen(short color){
-	    fillRect((short)0, (short)0, _width, _height, color);
+		this.fillRect((short)0, (short)0, _width, _height, color);
 	}
 	 
 	public void drawCircle(short x0, short y0, short r, short color)
@@ -103,10 +141,10 @@ public class Adafruit_GFX {
 		short x = 0;
 		short y = r;
 		
-		drawPixel(x0 , (short) (y0+r) , color);
-		drawPixel(x0 , (short) (y0-r) , color);
-		drawPixel((short) (x0+r) , y0 , color);
-		drawPixel((short) (x0-r) , y0 , color);
+		this.drawPixel(x0 , (short) (y0+r) , color);
+		this.drawPixel(x0 , (short) (y0-r) , color);
+		this.drawPixel((short) (x0+r) , y0 , color);
+		this.drawPixel((short) (x0-r) , y0 , color);
 		
 		while (x<y)
 		{
@@ -120,14 +158,14 @@ public class Adafruit_GFX {
 			ddF_x += 2;
 			f += ddF_x;
 			
-	        drawPixel(x0 + x, y0 + y, color);
-	        drawPixel(x0 - x, y0 + y, color);
-	        drawPixel(x0 + x, y0 - y, color);
-	        drawPixel(x0 - x, y0 - y, color);
-	        drawPixel(x0 + y, y0 + x, color);
-	        drawPixel(x0 - y, y0 + x, color);
-	        drawPixel(x0 + y, y0 - x, color);
-	        drawPixel(x0 - y, y0 - x, color);
+			this.drawPixel(x0 + x, y0 + y, color);
+			this.drawPixel(x0 - x, y0 + y, color);
+			this.drawPixel(x0 + x, y0 - y, color);
+			this.drawPixel(x0 - x, y0 - y, color);
+			this.drawPixel(x0 + y, y0 + x, color);
+			this.drawPixel(x0 - y, y0 + x, color);
+			this.drawPixel(x0 + y, y0 - x, color);
+			this.drawPixel(x0 - y, y0 - x, color);
 		}
 		
 	}
@@ -152,37 +190,37 @@ public class Adafruit_GFX {
 	        
 	        if ((cornername & 0x4) ? true:false)
 	        {
-	            drawPixel(x0 + x, y0 + y, color);
-	            drawPixel(x0 + y, y0 + x, color);
+	        	this.drawPixel(x0 + x, y0 + y, color);
+	        	this.drawPixel(x0 + y, y0 + x, color);
 	        } 
 	 
 	        if (cornername & 0x2)
 	        {
-	            drawPixel(x0 + x, y0 - y, color);
-	            drawPixel(x0 + y, y0 - x, color);
+	        	this.drawPixel(x0 + x, y0 - y, color);
+	        	this.drawPixel(x0 + y, y0 - x, color);
 	        }
 	 
 	        if (cornername & 0x8)
 	        {
-	            drawPixel(x0 - y, y0 + x, color);
-	            drawPixel(x0 - x, y0 + y, color);
+	        	this.drawPixel(x0 - y, y0 + x, color);
+	        	this.drawPixel(x0 - x, y0 + y, color);
 	        }
 	        
 	        if (cornername & 0x1)
 	        {
-	            drawPixel(x0 - y, y0 - x, color);
-	            drawPixel(x0 - x, y0 - y, color);
+	        	this.drawPixel(x0 - y, y0 - x, color);
+	        	this.drawPixel(x0 - x, y0 - y, color);
 	        }
 	    }
 	}
 	public void fillCircle(short x0, short y0, short r, short color){
-	    drawFastVLine(x0, y0-r, 2*r+1, color);
-	    fillCircleHelper(x0, y0, r, 3, 0, color);
+		this.drawFastVLine(x0, y0-r, 2*r+1, color);
+		this.fillCircleHelper(x0, y0, r, 3, 0, color);
 	}
 	public void fillCircleHelper(short x0, short y0, short r, byte cornername, short delta, short color){
-		short f     = 1 - r;
+		short f     = (short) (1 - r);
 		short ddF_x = 1;
-		short ddF_y = -2 * r;
+		short ddF_y = (short) (-2 * r);
 		short x     = 0;
 		short y     = r;
 	    
@@ -200,23 +238,23 @@ public class Adafruit_GFX {
 	        
 	        if (cornername & 0x1)
 	        {
-	            drawFastVLine(x0+x, y0-y, 2*y+1+delta, color);
-	            drawFastVLine(x0+y, y0-x, 2*x+1+delta, color);
+	        	this.drawFastVLine(x0+x, y0-y, 2*y+1+delta, color);
+	        	this.drawFastVLine(x0+y, y0-x, 2*x+1+delta, color);
 	        }
 	 
 	        if (cornername & 0x2)
 	        {
-	            drawFastVLine(x0-x, y0-y, 2*y+1+delta, color);
-	            drawFastVLine(x0-y, y0-x, 2*x+1+delta, color);
+	        	this.drawFastVLine(x0-x, y0-y, 2*y+1+delta, color);
+	        	this.drawFastVLine(x0-y, y0-x, 2*x+1+delta, color);
 	        }
 	    }
 	}
 	 
 	public void drawTriangle(short x0, short y0, short x1, short y1, short x2, short y2, short color){
 		 
-		drawLine(x0, y0, x1, y1, color);
-		drawLine(x1, y1, x2, y2, color);
-		drawLine(x2, y2, x0, y0, color);
+		this.drawLine(x0, y0, x1, y1, color);
+		this.drawLine(x1, y1, x2, y2, color);
+		this.drawLine(x2, y2, x0, y0, color);
 	}
 	public void fillTriangle(short x0, short y0, short x1, short y1, short x2, short y2, short color){
 	    short a, b, y, last;
@@ -243,7 +281,7 @@ public class Adafruit_GFX {
 	        if(x2 < a)
 	            a = x2;
 	        else if(x2 > b) b = x2;
-	            drawFastHLine(a, y0, b-a+1, color);
+	        	this.drawFastHLine(a, y0, (short) (b-a+1), color);
 	        return;
 	    }
 	 
@@ -280,7 +318,7 @@ public class Adafruit_GFX {
 	        */
 	        if(a > b)
 	            swap(a,b);
-	        drawFastHLine(a, y, b-a+1, color);
+	        this.drawFastHLine(a, y, b-a+1, color);
 	    }
 	 
 	    // For lower part of triangle, find scanline crossings for segments
@@ -299,28 +337,28 @@ public class Adafruit_GFX {
 	        */
 	        if(a > b)
 	            swap(a,b);
-	        drawFastHLine(a, y, b-a+1, color);
+	        this.drawFastHLine(a, y, (short) (b-a+1), color);
 	    }
 	}
 	public void drawRoundRect(short x, short y, short w, short h, short r, short color){
 		// smarter version
-	    drawFastHLine(x+r  , y    , w-2*r, color); // Top
-	    drawFastHLine(x+r  , y+h-1, w-2*r, color); // Bottom
-	    drawFastVLine(  x    , y+r  , h-2*r, color); // Left
-	    drawFastVLine(  x+w-1, y+r  , h-2*r, color); // Right
+		this.drawFastHLine(x+r  , y    , w-2*r, color); // Top
+		this.drawFastHLine(x+r  , y+h-1, w-2*r, color); // Bottom
+		this.drawFastVLine(  x    , y+r  , h-2*r, color); // Left
+		this.drawFastVLine(  x+w-1, y+r  , h-2*r, color); // Right
 	    // draw four corners
-	    drawCircleHelper(x+r    , y+r    , r, 1, color);
-	    drawCircleHelper(x+w-r-1, y+r    , r, 2, color);
-	    drawCircleHelper(x+w-r-1, y+h-r-1, r, 4, color);
-	    drawCircleHelper(x+r    , y+h-r-1, r, 8, color);
+		this.drawCircleHelper(x+r    , y+r    , r, 1, color);
+		this.drawCircleHelper(x+w-r-1, y+r    , r, 2, color);
+		this.drawCircleHelper(x+w-r-1, y+h-r-1, r, 4, color);
+		this.drawCircleHelper(x+r    , y+h-r-1, r, 8, color);
 	}
 	public void fillRoundRect(short x, short y, short w, short h, short r, short color){
 	    // smarter version
-	    fillRect(x+r, y, w-2*r, h, color);
+		this.fillRect(x+r, y, w-2*r, h, color);
 	    
 	    // draw four corners
-	    fillCircleHelper(x+w-r-1, y+r, r, 1, h-2*r-1, color);
-	    fillCircleHelper(x+r    , y+r, r, 2, h-2*r-1, color);
+		this.fillCircleHelper(x+w-r-1, y+r, r, 1, h-2*r-1, color);
+		this.fillCircleHelper(x+r    , y+r, r, 2, h-2*r-1, color);
 	}
 	 
 	public void drawBitmap(short x, short y, const byte *bitmap, short w, short h, short color){
@@ -356,19 +394,19 @@ public class Adafruit_GFX {
 	                if (line & 0x1)
 	                {
 	                    if (size == 1) // default size
-	                        drawPixel(x+i, y+j, color);
+	                    	this.drawPixel(x+i, y+j, color);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                        fillRect(x+(i*size), y+(j*size), size, size, color);
+	                    	this.fillRect(x+(i*size), y+(j*size), size, size, color);
 	    //#endif
 	                }
 	                else if (bg != color)
 	                {
 	                    if (size == 1) // default size
-	                        drawPixel(x+i, y+j, bg);
+	                    	this.drawPixel(x+i, y+j, bg);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                        fillRect(x+i*size, y+j*size, size, size, bg);
+	                    	this.fillRect(x+i*size, y+j*size, size, size, bg);
 	    //#endif
 	                }
 	                line >>= 1;
@@ -450,7 +488,5 @@ public class Adafruit_GFX {
 	protected byte  textsize;
 	protected byte  rotation;
 	protected boolean  wrap; // If set, 'wrap' text at right edge of display
-
-
 
 }
