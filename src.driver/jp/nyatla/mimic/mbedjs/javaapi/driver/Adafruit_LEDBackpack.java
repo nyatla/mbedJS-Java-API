@@ -29,12 +29,12 @@ import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 
 public class Adafruit_LEDBackpack {
 	
-	private final static byte LED_ON =1;
-	private final static byte LED_OFF =0;
+	public static byte LED_ON =1;
+	public static byte LED_OFF =0;
 	 
-	private final static byte LED_RED =1;
-	private final static byte LED_YELLOW =2;
-	private final static byte LED_GREEN =3;
+	public static byte LED_RED =1;
+	public static byte LED_YELLOW =2;
+	public static byte LED_GREEN =3;
 	 
 	 
 	 
@@ -54,7 +54,7 @@ public class Adafruit_LEDBackpack {
 	
 	public byte[] displaybuffer; // 8 
 	
-	public Adafruit_LEDBackpack(I2C i_i2c,int i_address)
+	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) throws MbedJsException
 	{
 		this._is_attached=false;
 		this._i2c=i_i2c;
@@ -68,15 +68,15 @@ public class Adafruit_LEDBackpack {
 		this.i2c_addr=i_address;
 		this._i2c.frequency(1000);
 	}
-	public void begin(byte i_addr) throws MbedJsException
+	public void begin() throws MbedJsException
 	{
-		int addr = i_addr & 0xff;
-		  this.i2c_addr = addr << 1;
+		//int addr = i_addr & 0xff;
+		  //this.i2c_addr = addr << 1;
 		 
 		  byte[] foo= new byte[1];
 		  foo[0] = 0x21;
 		 
-		  this._i2c.write(this.i2c_addr, foo, true);  // turn on oscillator
+		  this._i2c.write(this.i2c_addr, foo, false);  // turn on oscillator
 		 
 		  this.blinkRate(this.HT16K33_BLINK_OFF);
 		  
@@ -113,13 +113,13 @@ public class Adafruit_LEDBackpack {
 		  }
 		  this._i2c.write(this.i2c_addr, foo, false);
 	}
-	public void clear()
+	public void clear() throws MbedJsException
 	{
 		for (short i=0; i<8; i++) {
 			this.displaybuffer[i] = 0;
 		}
 	}
-	public void init(byte a)
+	public void init(byte a) throws MbedJsException
 	{
 		
 	}

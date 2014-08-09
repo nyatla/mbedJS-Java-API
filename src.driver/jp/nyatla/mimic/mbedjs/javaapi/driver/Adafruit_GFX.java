@@ -21,9 +21,8 @@ All text above must be included in any redistribution
 
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
-import jp.nyatla.mimic.mbedjs.MbedJsException;
-import jp.nyatla.mimic.mbedjs.javaapi.I2C;
-import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
+import jp.nyatla.mimic.mbedjs.*;
+import jp.nyatla.mimic.mbedjs.javaapi.*;
 
 public class Adafruit_GFX extends Adafruit_LEDBackpack
 {
@@ -291,17 +290,18 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		return (1<<(i_bit));
 	}
 	 
-	public Adafruit_GFX(I2C i_i2c,int i_address , short w , short h) {
+	public Adafruit_GFX(I2C i_i2c,int i_address , int w , int h)  throws MbedJsException
+	{
 		super(i_i2c, i_address);
 		this._init(w, h);
 		
 	}
-	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address, short w , short h) throws MbedJsException {
+	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address, int w , int h) throws MbedJsException {
 		super(i_mcu, i_sda, i_scl, i_address);
 		this._init(w, h);
 		
 	}
-	private void _init(short w, short h)
+	private void _init(int w, int h) throws MbedJsException
 	{
 		this._rawWidth=w;
         this._rawHeight=h;
@@ -315,20 +315,21 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
         this.rotation = 0;
         this.wrap =true;
 	}
-	public void drawPixel(int x , int y , short color)
+	public void drawPixel(int x , int y , short color) throws MbedJsException
 	{
 		
 	}
-	public void invertDisplay(boolean i)
+	public void invertDisplay(boolean i) throws MbedJsException
 	{
 		
 	}
-	int _putc(byte value){
+	int _putc(byte value) throws MbedJsException
+	{
 		return writeChar(value);}
 	int _getc(){ 
 		return -1;}
 	
-	public void drawLine(short x0 , short y0, short x1 , short y1,short color)
+	public void drawLine(short x0 , short y0, short x1 , short y1,short color) throws MbedJsException
 	{
 	    //short steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
 	    boolean steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
@@ -389,34 +390,35 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }		
 	}
-	public void drawFastVLine(short x, short y, short h, short color)
+	public void drawFastVLine(short x, short y, int h, short color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
 	    this.drawLine(x, y, x, (short) (y+h-1), color);
 	}
-	public void drawFastHLine(short x, short y, short w, short color)
+	public void drawFastHLine(short x, short y, short w, short color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
 		this.drawLine(x, y, (short) (x+w-1), y, color);
 	}
-	public void drawRect(short x, short y, short w, short h, short color)
+	public void drawRect(short x, short y, short w, short h, short color) throws MbedJsException
 	{
 		this.drawFastHLine(x, y, w, color);
 		this.drawFastHLine(x, (short) (y+h-1), w, color);
 		this.drawFastVLine(x, y, h, color);
 		this.drawFastVLine((short) (x+w-1), y, h, color);		
 	}
-	public void fillRect(short x, short y, short w, short h, short color)
+	public void fillRect(short x, short y, int w, int h, short color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
 	    for (short i=x; i<x+w; i++)
 	    	this.drawFastVLine(i, y, h, color); 
 	}
-	public void fillScreen(short color){
+	public void fillScreen(short color) throws MbedJsException
+	{
 		this.fillRect((short)0, (short)0, _width, _height, color);
 	}
 	 
-	public void drawCircle(short x0, short y0, short r, short color)
+	public void drawCircle(short x0, short y0, short r, short color) throws MbedJsException
 	{
 		short f = (short) (1 - r);
 		short ddF_x =1;
@@ -452,7 +454,8 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		}
 		
 	}
-	public void drawCircleHelper(short x0, short y0, short r, byte cornername, short color){
+	public void drawCircleHelper(short x0, short y0, short r, byte cornername, short color) throws MbedJsException
+	{
 	    short f     = (short) (1 - r);
 	    short ddF_x = 1;
 	    short ddF_y = (short) (-2 * r);
@@ -497,11 +500,13 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }
 	}
-	public void fillCircle(short x0, short y0, short r, short color){
+	public void fillCircle(short x0, short y0, short r, short color) throws MbedJsException
+	{
 		this.drawFastVLine(x0,(short)( y0-r),(short)( 2*r+1), color);
 		this.fillCircleHelper(x0, y0, r,(byte) 3, (short)0, color);
 	}
-	public void fillCircleHelper(short x0, short y0, short r, byte cornername, short delta, short color){
+	public void fillCircleHelper(short x0, short y0, short r, byte cornername, short delta, short color) throws MbedJsException
+	{
 		short f     = (short) (1 - r);
 		short ddF_x = 1;
 		short ddF_y = (short) (-2 * r);
@@ -534,13 +539,17 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	    }
 	}
 	 
-	public void drawTriangle(short x0, short y0, short x1, short y1, short x2, short y2, short color){
+	public void drawTriangle(short x0, short y0, short x1, short y1,
+			short x2, short y2, short color) throws MbedJsException
+	{
 		 
 		this.drawLine(x0, y0, x1, y1, color);
 		this.drawLine(x1, y1, x2, y2, color);
 		this.drawLine(x2, y2, x0, y0, color);
 	}
-	public void fillTriangle(short x0, short y0, short x1, short y1, short x2, short y2, short color){
+	public void fillTriangle(short x0, short y0, short x1, short y1,
+			short x2, short y2, short color) throws MbedJsException
+	{
 	    short a, b, y, last;
 	    
 	    short t=0;
@@ -653,7 +662,8 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        this.drawFastHLine(a, y, (short) (b-a+1), color);
 	    }
 	}
-	public void drawRoundRect(short x, short y, short w, short h, short r, short color){
+	public void drawRoundRect(short x, short y, short w, short h, short r, short color) throws MbedJsException
+	{
 		// smarter version
 		this.drawFastHLine((short)(x+r)  , y    , (short)(w-2*r), color); // Top
 		this.drawFastHLine((short)(x+r) ,(short)( y+h-1),(short)( w-2*r), color); // Bottom
@@ -665,7 +675,8 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.drawCircleHelper((short)(x+w-r-1),(short)( y+h-r-1), r,(byte) 4, color);
 		this.drawCircleHelper((short)(x+r)    ,(short)( y+h-r-1), r,(byte) 8, color);
 	}
-	public void fillRoundRect(short x, short y, short w, short h, short r, short color){
+	public void fillRoundRect(short x, short y, short w, short h, short r, short color) throws MbedJsException
+	{
 	    // smarter version
 		this.fillRect((short)(x+r), y,(short)( w-2*r), h, color);
 	    
@@ -674,7 +685,8 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.fillCircleHelper((short)(x+r    ),(short)( y+r), r, (byte)2,(short)( h-2*r-1), color);
 	}
 	 
-	public void drawBitmap(short x, short y, byte[] bitmap, short w, short h, short color){
+	public void drawBitmap(short x, short y, byte[] bitmap, short w, short h, short color) throws MbedJsException
+	{
 	    for (short j=0; j<h; j++)
 	    {
 	        for (short i=0; i<w; i++ )
@@ -684,11 +696,12 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }
 	}
-	public void drawChar(short x, short y, byte c, short color, short bg, byte size){
+	public void drawChar(short i_x, short y, byte c, short color, short bg, byte size) throws MbedJsException
+	{
 	    if(
-	            (x >= this._width) || // Clip right
+	            (i_x >= this._width) || // Clip right
 	            (y >= this._height) || // Clip bottom
-	            ((x + 5 * size - 1) < 0) || // Clip left
+	            ((i_x + 5 * size - 1) < 0) || // Clip left
 	            ((y + 8 * size - 1) < 0) // Clip top
 	            )
 	        return;
@@ -707,37 +720,38 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	                if ((line & 0x1) != 0)
 	                {
 	                    if (size == 1) // default size
-	                    	this.drawPixel(x+i, y+j, color);
+	                    	this.drawPixel(i_x+i, y+j, color);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((short)(x+(i*size)), (short)(y+(j*size)), size, size, color);
+	                    	this.fillRect((short)(i_x+(i*size)), (short)(y+(j*size)), size, size, color);
 	    //#endif
 	                }
 	                else if (bg != color)
 	                {
 	                    if (size == 1) // default size
-	                    	this.drawPixel(x+i, y+j, bg);
+	                    	this.drawPixel(i_x+i, y+j, bg);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((short)(x+i*size), (short)(y+j*size), size, size, bg);
+	                    	this.fillRect((short)(i_x+i*size), (short)(y+j*size), size, size, bg);
 	    //#endif
 	                }
 	                line >>= 1;
 	            }
 	        }
 	}
-	public int writeChar(byte c){
-	    if (c == '\n')
+	public int writeChar(byte i_ch) throws MbedJsException
+	{
+	    if (i_ch == '\n')
 	    {
 	    	this.cursor_y += this.textsize*8;
 	        this.cursor_x = 0;
 	    }
-	    else if (c == '\r')
+	    else if (i_ch == '\r')
 	    	this.cursor_x = 0;
 	    else
 	    {
 	        drawChar(this.cursor_x, this.cursor_y,
-	        		c, this.textcolor, this.textbgcolor, this.textsize);
+	        		i_ch, this.textcolor, this.textbgcolor, this.textsize);
 	        this.cursor_x += this.textsize*6;
 	        if (this.wrap && (this.cursor_x > (this._width - this.textsize*6)))
 	        {
@@ -748,37 +762,37 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	    return 1;
 	}
 	 
-	public short width() { 
+	public short width() throws MbedJsException { 
 		return this._width;
 	}
-	public short height() { 
+	public short height() throws MbedJsException { 
 		return this._height; 
 	}
 	 
-	public void setCursor(short x, short y) 
+	public void setCursor(short i_x, short i_y) throws MbedJsException 
 	{ 
-		this.cursor_x = x;
-		this.cursor_y = y; 
+		this.cursor_x = i_x;
+		this.cursor_y = i_y; 
 	}
-	public void setTextSize(byte s) {
-		this.textsize = (s > 0) ? s : 1; 
+	public void setTextSize(byte i_size) throws MbedJsException {
+		this.textsize = (i_size > 0) ? i_size : 1; 
 	}
-	public void setTextColor(short c) {
-		this.textcolor = c; 
-		this.textbgcolor = c; 
+	public void setTextColor(short i_color) throws MbedJsException {
+		this.textcolor = i_color; 
+		this.textbgcolor = i_color; 
 	}
-	public void setTextColor(short c, short b) { 
-		this.textcolor = c; 
-		this.textbgcolor = b; 
+	public void setTextColor(short i_col, short i_bg) throws MbedJsException { 
+		this.textcolor = i_col; 
+		this.textbgcolor = i_bg; 
 		}
-	public void setTextWrap(boolean w) {
-		this.wrap = w; }
+	public void setTextWrap(boolean i_wrap) throws MbedJsException {
+		this.wrap = i_wrap; }
 	 
-	public void setRotation(byte x)
+	public void setRotation(byte i_x) throws MbedJsException
 	{
-	    x %= 4;  // cant be higher than 3
-	    this.rotation = x;
-	    switch (x)
+	    i_x %= 4;  // cant be higher than 3
+	    this.rotation = i_x;
+	    switch (i_x)
 	    {
 	        case 0:
 	        case 2:
@@ -792,10 +806,11 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	            break;
 	    }
 	}
-	public short getRotation() { rotation %= 4; return rotation; }
+	public short getRotation()  throws MbedJsException
+	{ rotation %= 4; return rotation; }
 	 
-	protected short  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
-	protected short  _width, _height; // dependent on rotation
+	protected int  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
+	protected int  _width, _height; // dependent on rotation
 	protected short  cursor_x, cursor_y;
 	protected short textcolor, textbgcolor;
 	protected byte  textsize;
