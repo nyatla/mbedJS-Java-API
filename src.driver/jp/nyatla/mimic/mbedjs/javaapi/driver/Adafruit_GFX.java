@@ -290,23 +290,24 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		return (1<<(i_bit));
 	}
 	 
-	public Adafruit_GFX(I2C i_i2c,int i_address , int w , int h)  throws MbedJsException
+	public Adafruit_GFX(I2C i_i2c,int i_address , int i_width , int i_height)  throws MbedJsException
 	{
 		super(i_i2c, i_address);
-		this._init(w, h);
+		this._init(i_width, i_height);
 		
 	}
-	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address, int w , int h) throws MbedJsException {
+	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address,
+			int i_width , int i_height) throws MbedJsException {
 		super(i_mcu, i_sda, i_scl, i_address);
-		this._init(w, h);
+		this._init(i_width, i_height);
 		
 	}
-	private void _init(int w, int h) throws MbedJsException
+	private void _init(int i_width, int i_height) throws MbedJsException
 	{
-		this._rawWidth=w;
-        this._rawHeight=h;
-        this._width=w;
-        this._height = h;
+		this._rawWidth=i_width;
+        this._rawHeight=i_height;
+        this._width=i_width;
+        this._height = i_height;
         this.cursor_x = 0;
         this.cursor_y = 0;
         this.textcolor = Adafruit_GFX.WHITE;
@@ -315,121 +316,121 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
         this.rotation = 0;
         this.wrap =true;
 	}
-	public void drawPixel(int x , int y , short color) throws MbedJsException
+	public void drawPixel(int i_x , int i_y , short i_color) throws MbedJsException
 	{
 		
 	}
-	public void invertDisplay(boolean i) throws MbedJsException
+	public void invertDisplay(boolean i_invert) throws MbedJsException
 	{
 		
 	}
-	int _putc(byte value) throws MbedJsException
+	int _putc(byte i_value) throws MbedJsException
 	{
-		return writeChar(value);}
+		return writeChar(i_value);}
 	int _getc(){ 
 		return -1;}
 	
-	public void drawLine(short x0 , short y0, short x1 , short y1,short color) throws MbedJsException
+	public void drawLine(short i_x0 , short i_y0, short i_x1 , short i_y1,short i_color) throws MbedJsException
 	{
-	    //short steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
-	    boolean steep = Math.abs(y1 - y0) > Math.abs(x1 - x0);
+	    //short steep = Math.abs(i_y1 - i_y0) > Math.abs(i_x1 - i_x0);
+	    boolean steep = Math.abs(i_y1 - i_y0) > Math.abs(i_x1 - i_x0);
 	    
 
     	short t;
 	    if (steep)
 	    {
-	    	//swap(x0,y0);
-	    	t = x0;
-	    	x0 = y0;
-	    	y0 = t;
+	    	//swap(i_x0,i_y0);
+	    	t = i_x0;
+	    	i_x0 = i_y0;
+	    	i_y0 = t;
 	    	
-	    	// swap(x1,y1);
-	        t = x1;
-	    	x1 = y1;
-	    	y1 = t;
+	    	// swap(i_x1,i_y1);
+	        t = i_x1;
+	    	i_x1 = i_y1;
+	    	i_y1 = t;
 	    	
 	    }
 	    
-	    if (x0 > x1)
+	    if (i_x0 > i_x1)
 	    {
-	    	//swap(x0,x1);
-	    	t =x0;
-	    	x0 = x1;
-	    	x1= t;
+	    	//swap(i_x0,i_x1);
+	    	t =i_x0;
+	    	i_x0 = i_x1;
+	    	i_x1= t;
 	    	
-	    	// swap(y0,y1);
-	    	t = y0;
-	    	y0 = y1;
-	    	y1 = t;
+	    	// swap(i_y0,i_y1);
+	    	t = i_y0;
+	    	i_y0 = i_y1;
+	    	i_y1 = t;
 	    }
 	    
 	    short dx, dy;
-	    dx = (short) (x1 - x0);
-	    dy = (short) Math.abs(y1 - y0);
+	    dx = (short) (i_x1 - i_x0);
+	    dy = (short) Math.abs(i_y1 - i_y0);
 	    
 	    short err = (short) (dx / 2);
 	    short ystep;
 	    
-	    if (y0 < y1)
+	    if (i_y0 < i_y1)
 	        ystep = 1;
 	    else
 	        ystep = -1;
 	    
-	    for (; x0<=x1; x0++)
+	    for (; i_x0<=i_x1; i_x0++)
 	    {
 	        if (steep)
-	            drawPixel(y0, x0, color);
+	            drawPixel(i_y0, i_x0, i_color);
 	        else
-	            drawPixel(x0, y0, color);
+	            drawPixel(i_x0, i_y0, i_color);
 	 
 	        err -= dy;
 	        if (err < 0)
 	        {
-	            y0 += ystep;
+	            i_y0 += ystep;
 	            err += dx;
 	        }
 	    }		
 	}
-	public void drawFastVLine(short x, short y, int h, short color) throws MbedJsException
+	public void drawFastVLine(short i_x, short i_y, int i_height, short i_color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
-	    this.drawLine(x, y, x, (short) (y+h-1), color);
+	    this.drawLine(i_x, i_y, i_x, (short) (i_y+i_height-1), i_color);
 	}
-	public void drawFastHLine(short x, short y, short w, short color) throws MbedJsException
+	public void drawFastHLine(short i_x, short i_y, short i_w, short i_color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
-		this.drawLine(x, y, (short) (x+w-1), y, color);
+		this.drawLine(i_x, i_y, (short) (i_x+i_w-1), i_y, i_color);
 	}
-	public void drawRect(short x, short y, short w, short h, short color) throws MbedJsException
+	public void drawRect(short i_x, short i_y, short i_w, short i_h, short i_color) throws MbedJsException
 	{
-		this.drawFastHLine(x, y, w, color);
-		this.drawFastHLine(x, (short) (y+h-1), w, color);
-		this.drawFastVLine(x, y, h, color);
-		this.drawFastVLine((short) (x+w-1), y, h, color);		
+		this.drawFastHLine(i_x, i_y, i_w, i_color);
+		this.drawFastHLine(i_x, (short) (i_y+i_h-1), i_w, i_color);
+		this.drawFastVLine(i_x, i_y, i_h, i_color);
+		this.drawFastVLine((short) (i_x+i_w-1), i_y, i_h, i_color);		
 	}
-	public void fillRect(short x, short y, int w, int h, short color) throws MbedJsException
+	public void fillRect(short i_x, short i_y, int i_w, int i_h, short i_color) throws MbedJsException
 	{
 	    // stupidest version - update in subclasses if desired!
-	    for (short i=x; i<x+w; i++)
-	    	this.drawFastVLine(i, y, h, color); 
+	    for (short i=i_x; i<i_x+i_w; i++)
+	    	this.drawFastVLine(i, i_y, i_h, i_color); 
 	}
-	public void fillScreen(short color) throws MbedJsException
+	public void fillScreen(short i_color) throws MbedJsException
 	{
-		this.fillRect((short)0, (short)0, _width, _height, color);
+		this.fillRect((short)0, (short)0, _width, _height, i_color);
 	}
 	 
-	public void drawCircle(short x0, short y0, short r, short color) throws MbedJsException
+	public void drawCircle(short i_x0, short i_y0, short i_r, short i_color) throws MbedJsException
 	{
-		short f = (short) (1 - r);
+		short f = (short) (1 - i_r);
 		short ddF_x =1;
-		short ddF_y =(short) (-2 * r);
+		short ddF_y =(short) (-2 * i_r);
 		short x = 0;
-		short y = r;
+		short y = i_r;
 		
-		this.drawPixel(x0 , (short) (y0+r) , color);
-		this.drawPixel(x0 , (short) (y0-r) , color);
-		this.drawPixel((short) (x0+r) , y0 , color);
-		this.drawPixel((short) (x0-r) , y0 , color);
+		this.drawPixel(i_x0 , (short) (i_y0+i_r) , i_color);
+		this.drawPixel(i_x0 , (short) (i_y0-i_r) , i_color);
+		this.drawPixel((short) (i_x0+i_r) , i_y0 , i_color);
+		this.drawPixel((short) (i_x0-i_r) , i_y0 , i_color);
 		
 		while (x<y)
 		{
@@ -443,24 +444,24 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 			ddF_x += 2;
 			f += ddF_x;
 			
-			this.drawPixel(x0 + x, y0 + y, color);
-			this.drawPixel(x0 - x, y0 + y, color);
-			this.drawPixel(x0 + x, y0 - y, color);
-			this.drawPixel(x0 - x, y0 - y, color);
-			this.drawPixel(x0 + y, y0 + x, color);
-			this.drawPixel(x0 - y, y0 + x, color);
-			this.drawPixel(x0 + y, y0 - x, color);
-			this.drawPixel(x0 - y, y0 - x, color);
+			this.drawPixel(i_x0 + x, i_y0 + y, i_color);
+			this.drawPixel(i_x0 - x, i_y0 + y, i_color);
+			this.drawPixel(i_x0 + x, i_y0 - y, i_color);
+			this.drawPixel(i_x0 - x, i_y0 - y, i_color);
+			this.drawPixel(i_x0 + y, i_y0 + x, i_color);
+			this.drawPixel(i_x0 - y, i_y0 + x, i_color);
+			this.drawPixel(i_x0 + y, i_y0 - x, i_color);
+			this.drawPixel(i_x0 - y, i_y0 - x, i_color);
 		}
 		
 	}
-	public void drawCircleHelper(short x0, short y0, short r, byte cornername, short color) throws MbedJsException
+	public void drawCircleHelper(short i_x0, short i_y0, short i_r, byte i_cornername, short i_color) throws MbedJsException
 	{
-	    short f     = (short) (1 - r);
+	    short f     = (short) (1 - i_r);
 	    short ddF_x = 1;
-	    short ddF_y = (short) (-2 * r);
+	    short ddF_y = (short) (-2 * i_r);
 	    short x     = 0;
-	    short y     = r;
+	    short y     = i_r;
 	    
 	    while (x<y)
 	    {
@@ -475,43 +476,43 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        f += ddF_x;
 	        
 	        
-	        if ((cornername & 0x4) !=0)
+	        if ((i_cornername & 0x4) !=0)
 	        {
-	        	this.drawPixel(x0 + x, y0 + y, color);
-	        	this.drawPixel(x0 + y, y0 + x, color);
+	        	this.drawPixel(i_x0 + x, i_y0 + y, i_color);
+	        	this.drawPixel(i_x0 + y, i_y0 + x, i_color);
 	        } 
 	 
-	        if ((cornername & 0x2) !=0)
+	        if ((i_cornername & 0x2) !=0)
 	        {
-	        	this.drawPixel(x0 + x, y0 - y, color);
-	        	this.drawPixel(x0 + y, y0 - x, color);
+	        	this.drawPixel(i_x0 + x, i_y0 - y, i_color);
+	        	this.drawPixel(i_x0 + y, i_y0 - x, i_color);
 	        }
 	 
-	        if ((cornername & 0x8)!=0)
+	        if ((i_cornername & 0x8)!=0)
 	        {
-	        	this.drawPixel(x0 - y, y0 + x, color);
-	        	this.drawPixel(x0 - x, y0 + y, color);
+	        	this.drawPixel(i_x0 - y, i_y0 + x, i_color);
+	        	this.drawPixel(i_x0 - x, i_y0 + y, i_color);
 	        }
 	        
-	        if ((cornername & 0x1)!=0)
+	        if ((i_cornername & 0x1)!=0)
 	        {
-	        	this.drawPixel(x0 - y, y0 - x, color);
-	        	this.drawPixel(x0 - x, y0 - y, color);
+	        	this.drawPixel(i_x0 - y, i_y0 - x, i_color);
+	        	this.drawPixel(i_x0 - x, i_y0 - y, i_color);
 	        }
 	    }
 	}
-	public void fillCircle(short x0, short y0, short r, short color) throws MbedJsException
+	public void fillCircle(short i_x0, short i_y0, short i_r, short i_color) throws MbedJsException
 	{
-		this.drawFastVLine(x0,(short)( y0-r),(short)( 2*r+1), color);
-		this.fillCircleHelper(x0, y0, r,(byte) 3, (short)0, color);
+		this.drawFastVLine(i_x0,(short)( i_y0-i_r),(short)( 2*i_r+1), i_color);
+		this.fillCircleHelper(i_x0, i_y0, i_r,(byte) 3, (short)0, i_color);
 	}
-	public void fillCircleHelper(short x0, short y0, short r, byte cornername, short delta, short color) throws MbedJsException
+	public void fillCircleHelper(short i_x0, short i_y0, short i_r, byte i_cornername, short i_delta, short i_color) throws MbedJsException
 	{
-		short f     = (short) (1 - r);
+		short f     = (short) (1 - i_r);
 		short ddF_x = 1;
-		short ddF_y = (short) (-2 * r);
+		short ddF_y = (short) (-2 * i_r);
 		short x     = 0;
-		short y     = r;
+		short y     = i_r;
 	    
 	    while (x<y)
 	    {
@@ -525,87 +526,87 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        ddF_x += 2;
 	        f += ddF_x;
 	        
-	        if ((cornername & 0x1) !=0)
+	        if ((i_cornername & 0x1) !=0)
 	        {
-	        	this.drawFastVLine((short)(x0+x), (short)(y0-y),(short)( 2*y+1+delta), color);
-	        	this.drawFastVLine((short)(x0+y), (short)(y0-x), (short)(2*x+1+delta), color);
+	        	this.drawFastVLine((short)(i_x0+x), (short)(i_y0-y),(short)( 2*y+1+i_delta), i_color);
+	        	this.drawFastVLine((short)(i_x0+y), (short)(i_y0-x), (short)(2*x+1+i_delta), i_color);
 	        }
 	 
-	        if ((cornername & 0x2) != 0)
+	        if ((i_cornername & 0x2) != 0)
 	        {
-	        	this.drawFastVLine((short)(x0-x), (short)(y0-y), (short)(2*y+1+delta), color);
-	        	this.drawFastVLine((short)(x0-y), (short)(y0-x), (short)(2*x+1+delta), color);
+	        	this.drawFastVLine((short)(i_x0-x), (short)(i_y0-y), (short)(2*y+1+i_delta), i_color);
+	        	this.drawFastVLine((short)(i_x0-y), (short)(i_y0-x), (short)(2*x+1+i_delta), i_color);
 	        }
 	    }
 	}
 	 
-	public void drawTriangle(short x0, short y0, short x1, short y1,
-			short x2, short y2, short color) throws MbedJsException
+	public void drawTriangle(short i_x0, short i_y0, short i_x1, short i_y1,
+			short i_x2, short i_y2, short i_color) throws MbedJsException
 	{
 		 
-		this.drawLine(x0, y0, x1, y1, color);
-		this.drawLine(x1, y1, x2, y2, color);
-		this.drawLine(x2, y2, x0, y0, color);
+		this.drawLine(i_x0, i_y0, i_x1, i_y1, i_color);
+		this.drawLine(i_x1, i_y1, i_x2, i_y2, i_color);
+		this.drawLine(i_x2, i_y2, i_x0, i_y0, i_color);
 	}
-	public void fillTriangle(short x0, short y0, short x1, short y1,
-			short x2, short y2, short color) throws MbedJsException
+	public void fillTriangle(short i_x0, short i_y0, short i_x1, short i_y1,
+			short i_x2, short i_y2, short i_color) throws MbedJsException
 	{
 	    short a, b, y, last;
 	    
 	    short t=0;
 	    // Sort coordinates by Y order (y2 >= y1 >= y0)
-	    if (y0 > y1)
+	    if (i_y0 > i_y1)
 	        //swap(y0, y1);
-	    	t = y0;
-	    	y0 = y1;
-	    	y1 = t;
+	    	t = i_y0;
+	    	i_y0 = i_y1;
+	    	i_y1 = t;
 	    	//swap(x0, x1);
-	    	t=x0;
-	    	x0 = x1;
-	    	x1 = t;
-	    if (y1 > y2)
+	    	t=i_x0;
+	    	i_x0 = i_x1;
+	    	i_x1 = t;
+	    if (i_y1 > i_y2)
 	        //swap(y2, y1);
-	    	t= y2 ;
-	    	y2 = y1;
-	    	y1 = t;
+	    	t= i_y2 ;
+	    	i_y2 = i_y1;
+	    	i_y1 = t;
 	    	//swap(x2, x1);
-	    	t = x2;
-	    	x2 = x1;
-	    	x1 = t;
+	    	t = i_x2;
+	    	i_x2 = i_x1;
+	    	i_x1 = t;
 	    	
-	    if (y0 > y1)
+	    if (i_y0 > i_y1)
 	        //swap(y0, y1);
-	    	t = y0;
-	    	y0 = y1;
-	    	y1 = t;
+	    	t = i_y0;
+	    	i_y0 = i_y1;
+	    	i_y1 = t;
 	    	
 	    	//swap(x0, x1);
-	    	t = x0;
-	    	x0 = x1;
-	    	x1 = t;
+	    	t = i_x0;
+	    	i_x0 = i_x1;
+	    	i_x1 = t;
 	    
-	    if(y0 == y2)
+	    if(i_y0 == i_y2)
 	    { // Handle awkward all-on-same-line case as its own thing
-	        a = b = x0;
-	        if(x1 < a)
-	            a = x1;
-	        else if(x1 > b)
-	            b = x1;
+	        a = b = i_x0;
+	        if(i_x1 < a)
+	            a = i_x1;
+	        else if(i_x1 > b)
+	            b = i_x1;
 	            
-	        if(x2 < a)
-	            a = x2;
-	        else if(x2 > b) b = x2;
-	        	this.drawFastHLine(a, y0, (short) (b-a+1), color);
+	        if(i_x2 < a)
+	            a = i_x2;
+	        else if(i_x2 > b) b = i_x2;
+	        	this.drawFastHLine(a, i_y0, (short) (b-a+1), i_color);
 	        return;
 	    }
 	 
 	    short
-	        dx01 = (short) (x1 - x0),
-	        dy01 = (short) (y1 - y0),
-	        dx02 = (short) (x2 - x0),
-	        dy02 = (short) (y2 - y0),
-	        dx12 = (short) (x2 - x1),
-	        dy12 = (short) (y2 - y1),
+	        dx01 = (short) (i_x1 - i_x0),
+	        dy01 = (short) (i_y1 - i_y0),
+	        dx02 = (short) (i_x2 - i_x0),
+	        dy02 = (short) (i_y2 - i_y0),
+	        dx12 = (short) (i_x2 - i_x1),
+	        dy12 = (short) (i_y2 - i_y1),
 	        sa   = 0,
 	        sb   = 0;
 	 
@@ -615,15 +616,15 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	    // error there), otherwise scanline y1 is skipped here and handled
 	    // in the second loop...which also avoids a /0 error here if y0=y1
 	    // (flat-topped triangle).
-	    if(y1 == y2)
-	        last = y1;   // Include y1 scanline
+	    if(i_y1 == i_y2)
+	        last = i_y1;   // Include y1 scanline
 	    else
-	        last = (short) (y1-1); // Skip it
+	        last = (short) (i_y1-1); // Skip it
 	 
-	    for(y=y0; y<=last; y++)
+	    for(y=i_y0; y<=last; y++)
 	    {
-	        a   = (short) (x0 + sa / dy01);
-	        b   = (short) (x0 + sb / dy02);
+	        a   = (short) (i_x0 + sa / dy01);
+	        b   = (short) (i_x0 + sb / dy02);
 	        sa += dx01;
 	        sb += dx02;
 	        /* longhand:
@@ -636,17 +637,17 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        	a=b;
 	        	b=t;
 	        }
-	        this.drawFastHLine(a, y, (short)(b-a+1), color);
+	        this.drawFastHLine(a, y, (short)(b-a+1), i_color);
 	    }
 	 
 	    // For lower part of triangle, find scanline crossings for segments
 	    // 0-2 and 1-2.  This loop is skipped if y1=y2.
-	    sa = (short) (dx12 * (y - y1));
-	    sb = (short) (dx02 * (y - y0));
-	    for(; y<=y2; y++)
+	    sa = (short) (dx12 * (y - i_y1));
+	    sb = (short) (dx02 * (y - i_y0));
+	    for(; y<=i_y2; y++)
 	    {
-	        a   = (short) (x1 + sa / dy12);
-	        b   = (short) (x0 + sb / dy02);
+	        a   = (short) (i_x1 + sa / dy12);
+	        b   = (short) (i_x0 + sb / dy02);
 	        sa += dx12;
 	        sb += dx02;
 	        /* longhand:
@@ -659,50 +660,50 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        	a=b;
 	        	b=t;
 	        }
-	        this.drawFastHLine(a, y, (short) (b-a+1), color);
+	        this.drawFastHLine(a, y, (short) (b-a+1), i_color);
 	    }
 	}
-	public void drawRoundRect(short x, short y, short w, short h, short r, short color) throws MbedJsException
+	public void drawRoundRect(short i_x, short i_y, short i_width, short i_height, short i_r, short i_color) throws MbedJsException
 	{
 		// smarter version
-		this.drawFastHLine((short)(x+r)  , y    , (short)(w-2*r), color); // Top
-		this.drawFastHLine((short)(x+r) ,(short)( y+h-1),(short)( w-2*r), color); // Bottom
-		this.drawFastVLine(  x    ,(short)( y+r)  ,(short)( h-2*r), color); // Left
-		this.drawFastVLine((short)(  x+w-1),(short)( y+r ) ,(short)( h-2*r), color); // Right
+		this.drawFastHLine((short)(i_x+i_r)  , i_y    , (short)(i_width-2*i_r), i_color); // Top
+		this.drawFastHLine((short)(i_x+i_r) ,(short)( i_y+i_height-1),(short)( i_width-2*i_r), i_color); // Bottom
+		this.drawFastVLine(  i_x    ,(short)( i_y+i_r)  ,(short)( i_height-2*i_r), i_color); // Left
+		this.drawFastVLine((short)(  i_x+i_width-1),(short)( i_y+i_r ) ,(short)( i_height-2*i_r), i_color); // Right
 	    // draw four corners
-		this.drawCircleHelper((short)(x+r)    ,(short)( y+r)    , r,(byte) 1, color);
-		this.drawCircleHelper((short)(x+w-r-1),(short)( y+r)    , r,(byte) 2, color);
-		this.drawCircleHelper((short)(x+w-r-1),(short)( y+h-r-1), r,(byte) 4, color);
-		this.drawCircleHelper((short)(x+r)    ,(short)( y+h-r-1), r,(byte) 8, color);
+		this.drawCircleHelper((short)(i_x+i_r)    ,(short)( i_y+i_r)    , i_r,(byte) 1, i_color);
+		this.drawCircleHelper((short)(i_x+i_width-i_r-1),(short)( i_y+i_r)    , i_r,(byte) 2, i_color);
+		this.drawCircleHelper((short)(i_x+i_width-i_r-1),(short)( i_y+i_height-i_r-1), i_r,(byte) 4, i_color);
+		this.drawCircleHelper((short)(i_x+i_r)    ,(short)( i_y+i_height-i_r-1), i_r,(byte) 8, i_color);
 	}
-	public void fillRoundRect(short x, short y, short w, short h, short r, short color) throws MbedJsException
+	public void fillRoundRect(short i_x, short i_y, short i_w, short i_h, short i_r, short i_color) throws MbedJsException
 	{
 	    // smarter version
-		this.fillRect((short)(x+r), y,(short)( w-2*r), h, color);
+		this.fillRect((short)(i_x+i_r), i_y,(short)( i_w-2*i_r), i_h, i_color);
 	    
 	    // draw four corners
-		this.fillCircleHelper((short)(x+w-r-1),(short)( y+r), r, (byte)1,(short)( h-2*r-1), color);
-		this.fillCircleHelper((short)(x+r    ),(short)( y+r), r, (byte)2,(short)( h-2*r-1), color);
+		this.fillCircleHelper((short)(i_x+i_w-i_r-1),(short)( i_y+i_r), i_r, (byte)1,(short)( i_h-2*i_r-1), i_color);
+		this.fillCircleHelper((short)(i_x+i_r    ),(short)( i_y+i_r), i_r, (byte)2,(short)( i_h-2*i_r-1), i_color);
 	}
 	 
-	public void drawBitmap(short x, short y, byte[] bitmap, short w, short h, short color) throws MbedJsException
+	public void drawBitmap(short i_x, short i_y, byte[] i_bitmap, short i_w, short i_h, short i_color) throws MbedJsException
 	{
-	    for (short j=0; j<h; j++)
+	    for (short j=0; j<i_h; j++)
 	    {
-	        for (short i=0; i<w; i++ )
+	        for (short i=0; i<i_w; i++ )
 	        {
-	            if ((bitmap[i + (j/8)*w] & _BV(j%8))!=0)
-	                drawPixel(x+i, y+j, color);
+	            if ((i_bitmap[i + (j/8)*i_w] & _BV(j%8))!=0)
+	                drawPixel(i_x+i, i_y+j, i_color);
 	        }
 	    }
 	}
-	public void drawChar(short i_x, short y, byte c, short color, short bg, byte size) throws MbedJsException
+	public void drawChar(short i_x, short y, byte i_c, short i_color, short i_bg, byte i_size) throws MbedJsException
 	{
 	    if(
 	            (i_x >= this._width) || // Clip right
 	            (y >= this._height) || // Clip bottom
-	            ((i_x + 5 * size - 1) < 0) || // Clip left
-	            ((y + 8 * size - 1) < 0) // Clip top
+	            ((i_x + 5 * i_size - 1) < 0) || // Clip left
+	            ((y + 8 * i_size - 1) < 0) // Clip top
 	            )
 	        return;
 	        
@@ -713,26 +714,26 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	            if (i == 5) 
 	                line = 0x0;
 	            else 
-	                line = (short)font[(c*5)+i];
+	                line = (short)font[(i_c*5)+i];
 	                
 	            for (short j = 0; j<8; j++)
 	            {
 	                if ((line & 0x1) != 0)
 	                {
-	                    if (size == 1) // default size
-	                    	this.drawPixel(i_x+i, y+j, color);
+	                    if (i_size == 1) // default size
+	                    	this.drawPixel(i_x+i, y+j, i_color);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((short)(i_x+(i*size)), (short)(y+(j*size)), size, size, color);
+	                    	this.fillRect((short)(i_x+(i*i_size)), (short)(y+(j*i_size)), i_size, i_size, i_color);
 	    //#endif
 	                }
-	                else if (bg != color)
+	                else if (i_bg != i_color)
 	                {
-	                    if (size == 1) // default size
-	                    	this.drawPixel(i_x+i, y+j, bg);
+	                    if (i_size == 1) // default size
+	                    	this.drawPixel(i_x+i, y+j, i_bg);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((short)(i_x+i*size), (short)(y+j*size), size, size, bg);
+	                    	this.fillRect((short)(i_x+i*i_size), (short)(y+j*i_size), i_size, i_size, i_bg);
 	    //#endif
 	                }
 	                line >>= 1;

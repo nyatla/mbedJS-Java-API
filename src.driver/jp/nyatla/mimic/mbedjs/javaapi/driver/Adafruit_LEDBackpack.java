@@ -61,10 +61,10 @@ public class Adafruit_LEDBackpack {
 		this.i2c_addr=i_address;
 	}
 
-	public Adafruit_LEDBackpack(Mcu i_mcu, int sda, int scl,int i_address) throws MbedJsException
+	public Adafruit_LEDBackpack(Mcu i_mcu, int i_sda, int i_scl,int i_address) throws MbedJsException
 	{
 		this._is_attached=true;
-		this._i2c=new I2C(i_mcu, sda, scl);
+		this._i2c=new I2C(i_mcu, i_sda, i_scl);
 		this.i2c_addr=i_address;
 		this._i2c.frequency(1000);
 	}
