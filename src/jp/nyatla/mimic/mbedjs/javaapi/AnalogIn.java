@@ -22,7 +22,6 @@ import jp.nyatla.mimic.mbedjs.JsonRpcResult;
 import jp.nyatla.mimic.mbedjs.JsonRpcUtils;
 import jp.nyatla.mimic.mbedjs.McuBindClass;
 import jp.nyatla.mimic.mbedjs.MbedJsException;
-import jp.nyatla.mimic.mbedjs.javaapi.Mcu.GetInfoResult;
 
 /**
  * AnalogInクラスです。

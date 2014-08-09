@@ -1,7 +1,9 @@
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
-import jp.nyatla.mimic.mbedjs.*;
-import jp.nyatla.mimic.mbedjs.javaapi.*;
+import jp.nyatla.mimic.mbedjs.MbedJsException;
+import jp.nyatla.mimic.mbedjs.javaapi.I2C;
+import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
+import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 
 /**
  * http://mbed.org/users/chris/code/LM75B/ をmbedJS-Javaに移植したものです
