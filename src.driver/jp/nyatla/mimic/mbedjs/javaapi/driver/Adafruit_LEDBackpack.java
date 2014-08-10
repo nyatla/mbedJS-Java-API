@@ -27,7 +27,7 @@ import jp.nyatla.mimic.mbedjs.MbedJsException;
 import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 
-public class Adafruit_LEDBackpack {
+public class Adafruit_LEDBackpack extends DriverBaseClass{
 	
 	public static byte LED_ON =1;
 	public static byte LED_OFF =0;
@@ -52,7 +52,7 @@ public class Adafruit_LEDBackpack {
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
 	
-	public byte[] displaybuffer; // 8 
+	protected byte[] displaybuffer; // 8 
 	
 	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) 
 	{
@@ -120,7 +120,7 @@ public class Adafruit_LEDBackpack {
 		}
 	}
 	/*
-	public void init(byte a) throws MbedJsException
+	public void init(byte a)
 	{
 		
 	}

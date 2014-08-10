@@ -286,13 +286,13 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	private final static short BLACK = 0;
 	private final static short WHITE = 1;
 	
-	protected int  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
-	protected int  _width, _height; // dependent on rotation
-	protected short  cursor_x, cursor_y;
-	protected short textcolor, textbgcolor;
-	protected byte  textsize;
-	protected byte  rotation;
-	protected boolean  wrap; // If set, 'wrap' text at right edge of display
+	private int  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
+	private int  _width, _height; // dependent on rotation
+	private short  cursor_x, cursor_y;
+	private short textcolor, textbgcolor;
+	private byte  textsize;
+	private byte  rotation;
+	private boolean  wrap; // If set, 'wrap' text at right edge of display
 	
 	private int _BV(int i_bit)
 	{
@@ -428,7 +428,7 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	}
 	public void fillScreen(short i_color)
 	{
-		this.fillRect((short)0, (short)0, _width, _height, i_color);
+		this.fillRect((short)0, (short)0, this._width, this._height, i_color);
 	}
 	 
 	public void drawCircle(short i_x0, short i_y0, short i_r, short i_color)
@@ -727,12 +727,12 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	        
 	        for (short i=0; i<6; i++ )
 	        {
-	            short line = 0;
+	            int line = 0;
 	     
 	            if (i == 5) 
 	                line = 0x0;
 	            else 
-	                line = (short)font[(i_c*5)+i];
+	                line = font[(i_c*5)+i];
 	                
 	            for (short j = 0; j<8; j++)
 	            {
