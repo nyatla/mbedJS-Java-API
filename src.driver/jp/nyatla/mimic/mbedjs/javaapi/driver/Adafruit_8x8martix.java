@@ -17,7 +17,6 @@ public class Adafruit_8x8martix extends Adafruit_GFX
 	public Adafruit_8x8martix(I2C i_i2c , int i_address) 
 	{
 		super(i_i2c, i_address , 8,8);
-		// TODO Auto-generated constructor stub
 	}
 	public Adafruit_8x8martix(Mcu i_mcu, int i_sda, int i_scl,int i_address) throws MbedJsException 
 	{

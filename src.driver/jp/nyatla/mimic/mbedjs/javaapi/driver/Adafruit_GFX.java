@@ -283,8 +283,17 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	    0x00, 0x3C, 0x3C, 0x3C, 0x3C, 
 	    0x00, 0x00, 0x00, 0x00, 0x00, 
 	};
-	private static final short BLACK = 0;
-	private static final short WHITE = 1;
+	private final static short BLACK = 0;
+	private final static short WHITE = 1;
+	
+	protected int  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
+	protected int  _width, _height; // dependent on rotation
+	protected short  cursor_x, cursor_y;
+	protected short textcolor, textbgcolor;
+	protected byte  textsize;
+	protected byte  rotation;
+	protected boolean  wrap; // If set, 'wrap' text at right edge of display
+	
 	private int _BV(int i_bit)
 	{
 		return (1<<(i_bit));
@@ -417,7 +426,7 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	    for (short i=i_x; i<i_x+i_w; i++)
 	    	this.drawFastVLine(i, i_y, i_h, i_color); 
 	}
-	public void fillScreen(short i_color) throws MbedJsException
+	public void fillScreen(short i_color)
 	{
 		this.fillRect((short)0, (short)0, _width, _height, i_color);
 	}
@@ -826,12 +835,6 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		rotation %= 4; return rotation;
 	}
 	 
-	protected int  _rawWidth, _rawHeight;   // this is the 'raw' display w/h - never changes
-	protected int  _width, _height; // dependent on rotation
-	protected short  cursor_x, cursor_y;
-	protected short textcolor, textbgcolor;
-	protected byte  textsize;
-	protected byte  rotation;
-	protected boolean  wrap; // If set, 'wrap' text at right edge of display
+
 
 }
