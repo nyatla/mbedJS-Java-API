@@ -54,7 +54,7 @@ public class Adafruit_LEDBackpack {
 	
 	public byte[] displaybuffer; // 8 
 	
-	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) throws MbedJsException
+	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) 
 	{
 		this._is_attached=false;
 		this._i2c=i_i2c;
@@ -113,16 +113,18 @@ public class Adafruit_LEDBackpack {
 		  }
 		  this._i2c.write(this.i2c_addr, foo, false);
 	}
-	public void clear() throws MbedJsException
+	public void clear()
 	{
 		for (short i=0; i<8; i++) {
 			this.displaybuffer[i] = 0;
 		}
 	}
+	/*
 	public void init(byte a) throws MbedJsException
 	{
 		
 	}
+	*/
 
 
 }

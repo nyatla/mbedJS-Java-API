@@ -116,11 +116,13 @@ public class MMA7660 extends DriverBaseClass
 		for(;;){
 			int[] temp = this.read(MMA7660_XOUT_R, 3);
 			
+			
 			if(((temp[0]|temp[1]|temp[2])&0x040)==0){
 				//no alert
 				this.sleep_ms(10);
 				continue;
 			}
+			
 			//int6->int32
 			retval[0]=int6toint32(temp[0]);
 			retval[1]=int6toint32(temp[1]);
@@ -284,7 +286,10 @@ public class MMA7660 extends DriverBaseClass
 			for(int i=0;i<100000;i++){
 				if(!a.testConnection())
 					System.out.println("Can't detect");
-				System.out.println("x="+a.x()+" y="+a.y()+" z="+a.z());
+				//System.out.println("x="+a.x());
+				//System.out.println("y="+a.y());
+				//System.out.println("z="+a.z());
+				
 				float[] f=a.readData();
 				System.out.println("x="+f[0]+" y="+f[1]+" z="+f[2]);
 				System.out.println();
