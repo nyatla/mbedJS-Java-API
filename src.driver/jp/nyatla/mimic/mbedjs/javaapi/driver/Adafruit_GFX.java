@@ -26,7 +26,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.*;
 
 public class Adafruit_GFX extends Adafruit_LEDBackpack
 {
-	private static int  font[] = {
+	private final static int  font[] = {
 	    0x00, 0x00, 0x00, 0x00, 0x00,   
 	    0x3E, 0x5B, 0x4F, 0x5B, 0x3E,     
 	    0x3E, 0x6B, 0x4F, 0x6B, 0x3E,     
@@ -764,10 +764,10 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 	}
 	 
 	public short width() throws MbedJsException { 
-		return this._width;
+		return (short)this._width;
 	}
 	public short height() throws MbedJsException { 
-		return this._height; 
+		return (short)this._height; 
 	}
 	 
 	public void setCursor(short i_x, short i_y) throws MbedJsException 

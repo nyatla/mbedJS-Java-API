@@ -64,8 +64,7 @@ public class LM75B extends DriverBaseClass
 		I2C.ReadResult rr = null;
 		this._i2c.write(this._addr, str, false);
 		rr = this._i2c.read(this._addr, 2, false);
-		float ret;
-		ret = ((rr.data[0] << 8) | rr.data[1]) / 256.0f;
+		float ret= (((rr.data[0]& 0x0ff) << 8) | (rr.data[1]& 0x0ff)) / 256.0f;
 		return ret;
 	}
 	/**

@@ -40,7 +40,7 @@ public class MMA7660 extends DriverBaseClass
 		this._is_attached=true;
 		this._i2c=new I2C(i_mcu, i_sda, i_scl);
 		this._addr=i_address;
-		this._i2c.frequency(1000);
+		this._i2c.frequency(10000);
 		this._initDevice();
 	}
 	private void _initDevice() throws MbedJsException
@@ -215,7 +215,7 @@ public class MMA7660 extends DriverBaseClass
 		I2C.ReadResult retval = null;
 		this._i2c.write(this._addr , new byte[]{i_address} , true);
 		retval = this._i2c.read(this._addr ,1, false);
-		return (int)retval.data[0];
+		return (retval.data[0] & 0x0ff);
 	}
 	private int[] read(byte address ,int i_length) throws MbedJsException
 	{
@@ -226,7 +226,7 @@ public class MMA7660 extends DriverBaseClass
 		int[] retval= new int [i_length];
 		for(int i = 0;i<i_length ; i++)
 		{
-			retval[i] = (int)ret.data[i];
+			retval[i] = (int)(ret.data[i] & 0x0ff);
 		}
 		return retval;
 	}
