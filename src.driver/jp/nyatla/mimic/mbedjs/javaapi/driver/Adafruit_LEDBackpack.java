@@ -59,19 +59,29 @@ public class Adafruit_LEDBackpack extends DriverBaseClass{
 		this._is_attached=false;
 		this._i2c=i_i2c;
 		this.i2c_addr=i_address;
+		
+		int addr = i_address & 0xff;
+		this.i2c_addr = addr << 1;
+		
+		this.displaybuffer = new byte[8];
 	}
 
-	public Adafruit_LEDBackpack(Mcu i_mcu, int i_sda, int i_scl,int i_address) throws MbedJsException
+	public Adafruit_LEDBackpack(Mcu i_mcu, int i_sda, int i_scl,int i_address)
+			throws MbedJsException
 	{
 		this._is_attached=true;
 		this._i2c=new I2C(i_mcu, i_sda, i_scl);
 		this.i2c_addr=i_address;
 		this._i2c.frequency(1000);
+		
+		int addr = i_address & 0xff;
+		this.i2c_addr = addr << 1;
+
+		this.displaybuffer = new byte[8];
 	}
 	public void begin() throws MbedJsException
 	{
-		//int addr = i_addr & 0xff;
-		  //this.i2c_addr = addr << 1;
+
 		 
 		  byte[] foo= new byte[1];
 		  foo[0] = 0x21;
