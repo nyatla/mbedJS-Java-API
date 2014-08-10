@@ -14,7 +14,7 @@ public class Adafruit_8x8martix extends Adafruit_GFX
 		}
 		return;
 	}
-	public Adafruit_8x8martix(I2C i_i2c , int i_address) throws MbedJsException 
+	public Adafruit_8x8martix(I2C i_i2c , int i_address) 
 	{
 		super(i_i2c, i_address , 8,8);
 		// TODO Auto-generated constructor stub
@@ -24,7 +24,7 @@ public class Adafruit_8x8martix extends Adafruit_GFX
 		super(i_mcu, i_sda, i_scl, i_address,8,8 );
 	}
 	
-	public void drawPixel(int x , int y , short color) throws MbedJsException
+	public void drawPixel(int x , int y , short color)
 	{
 		  if ((y < 0) || (y >= 8)) return;
 		  if ((x < 0) || (x >= 8)) return;
