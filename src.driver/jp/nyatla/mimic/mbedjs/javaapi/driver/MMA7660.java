@@ -74,7 +74,14 @@ public class MMA7660 extends DriverBaseClass
 	private final static byte MMA7660_INT_R       =0x06;
 	private final static byte MMA7660_MODE_R      =0x07;
 	private final static byte MMA7660_SR_R        =0x08;
-	
+	private static int int6toint32(int v)
+	{
+		if((v&0x00000020)==0){
+			return (v&0x0000001f);
+		}else{
+			return 0xffffffe0|v;
+		}
+	}	
 	public boolean testConnection() throws MbedJsException
 	{
 		int ret = this._i2c.write(this._addr ,new byte[]{0x00}, false);
@@ -106,20 +113,20 @@ public class MMA7660 extends DriverBaseClass
 			this.setActive(true);
 			this.sleep_ms(12+(long)(1000/this._samplerate) );
 		}
-		int [] temp;
-		boolean alert;
-		
-		do{
-			alert = false;
-			temp = this.read(MMA7660_XOUT_R, 3);
-			for(int i=0 ; i<3 ;i++){
-				if(temp[i] > 63)
-					alert = true;
-				if(temp[i] > 31)
-					temp[i] +=128+64;
-				retval[i] = temp[i];
+		for(;;){
+			int[] temp = this.read(MMA7660_XOUT_R, 3);
+			
+			if(((temp[0]|temp[1]|temp[2])&0x040)==0){
+				//no alert
+				this.sleep_ms(10);
+				continue;
 			}
-		}while(alert);
+			//int6->int32
+			retval[0]=int6toint32(temp[0]);
+			retval[1]=int6toint32(temp[1]);
+			retval[2]=int6toint32(temp[2]);
+			break;
+		}
 		
 		if(!active_old){
 			this.setActive(false);
@@ -210,11 +217,16 @@ public class MMA7660 extends DriverBaseClass
 		byte[] temp ={i_address,i_data};
 		this._i2c.write(this._addr, temp , false);
 	}
+	/**
+	 * unsigned charとして読出し
+	 * @param i_address
+	 * @return
+	 * @throws MbedJsException
+	 */
 	private int read(byte i_address) throws MbedJsException
 	{
-		I2C.ReadResult retval = null;
 		this._i2c.write(this._addr , new byte[]{i_address} , true);
-		retval = this._i2c.read(this._addr ,1, false);
+		I2C.ReadResult retval = this._i2c.read(this._addr ,1, false);
 		return (retval.data[0] & 0x0ff);
 	}
 	private int[] read(byte address ,int i_length) throws MbedJsException
@@ -240,15 +252,17 @@ public class MMA7660 extends DriverBaseClass
 		}
 		
 		int temp;
-		boolean alert;
-		do{
-			alert = false;
+		for(;;){
 			temp = this.read((byte)(MMA7660_XOUT_R+i_number));
-			if(temp > 63)
-				alert =true;
-			if(temp > 31)
-				temp +=128+64;
-		}while(alert);
+			if((temp&0x40)==0){
+				//no-alert
+				this.sleep_ms(10);
+				continue;
+			}
+			//int6->int32
+			temp=int6toint32(temp);
+			break;
+		}
 		if(!active_old)
 			this.setActive(false);
 		
@@ -263,19 +277,24 @@ public class MMA7660 extends DriverBaseClass
 	 * @param args
 	 */
 	public static void main(String args[]){
+		
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");
 			MMA7660 a=new MMA7660(mcu,PinName.p28,PinName.p27,0x98);
-			if(!a.testConnection())
-				System.out.println("Can't detect");
-			System.out.println("x="+a.x());
-			System.out.println("y="+a.y());
-			System.out.println("z="+a.z());
+			for(int i=0;i<100000;i++){
+				if(!a.testConnection())
+					System.out.println("Can't detect");
+				System.out.println("x="+a.x()+" y="+a.y()+" z="+a.z());
+				float[] f=a.readData();
+				System.out.println("x="+f[0]+" y="+f[1]+" z="+f[2]);
+				System.out.println();
+			}
 			mcu.close();
 			System.out.println("done");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 
 }
