@@ -12,6 +12,9 @@ import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 
 public class MPL115A2 extends DriverBaseClass {
+	/**
+	 * 7bitアドレスです。mbedSDKに指定するときは(0x60<<1)を指定してください。
+	 */
 	public final static int I2C_ADDRESS = 0x60;
 	private final I2C _i2c;
 	private final int _addr;
@@ -66,7 +69,7 @@ public class MPL115A2 extends DriverBaseClass {
 		this._i2c.write(this._addr, new byte[] { 0x12, 0x01 }, false);
 		// omit checking !=0
 		this.sleep_ms(1);
-		this._i2c.write(this._addr, new byte[] { 0x00 }, false);
+		this._i2c.write(this._addr, new byte[] { 0x00 }, true);
 		// omit checking !=0
 
 		// compensation

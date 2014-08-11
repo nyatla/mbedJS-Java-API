@@ -117,8 +117,8 @@ public class MMA7660 extends DriverBaseClass
 			int[] temp = this.read(MMA7660_XOUT_R, 3);
 			
 			
-			if(((temp[0]|temp[1]|temp[2])&0x040)==0){
-				//no alert
+			if(((temp[0]|temp[1]|temp[2])&0x040)!=0){
+				//on alert
 				this.sleep_ms(10);
 				continue;
 			}
@@ -256,8 +256,8 @@ public class MMA7660 extends DriverBaseClass
 		int temp;
 		for(;;){
 			temp = this.read((byte)(MMA7660_XOUT_R+i_number));
-			if((temp&0x40)==0){
-				//no-alert
+			if((temp&0x040)!=0){
+				//on alert
 				this.sleep_ms(10);
 				continue;
 			}
