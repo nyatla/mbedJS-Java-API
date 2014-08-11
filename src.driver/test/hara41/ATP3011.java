@@ -15,7 +15,7 @@
  *              talk.Synthe(buf);
  *          }
  *      } 
- * @endcode
+ * @endcodeß
  *
  */
 
@@ -77,15 +77,15 @@ public class ATP3011 extends DriverBaseClass{
 	}
 
  
-	public boolean IsActive(int timeout_ms)
+	public boolean IsActive(int timeout_ms) throws MbedJsException
 	{
 	    sleep_ms(ATP3011.AQTK_STARTUP_WAIT_MS);
-	    Timer t;
+	    Timer t = new Timer();
 	    t.reset();
 	    t.start();
 	    while(t.read_ms() < timeout_ms) {
 	        this._poll_wait.reset();
-	        if (this._i2c.write(this._addr,new byte[]{0x00}, 0) == 0) {
+	        if (this._i2c.write(this._addr,new byte[]{0x00}, false) == 0) {
 	            return true;
 	        }
 	        sleep_ms(ATP3011.AQTK_POLL_WAIT_MS);
@@ -104,7 +104,7 @@ public void Synthe(byte[] msg) throws MbedJsException
  
 public void Write(byte[] msg) throws MbedJsException
 {
-    this._i2c.write(_addr, msg, false);    
+    this._i2c.write(this._addr, msg, false);    
     this._poll_wait.reset();
 }
  
@@ -122,9 +122,17 @@ public boolean IsBusy() throws MbedJsException
     return c == '*' || c == 0xff;
 }
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MbedJsException {
 		// TODO Auto-generated method stub
-
+		Mcu mcu = new Mcu("10.0.0.2");
+		ATP3011 talk = new ATP3011(mcu,PinName.P0_10 , PinName.P0_11,ATP3011.I2C_ADDRESS);
+		for(int n=1 ; ; n++)
+		{
+			String str = String.format("<NUMK VAL={0}>.", n);
+			byte[] msg = new byte[32];
+			msg = str.getBytes();
+			talk.Synthe(msg);
+		}
 	}
 
 }
