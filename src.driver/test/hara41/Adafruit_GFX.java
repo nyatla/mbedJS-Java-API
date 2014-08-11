@@ -311,6 +311,8 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		this._init(i_width, i_height);
 		
 	}
+	public void dispose() {
+	}
 	private void _init(int i_width, int i_height)
 	{
 		this._rawWidth=i_width;
