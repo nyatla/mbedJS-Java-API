@@ -28,6 +28,7 @@ package test.hara41;
 
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.LM75B;
 
 public class TMP102 {
 	public final static int I2C_ADDRESS=0x90;
@@ -88,6 +89,18 @@ public class TMP102 {
 		  float temp =  (float) ((float)res * 0.0625);
 		   
 		  return temp;
+	}
+	public static void main(String[] args)
+	{
+		try {
+			Mcu mcu=new Mcu("10.0.0.2");
+			TMP102 a=new TMP102(mcu,PinName.p28,PinName.p27,0x90);
+			System.out.println(a.read());
+			mcu.close();
+			System.out.println("done");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
