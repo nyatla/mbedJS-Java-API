@@ -77,13 +77,13 @@ public class ATP3011 extends DriverBaseClass{
 	}
 
  
-	public boolean IsActive(int timeout_ms) throws MbedJsException
+	public boolean IsActive(int i_timeout_ms) throws MbedJsException
 	{
 	    sleep_ms(ATP3011.AQTK_STARTUP_WAIT_MS);
 	    Timer t = new Timer();
 	    t.reset();
 	    t.start();
-	    while(t.read_ms() < timeout_ms) {
+	    while(t.read_ms() < i_timeout_ms) {
 	        this._poll_wait.reset();
 	        if (this._i2c.write(this._addr,new byte[]{0x00}, false) == 0) {
 	            return true;
@@ -93,18 +93,18 @@ public class ATP3011 extends DriverBaseClass{
 	    return false;
 	}
     
-public void Synthe(byte[] msg) throws MbedJsException
+public void Synthe(byte[] i_msg) throws MbedJsException
 {
     while(this.IsBusy()) {
         ;
     }
-    this.Write(msg);
+    this.Write(i_msg);
     this.Write(new byte[]{'\r'});
 }
  
-public void Write(byte[] msg) throws MbedJsException
+public void Write(byte[] i_msg) throws MbedJsException
 {
-    this._i2c.write(this._addr, msg, false);    
+    this._i2c.write(this._addr, i_msg, false);    
     this._poll_wait.reset();
 }
  
