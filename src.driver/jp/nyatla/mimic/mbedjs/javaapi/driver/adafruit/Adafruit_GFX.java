@@ -19,12 +19,12 @@ All text above must be included in any redistribution
  
 */
 
-package test.hara41;
+package jp.nyatla.mimic.mbedjs.javaapi.driver.adafruit;
 
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
 
-public class Adafruit_GFX extends Adafruit_LEDBackpack
+public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 {
 	private final static int  font[] = {
 	    0x00, 0x00, 0x00, 0x00, 0x00,   
@@ -305,8 +305,7 @@ public class Adafruit_GFX extends Adafruit_LEDBackpack
 		this._init(i_width, i_height);
 		
 	}
-	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address,
-			int i_width , int i_height) throws MbedJsException {
+	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address,int i_width , int i_height) throws MbedJsException{
 		super(i_mcu, i_sda, i_scl, i_address);
 		this._init(i_width, i_height);
 		

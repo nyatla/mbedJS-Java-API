@@ -20,13 +20,19 @@ public class MPL115A2 extends DriverBaseClass {
 	private final int _addr;
 	/** I2Cを内部生成したか */
 	private final boolean _is_attached;
-	private static float c2f(byte ch,byte cl,int nbits,int fbits,int zpad){
-
-		float v=((((ch & 0x0ff)<<8) |(0x0ff & cl))>>(16-nbits))/(float)(1 <<(fbits + zpad));
-		return v;
-		
+	private static float int2float(byte ch, byte cl, int i_nbits, int fbits, int zpad)
+	{
+		//16bit->32bit intに変換
+		int v = ((ch & 0x0ff) << 8) | (cl & 0x0ff);
+		if ((v&0x8000) != 0){
+			v = 0xffff8000|v;
+		}
+		//未使用ビットの削除(sign付Rシフト)
+		v = v >> (16-i_nbits);
+		int d = 1 << (fbits + zpad);
+		return (float)v / d;
 	}
-
+	
 	public MPL115A2(I2C i_i2c, int i_address) throws MbedJsException {
 		this._is_attached = false;
 		this._i2c = i_i2c;
@@ -73,7 +79,7 @@ public class MPL115A2 extends DriverBaseClass {
 		// omit checking !=0
 
 		// compensation
-		I2C.ReadResult r = _i2c.read(this._addr, 16, false);
+		I2C.ReadResult r = _i2c.read(this._addr, 12, false);
 		// omit checking !=0
 		return r.data;
 	}
@@ -89,14 +95,12 @@ public class MPL115A2 extends DriverBaseClass {
 		byte[] data=this.readRaw();
         int padc = ((data[0]&0x0ff) << 2) | ((data[1]&0x0ff) >> 6);
         int tadc = ((data[2]&0x0ff) << 2) | ((data[3]&0x0ff) >> 6);
-        float a0 = c2f(data[4],data[5], 16, 3, 0);
-        float b1 = c2f(data[6],data[7], 16, 13, 0);
-        float b2 = c2f(data[8],data[9], 16, 14, 0);
-        float c12 = c2f(data[10],data[11], 14, 13, 9);
-        float c11 = c2f(data[12],data[13], 11, 10, 11);
-        float c22 = c2f(data[14],data[15], 11, 10, 15);
+        float a0 = int2float(data[4],data[5], 16, 3, 0);
+        float b1 = int2float(data[6],data[7], 16, 13, 0);
+        float b2 = int2float(data[8],data[9], 16, 14, 0);
+        float c12 = int2float(data[10],data[11], 14, 13, 9);
  
-        float pcomp = a0 + (b1 + c11 * padc + c12 * tadc) * padc + (b2 + c22 * tadc) * tadc;
+        float pcomp = a0 + (b1 + c12 * tadc) * padc + (b2) * tadc;
         return new float[]{pcomp * 650f / 1023f + 500f,(25f + ((tadc - 498.0f) / -5.35f))};
 	}
 	/**
@@ -119,6 +123,22 @@ public class MPL115A2 extends DriverBaseClass {
 	}
 
 	public static void main(String args[]) {
+		byte data[] = {0x66,(byte) 0x80,0x7e,(byte) 0xc0,
+				0x3e,(byte) 0xce,
+				(byte) 0xb3,(byte) 0xf9,
+				(byte) 0xc5,0x17,
+				0x33,(byte) 0xc8,0x00,0x00,0x00};
+        int padc = ((data[0]&0x0ff) << 2) | ((data[1]&0x0ff) >> 6);
+        int tadc = ((data[2]&0x0ff) << 2) | ((data[3]&0x0ff) >> 6);
+        float a0 = int2float(data[4],data[5], 16, 3, 0);
+        float b1 = int2float(data[6],data[7], 16, 13, 0);
+        float b2 = int2float(data[8],data[9], 16, 14, 0);
+        float c12 = int2float(data[10],data[11], 14, 13, 9);
+ 
+        float pcomp = a0 + (b1 + c12 * tadc) * padc + (b2) * tadc;
+        System.out.println(pcomp * 650f / 1023f + 500f);
+        System.out.println(25f + ((tadc - 498.0f) / -5.35f));
+
 		try {
 		} catch (Exception e) {
 			e.printStackTrace();

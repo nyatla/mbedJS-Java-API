@@ -1,4 +1,4 @@
-package test.hara41;
+package jp.nyatla.mimic.mbedjs.javaapi.driver.adafruit;
 
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
@@ -56,7 +56,7 @@ public class Adafruit_8x8martix extends Adafruit_GFX
 	public static void main(String args[]) throws MbedJsException   
 	{
 		Mcu mcu= new Mcu("10.0.0.2");
-		Adafruit_8x8martix matrix = new Adafruit_8x8martix(mcu,PinName.p28,PinName.p27,0x70);
+		Adafruit_8x8martix matrix = new Adafruit_8x8martix(mcu,PinName.p28,PinName.p27,(0x70<<1));
 		matrix.begin();
 	    while(true) {
 	        matrix.clear();
