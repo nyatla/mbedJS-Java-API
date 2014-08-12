@@ -30,6 +30,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.BusOut;
 import jp.nyatla.mimic.mbedjs.javaapi.DigitalOut;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 
 /**

@@ -5,6 +5,7 @@ import jp.nyatla.mimic.mbedjs.Vector3d;
 import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public class MMA8451Q extends DriverBaseClass
 {

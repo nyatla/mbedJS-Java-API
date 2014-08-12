@@ -10,6 +10,7 @@ package jp.nyatla.mimic.mbedjs.javaapi.driver;
 import jp.nyatla.mimic.mbedjs.MbedJsException;
 import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public class MPL115A2 extends DriverBaseClass {
 	/**

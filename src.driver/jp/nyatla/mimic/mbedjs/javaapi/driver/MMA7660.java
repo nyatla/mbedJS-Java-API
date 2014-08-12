@@ -4,6 +4,7 @@ import jp.nyatla.mimic.mbedjs.MbedJsException;
 import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 /**
  * Port from https://mbed.org/components/MMA7660/
  * @author hara41

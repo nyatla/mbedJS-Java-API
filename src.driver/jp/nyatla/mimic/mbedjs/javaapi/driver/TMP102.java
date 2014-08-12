@@ -22,13 +22,16 @@ THE SOFTWARE.
 
 https://mbed.org/users/chris/code/TMP102/
 */
-
-
-package test.hara41;
+/**
+ * modified by hara41
+ */
+/**
+ * modified by nyatla
+ */
+package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
-import jp.nyatla.mimic.mbedjs.javaapi.driver.LM75B;
 
 public class TMP102 {
 	public final static int I2C_ADDRESS=0x90;
@@ -70,29 +73,55 @@ public class TMP102 {
 		}
 	}
 	/**
-	 * 温度を取得する
 	 * @return 温度
 	 * @throws MbedJsException
 	 */
 	public float read() throws MbedJsException
 	{
-		  byte[] tempRegAddr = {TMP102.TEMP_REG_ADDR};
-		  
-		  this._i2c.write(this._addr, tempRegAddr, false); //Pointer to the temperature register
-		 
-		  I2C.ReadResult rr;
-		  byte [] reg = {0,0};
-		  rr = this._i2c.read(this._addr, 2, false); //Rea
-		  reg = rr.data;
-		  int res  = ((int)reg[0] << 4) | ((int)reg[1] >> 4);  
-		  
-		  float temp =  (float) ((float)res * 0.0625);
-		   
-		  return temp;
+		byte[] tempRegAddr = { TMP102.TEMP_REG_ADDR };
+
+		this._i2c.write(this._addr, tempRegAddr, false);
+
+		I2C.ReadResult rr = this._i2c.read(this._addr, 2, false);
+		// 16bitに変換
+		return tempreg2temp(rr.data);
+	}
+	/**
+	 * See http://www.ti.com/lit/ds/symlink/tmp102.pdf
+	 * @param i_data
+	 * @return
+	 */
+	private static float tempreg2temp(byte[] i_data){
+		// 16bitに変換
+		int res = ((int) (i_data[0] & 0x0ff) << 8) | (i_data[1] & 0x0ff);
+		// EMビットの値をチェック
+		if ((res & 0x01) != 0) {
+			// ExtendMode(13bit)
+			res = res >> 3;
+			//13bit signed int to 32bit signed int
+			if((res&0x00001000)!=0){
+				res|=0xfffff000;
+			}
+		} else {
+			// Normal(12bit)
+			res = res >> 4;
+			//12bit signed int to 32bit signed int
+			if((res&0x00000800)!=0){
+				res|=0xfffff800;
+			}
+		}
+		return (float) ((float) res * 0.0625);
 	}
 	public static void main(String[] args)
 	{
 		try {
+			System.out.println(tempreg2temp(new byte[]{(byte)0x7f,(byte)0xf0}));
+			System.out.println(tempreg2temp(new byte[]{(byte)0x64,(byte)0x00}));
+			System.out.println(tempreg2temp(new byte[]{(byte)0xff,(byte)0xc0}));
+
+			System.out.println(tempreg2temp(new byte[]{(byte)0x4b,(byte)0x01}));
+			System.out.println(tempreg2temp(new byte[]{(byte)0xff,(byte)0xe1}));
+			
 			Mcu mcu=new Mcu("10.0.0.2");
 			TMP102 a=new TMP102(mcu,PinName.p28,PinName.p27,0x90);
 			System.out.println(a.read());

@@ -1,38 +1,28 @@
-
 /** ATP3011 class
  *
  * AquesTalk pico LSI I2C interface
- * Example:
- * @code
- *      #include "ATP3011.h"
- *      ATP3011 talk(P0_10,P0_11); // I2C sda scl
- *      
- *      int main() {
- *          talk.Synthe("konnichiwa.");
- *          for(int n = 1; ; n++) {
- *              char buf[32];
- *              snprintf(buf, sizeof(buf), "<NUMK VAL=%d>.", n);
- *              talk.Synthe(buf);
- *          }
- *      } 
- * @endcodeß
- *
+ * http://mbed.org/users/va009039/code/ATP3011/
  */
-
-package test.hara41;
+/**
+ * modified by hara41
+ */
+package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
-import jp.nyatla.mimic.mbedjs.javaapi.driver.DriverBaseClass;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public class ATP3011 extends DriverBaseClass{
-	public final static int I2C_ADDRESS=(0x2E<<1); 
+	/**
+	 * 7bit I2Cアドレスです。
+	 */
+	public final static int I2C_ADDRESS=(0x2E); 
 	public final static int AQTK_STARTUP_WAIT_MS = 80;
 	public final static int AQTK_POLL_WAIT_MS = 10;
+	private long _last_call_in_msec;
 	 
 	private final I2C _i2c;
 	private final int _addr;
-	private Timer _poll_wait;
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
 	/**
@@ -66,8 +56,7 @@ public class ATP3011 extends DriverBaseClass{
 	}
 	private void _initDevice()
 	{
-	    this._poll_wait.reset();
-	    this._poll_wait.start();
+		this._last_call_in_msec=System.currentTimeMillis();
 	}
 
 	public void dispose() throws MbedJsException{
@@ -77,61 +66,62 @@ public class ATP3011 extends DriverBaseClass{
 	}
 
  
-	public boolean IsActive(int i_timeout_ms) throws MbedJsException
+	public boolean isActive(int i_timeout_ms) throws MbedJsException
 	{
 	    sleep_ms(ATP3011.AQTK_STARTUP_WAIT_MS);
-	    Timer t = new Timer();
-	    t.reset();
-	    t.start();
-	    while(t.read_ms() < i_timeout_ms) {
-	        this._poll_wait.reset();
+	    long start=System.currentTimeMillis();
+	    do{
 	        if (this._i2c.write(this._addr,new byte[]{0x00}, false) == 0) {
+	    	    this._last_call_in_msec=System.currentTimeMillis();
 	            return true;
 	        }
 	        sleep_ms(ATP3011.AQTK_POLL_WAIT_MS);
-	    }
+	    }while(System.currentTimeMillis()-start<i_timeout_ms);
 	    return false;
 	}
     
-public void Synthe(byte[] i_msg) throws MbedJsException
-{
-    while(this.IsBusy()) {
-        ;
-    }
-    this.Write(i_msg);
-    this.Write(new byte[]{'\r'});
-}
- 
-public void Write(byte[] i_msg) throws MbedJsException
-{
-    this._i2c.write(this._addr, i_msg, false);    
-    this._poll_wait.reset();
-}
- 
-public boolean IsBusy() throws MbedJsException
-{
-    if (ATP3011.AQTK_POLL_WAIT_MS > this._poll_wait.read_ms()) {
-        return true;
-    } 
-    this._poll_wait.reset();
-    I2C.ReadResult rr= this._i2c.read(_addr, 1, false);
-    byte c = rr.data[0];
-    if (c  != 0) {
-        return false;
-    }
-    return c == '*' || c == 0xff;
-}
+	public void synthe(byte[] i_msg) throws MbedJsException
+	{
+	    while(this.isBusy()){
+	        this.sleep_ms(AQTK_POLL_WAIT_MS);
+	    }
+	    this.write(i_msg);
+	    this.write(new byte[]{'\r'});
+	}
+	 
+	public void write(byte[] i_msg) throws MbedJsException
+	{
+	    this._i2c.write(this._addr, i_msg, false);
+	    this._last_call_in_msec=System.currentTimeMillis();
+	}
+	 
+	public boolean isBusy() throws MbedJsException
+	{
+		//最終呼び出し時刻チェック
+		long now=System.currentTimeMillis();
+		if(now-this._last_call_in_msec<AQTK_POLL_WAIT_MS){
+			return true;
+		}	
+		this._last_call_in_msec=now;
+		//I2C通信
+		I2C.ReadResult rr= this._i2c.read(_addr, 1, false);
+	    byte c = rr.data[0];
+	    if (c  != 0) {
+	        return false;
+	    }
+	    return c == '*' || c == 0xff;
+	}
 	
 	public static void main(String[] args) throws MbedJsException {
 		// TODO Auto-generated method stub
 		Mcu mcu = new Mcu("10.0.0.2");
-		ATP3011 talk = new ATP3011(mcu,PinName.P0_10 , PinName.P0_11,ATP3011.I2C_ADDRESS);
+		ATP3011 talk = new ATP3011(mcu,PinName.P0_10 , PinName.P0_11,ATP3011.I2C_ADDRESS<<1);
 		for(int n=1 ; ; n++)
 		{
 			String str = String.format("<NUMK VAL={0}>.", n);
 			byte[] msg = new byte[32];
 			msg = str.getBytes();
-			talk.Synthe(msg);
+			talk.synthe(msg);
 		}
 	}
 
