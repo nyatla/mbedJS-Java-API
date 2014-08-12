@@ -80,6 +80,11 @@ public class Adafruit_LEDBackpack extends DriverBaseClass{
 
 		this.displaybuffer = new byte[8];
 	}
+	public void dispose() throws MbedJsException{
+		if(this._is_attached){
+			this._i2c.dispose();
+		}
+	}
 	public void begin() throws MbedJsException
 	{
 
