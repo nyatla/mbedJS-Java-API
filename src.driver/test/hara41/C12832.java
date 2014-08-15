@@ -130,8 +130,8 @@ public class C12832 extends GraphicsDisplay {
 	private static final int DMA_DEST_SSP1_TX      =  (2 << 6);
 	private static final int DMA_DEST_SSP0_TX      =  (0 << 6);
 	
-	private static final int NORMAL = 1;
-	private static final int XOR = 2;
+	public static final int NORMAL = 1;
+	public static final int XOR = 2;
 	
 	
 	
@@ -149,14 +149,18 @@ public class C12832 extends GraphicsDisplay {
     private int contrast;
     private int auto_up;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void main(String[] args) throws MbedJsException {
+		System.out.println("start");
+		Mcu mcu = new Mcu("192.168.0.39");
+		C12832 lcd = new C12832(mcu , "test".getBytes());
+		//lcd.pixel(10,10,1);
+		lcd._putc('c');
+		System.out.println("done");
 	}
 
 	public C12832(Mcu mcu , byte[] name) throws MbedJsException
     {
-		
+		//TODO: ピンの引数を追加する
 		//: _spi(p5,NC,p7),_reset(p6),_A0(p8),_CS(p11),GraphicsDisplay(name)
 		super(name);
 		_spi = new SPI(mcu,PinName.p5,PinName.NC , PinName.p7);
@@ -304,7 +308,9 @@ public class C12832 extends GraphicsDisplay {
 	//    LPC_GPDMACH0->DMACCLLI = 0;
 	//#endif
 	    // clear and update LCD
-	    buffer = memset((byte)0x00,512);  // clear display buffer
+	    //buffer = memset((byte)0x00,512);  // clear display buffer
+	    this.buffer = new byte[512];
+	    
 	    copy_to_lcd();
 	    auto_up = 1;              // switch on auto update
 	    // dont do this by default. Make the user call
@@ -444,7 +450,8 @@ public class C12832 extends GraphicsDisplay {
  
 	public void cls()
 	{
-		this.buffer = memset((byte)0x00,512);  // clear display buffer
+		//this.buffer = memset((byte)0x00,512);  // clear display buffer
+		this.buffer = new byte[512];
 	    try {
 			copy_to_lcd();
 		} catch (MbedJsException e) {
@@ -742,7 +749,7 @@ public class C12832 extends GraphicsDisplay {
 	 
 	public void character(int x, int y, int c)
 	{
-	    int hor,vert,offset,bpl,j,i,b;
+	    int hor,vert,offset,bpl,j,i,b , ofs;
 	    char[] zeichen;
 	    char z,w;
 	 
@@ -761,14 +768,15 @@ public class C12832 extends GraphicsDisplay {
 	            char_y = 0;
 	        }
 	    }
-	 
+	    
 	    //zeichen = &font[((c -32) * offset) + 4]; // start of char bitmap
-	    zeichen = this.font[((c -32) * offset) + 4]; // start of char bitmap
-	    w = zeichen[0];                          // width of actual char
+	    ofs = ((c -32) * offset) + 4;
+	    
+	    w = this.font[ofs];                          // width of actual char
 	    // construct the char into the buffer
 	    for (j=0; j<vert; j++) {  //  vert line
 	        for (i=0; i<hor; i++) {   //  horz line
-	            z =  zeichen[bpl * i + ((j & 0xF8) >> 3)+1];
+	            z =  this.font[ofs + bpl * i + ((j & 0xF8) >> 3)+1];
 	            b = 1 << (j & 0x07);
 	            if (( z & b ) == 0x00) {
 	                pixel(x+i,y+j,0);

@@ -60,7 +60,7 @@ public class TextDisplay extends DriverBaseClass{
     }
 }
     
-	int _putc(int value) throws MbedJsException 
+	public int _putc(int value) throws MbedJsException 
 	{
 	    if(value == '\n') {
 	        _column = 0;
