@@ -152,6 +152,7 @@ public class C12832 extends GraphicsDisplay {
 	public static void main(String[] args) throws MbedJsException {
 		System.out.println("start");
 		Mcu mcu = new Mcu("192.168.0.39");
+		System.out.println("start..constructor");
 		C12832 lcd = new C12832(mcu , "test".getBytes());
 		//lcd.pixel(10,10,1);
 		lcd._putc('c');
@@ -163,16 +164,16 @@ public class C12832 extends GraphicsDisplay {
 		//TODO: ピンの引数を追加する
 		//: _spi(p5,NC,p7),_reset(p6),_A0(p8),_CS(p11),GraphicsDisplay(name)
 		super(name);
-		_spi = new SPI(mcu,PinName.p5,PinName.NC , PinName.p7);
-		_reset = new DigitalOut(mcu , PinName.p6);
-		_A0 = new DigitalOut(mcu , PinName.p8);
-		_CS = new DigitalOut(mcu , PinName.p11);
+		this._spi = new SPI(mcu,PinName.p5,PinName.NC , PinName.p7);
+		this._reset = new DigitalOut(mcu , PinName.p6);
+		this._A0 = new DigitalOut(mcu , PinName.p8);
+		this._CS = new DigitalOut(mcu , PinName.p11);
+		this.orientation = 1;
+		this.draw_mode = NORMAL;
+		this.char_x = 0;
+		this.lcd_reset();
 		
-	    orientation = 1;
-	    draw_mode = NORMAL;
-	    char_x = 0;
-	    lcd_reset();
-	}
+    }
  
 	public int width()
 	{
@@ -269,17 +270,19 @@ public class C12832 extends GraphicsDisplay {
  
 	private void lcd_reset() throws MbedJsException
 	{
-	 
-	    _spi.format(8,3);                 // 8 bit spi mode 3
+		System.out.println("1");
+		_spi.format(8,3);                 // 8 bit spi mode 3
 	    _spi.frequency(20000000);          // 19,2 Mhz SPI clock
 	    //DigitalOut _reset(p6);
-	    _A0.write(0);
+	    System.out.println("2");
+		_A0.write(0);
 	    _CS.write(0);
 	    _reset.write(0);                        // display reset
 	    sleep_ms(1);//wait_us(50);
 	    _reset.write(1);                        // end reset
 	    sleep_ms(1);//wait_ms(5);
-	 
+	    System.out.println("3");
+		
 	    /* Start Initial Sequence ----------------------------------------------------*/
 	 
 	    wr_cmd((char) 0xAE);   //  display off
@@ -298,7 +301,8 @@ public class C12832 extends GraphicsDisplay {
 	    wr_cmd((char) 0x17);   //  set contrast
 	 
 	    wr_cmd((char) 0xA6);     // display normal
-	 
+	    System.out.println("4");
+		
 	 
 	//#if defined TARGET_LPC1768          //setup DMA channel 0       
 	//    LPC_SC->PCONP |= (1UL << 29);   // Power up the GPDMA
@@ -316,7 +320,10 @@ public class C12832 extends GraphicsDisplay {
 	    // dont do this by default. Make the user call
 	    //claim(stdout);           // redirekt printf to lcd
 	    locate(0,0);
-	    set_font((char[])Small_7);  // standart font
+	    System.out.println("5");
+		set_font((char[])Small_7);  // standart font
+		System.out.println("6");
+		
 	}
  
 // set one pixel in buffer
