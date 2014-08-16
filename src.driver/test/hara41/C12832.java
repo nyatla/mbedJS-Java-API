@@ -832,6 +832,15 @@ public class C12832 extends GraphicsDisplay {
 		}
 		
 		return retval;
+	}	
+	public int puts(String i_s) throws MbedJsException
+	{
+		int i=0;
+		for(;i<i_s.length();i++){
+			int v=i_s.charAt(i);
+			this._putc((v>255)?'?':v);
+		}
+		return i;
 	}
 	public static void main(String[] args) throws MbedJsException {
 		System.out.println("start");
@@ -843,7 +852,14 @@ public class C12832 extends GraphicsDisplay {
 		//lcd.fillrect(10, 10, 20, 20, 1); //ok
 		//lcd.circle(15, 15, 5, 1); //ok
 		//lcd.fillcircle(15, 14, 5, 1); // ok
-		lcd.pixel(10, 10, 1);
+		//lcd.pixel(10, 10, 1);
+		//lcd.character(1, 1, 'c');
+		lcd.locate(30, 20);
+		lcd._putc('t');
+		lcd._putc('e');
+		lcd._putc('s');
+		lcd._putc('t');
+		lcd.puts("hello mbedJS");
 		System.out.println("done");
 	}
 }
