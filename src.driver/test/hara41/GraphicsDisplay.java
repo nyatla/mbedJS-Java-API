@@ -6,7 +6,7 @@
 package test.hara41;
 
 public class GraphicsDisplay extends TextDisplay {
-	public void pixel(int x, int y, int colour){return;}
+	public void pixel(int i_x, int i_y, int i_colour){return;}
 	public int width() {return 0;}
 	public int height() {return 0;}
 	        
@@ -135,75 +135,77 @@ public class GraphicsDisplay extends TextDisplay {
 		{0x3B,0x6E,0x00,0x00,0x00,0x00,0x00,0x00}, // ~
 		{0x1C,0x36,0x36,0x1C,0x00,0x00,0x00,0x00}}; // DEL
 		    
-	public GraphicsDisplay(byte []name){
-		super(name);
-		foreground(0xFFFF);
-		background(0x0000);
+	public GraphicsDisplay(byte []i_name){
+		super(i_name);
+
+		this.foreground(0xFFFF);
+		this.background(0x0000);
+
 	}
     
-	public void character(int column, int row, int value) { 
+	public void character(int i_column, int i_row, int i_value) { 
 		//blitbit(column * 8, row * 8, 8, 8, (char*)&(FONT8x8[value - 0x1F][0]));
-		blitbit(column * 8, row * 8, 8, 8, (FONT8x8[value - 0x1F]));
+		this.blitbit(i_column * 8, i_row * 8, 8, 8, (FONT8x8[i_value - 0x1F]));
 	}
  
-	public void window(int x, int y, int w, int h) {
+	public void window(int i_x, int i_y, int i_w, int i_h) {
 	    // current pixel location
-	    _x =(short) (x & 0xff);
-	    _y = (short) (y& 0xff);
+		this._x =(short) (i_x & 0xff);
+		this._y = (short) (i_y& 0xff);
 	    // window settings
-	    _x1 = (short) (x&0xff);
-	    _x2 = (short) ((x + w - 1)&0xff);
-	    _y1 = (short) (y&0xff);
-	    _y2 = (short) ((y + h - 1)&0xff);
+		this._x1 = (short) (i_x&0xff);
+		this._x2 = (short) ((i_x + i_w - 1)&0xff);
+		this._y1 = (short) (i_y&0xff);
+		this._y2 = (short) ((i_y + i_h - 1)&0xff);
 	}
     
-	public void putp(int colour) {
+	public void putp(int i_colour) {
 	    // put pixel at current pixel location
-	    pixel(_x, _y, colour);
+		this.pixel(_x, _y, i_colour);
 	    // update pixel location based on window settings
-	    _x++;
-	    if(_x > _x2) {
-	        _x = _x1;
-	        _y++;
-	        if(_y > _y2) {
-	            _y = _y1;
+		this._x++;
+	    if(this._x > this._x2) {
+	    	this._x = this._x1;
+	    	this._y++;
+	        if(this._y > this._y2) {
+	        	this._y = this._y1;
 	        }
 	    }
 	}
  
-	public void fill(int x, int y, int w, int h, int colour) { 
-	    window(x, y, w, h);
-	    for(int i=0; i<w*h; i++) {
-	        putp(colour);
+	public void fill(int i_x, int i_y, int i_w, int i_h, int colour) { 
+		this.window(i_x, i_y, i_w, i_h);
+	    for(int i=0; i<i_w*i_h; i++) {
+	    	this.putp(colour);
 	    }
 	}
     
 	public void cls() {
-	    fill(0, 0, width(), height(), this._background);
+		this.fill(0, 0, this.width(), this.height(), this._background);
 	}
     
-	public void blit(int x, int y, int w, int h, int []colour) { 
-	    window(x, y, w, h);
-	    for(int i=0; i<w*h; i++) {
-	        putp(colour[i]);
+	public void blit(int i_x, int i_y, int i_w, int i_h, int []i_colour) { 
+		this.window(i_x, i_y, i_w, i_h);
+	    for(int i=0; i<i_w*i_h; i++) {
+	    	this.putp(i_colour[i]);
 	    }
 	}
     
-	void blitbit(int x, int y, int w, int h, int[] colour) {
-	    window(x, y, w, h);
-	    for(int i = 0; i < w*h; i++) {
-	        byte by= (byte)(colour[i >> 3]&0xff);
+	void blitbit(int i_x, int i_y, int i_w, int i_h, int[] i_colour) {
+		this.window(i_x, i_y, i_w, i_h);
+	    for(int i = 0; i < i_w*i_h; i++) {
+	        byte by= (byte)(i_colour[i >> 3]&0xff);
 	        int offset = i & 0x7;
 	        int c = (((by << offset) & 0x80)!=0) ? this._foreground : this._background;
-	        putp(c);
+	        this.putp(c);
 	    }
 	}
     
 	int columns() { 
-	    return width() / 8; 
+	    return this.width() / 8; 
 	}
  
 	int rows() { 
-	    return height() / 8; 
+	    return this.height() / 8; 
 	}
 }

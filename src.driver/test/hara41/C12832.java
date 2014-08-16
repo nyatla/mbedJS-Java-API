@@ -149,41 +149,33 @@ public class C12832 extends GraphicsDisplay {
     private int contrast;
     private int auto_up;
 
-	public static void main(String[] args) throws MbedJsException {
-		System.out.println("start");
-		Mcu mcu = new Mcu("192.168.0.39");
-		System.out.println("start..constructor");
-		C12832 lcd = new C12832(mcu , "test".getBytes());
-		//lcd.pixel(10,10,1);
-		lcd._putc('c');
-		System.out.println("done");
-	}
 
-	public C12832(Mcu mcu , byte[] name) throws MbedJsException
+
+	public C12832(Mcu i_mcu , byte[] i_name) throws MbedJsException
     {
 		//TODO: ピンの引数を追加する
 		//: _spi(p5,NC,p7),_reset(p6),_A0(p8),_CS(p11),GraphicsDisplay(name)
-		super(name);
-		this._spi = new SPI(mcu,PinName.p5,PinName.NC , PinName.p7);
-		this._reset = new DigitalOut(mcu , PinName.p6);
-		this._A0 = new DigitalOut(mcu , PinName.p8);
-		this._CS = new DigitalOut(mcu , PinName.p11);
-		this.orientation = 1;
-		this.draw_mode = NORMAL;
-		this.char_x = 0;
-		this.lcd_reset();
+		super(i_name); // 0msec
+		this._spi = new SPI(i_mcu,PinName.p5,PinName.NC , PinName.p7);// 50ms
+	    this._reset = new DigitalOut(i_mcu , PinName.p6); // 11ms
+		this._A0 = new DigitalOut(i_mcu , PinName.p8); // 8ms
+		this._CS = new DigitalOut(i_mcu , PinName.p11); // 9ms
+		this.orientation = 1; //0ms
+		this.draw_mode = NORMAL; //0ms
+		this.char_x = 0;// 0ms
+		this.lcd_reset(); // 20019ms 
 		
     }
  
 	public int width()
 	{
-	    if (orientation == 0 || orientation == 2) return 32;
+	    if (this.orientation == 0 || this.orientation == 2) return 32;
 	    else return 128;
 	}
  
 	public int height()
 	{
-	    if (orientation == 0 || orientation == 2) return 128;
+	    if (this.orientation == 0 || this.orientation == 2) return 128;
 	    else return 32;
 	}
  
@@ -213,96 +205,94 @@ public class C12832 extends GraphicsDisplay {
 	 
 	*/
  
-	private void invert(int o) throws MbedJsException
+	public void invert(int i_o) throws MbedJsException
 	{
-	    if(o == 0) wr_cmd((char) 0xA6);
-	    else wr_cmd((char) 0xA7);
+	    if(i_o == 0) this.wr_cmd((char) 0xA6);
+	    else this.wr_cmd((char) 0xA7);
 	}
  
  
-	private void set_contrast(int o) throws MbedJsException
+	public void set_contrast(int i_o) throws MbedJsException
 	{
-	    contrast = o;
-	    wr_cmd((char) 0x81);      //  set volume
-	    wr_cmd((char) (o & 0x3F));
+		this.contrast = i_o;
+		this.wr_cmd((char) 0x81);      //  set volume
+		this.wr_cmd((char) (i_o & 0x3F));
 	}
 	 
-	private int get_contrast()
+	public int get_contrast()
 	{
 	    return(contrast);
 	}
+	
  
  
 // write command to lcd controller
  
-	private void wr_cmd(char cmd) throws MbedJsException
+	private void wr_cmd(char i_cmd) throws MbedJsException
 	{
-	    _A0.write(0);
-	    _CS.write(0);
+		this._A0.write(0);
+		this._CS.write(0);
 	    
 	//#if defined TARGET_LPC1768     // fast without mbed lib
 	//    LPC_SSP1->DR = cmd;
 	//    do {
 	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // wait for SPI1 idle
 	//#else
-	    _spi.write(cmd);
+		this._spi.write(i_cmd);
 	//#endif
-	    _CS.write(1);
+		this._CS.write(1);
 	}
  
 // write data to lcd controller
 	 
-	private void wr_dat(char dat) throws MbedJsException
+	private void wr_dat(char i_dat) throws MbedJsException
 	{
-	    _A0.write(1);
-	    _CS.write(0);
+		this._A0.write(1);
+		this._CS.write(0);
 	//#if defined TARGET_LPC1768     // fast without mbed lib
 	//    LPC_SSP1->DR = dat;
 	//    do {
 	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // wait for SPI1 idle
 	//#else
-	    _spi.write(dat);
+		this._spi.write(i_dat);
 	//#endif
-	    _CS.write(1);
+		this._CS.write(1);
 	}
 	 
 // reset and init the lcd controller
  
 	private void lcd_reset() throws MbedJsException
 	{
-		System.out.println("1");
-		_spi.format(8,3);                 // 8 bit spi mode 3
-	    _spi.frequency(20000000);          // 19,2 Mhz SPI clock
+		
+		this._spi.format(8,3);                 // 8 bit spi mode 3 //7ms
+		this._spi.frequency(20000000);          // 19,2 Mhz SPI clock //8ms
 	    //DigitalOut _reset(p6);
-	    System.out.println("2");
-		_A0.write(0);
-	    _CS.write(0);
-	    _reset.write(0);                        // display reset
-	    sleep_ms(1);//wait_us(50);
-	    _reset.write(1);                        // end reset
-	    sleep_ms(1);//wait_ms(5);
-	    System.out.println("3");
-		
+		this._A0.write(0); //10ms
+		this._CS.write(0); //5ms
+		this._reset.write(0); //10ms                        // display reset
+		this.sleep_ms(1);//wait_us(50);
+
+		this._reset.write(1);    //8ms                    // end reset
+		this.sleep_ms(1);//wait_ms(5);
+
 	    /* Start Initial Sequence ----------------------------------------------------*/
+		this.wr_cmd((char) 0xAE);   //  display off //27ms
+		this.wr_cmd((char) 0xA2);   //  bias voltage
 	 
-	    wr_cmd((char) 0xAE);   //  display off
-	    wr_cmd((char) 0xA2);   //  bias voltage
+		this.wr_cmd((char) 0xA0);
+		this.wr_cmd((char) 0xC8);   //  colum normal
 	 
-	    wr_cmd((char) 0xA0);
-	    wr_cmd((char) 0xC8);   //  colum normal
-	 
-	    wr_cmd((char) 0x22);   //  voltage resistor ratio
-	    wr_cmd((char) 0x2F);   //  power on
+		this.wr_cmd((char) 0x22);   //  voltage resistor ratio
+		this.wr_cmd((char) 0x2F);   //  power on
 	    //wr_cmd(0xA4);   //  LCD display ram
-	    wr_cmd((char) 0x40);   // start line = 0
-	    wr_cmd((char) 0xAF);     // display ON
+		this.wr_cmd((char) 0x40);   // start line = 0
+		this.wr_cmd((char) 0xAF);     // display ON
 	 
-	    wr_cmd((char) 0x81);   //  set contrast
-	    wr_cmd((char) 0x17);   //  set contrast
+		this.wr_cmd((char) 0x81);   //  set contrast
+		this.wr_cmd((char) 0x17);   //  set contrast
 	 
-	    wr_cmd((char) 0xA6);     // display normal
-	    System.out.println("4");
-		
+		this.wr_cmd((char) 0xA6);     // display normal
+	 	
 	 
 	//#if defined TARGET_LPC1768          //setup DMA channel 0       
 	//    LPC_SC->PCONP |= (1UL << 29);   // Power up the GPDMA
@@ -313,34 +303,33 @@ public class C12832 extends GraphicsDisplay {
 	//#endif
 	    // clear and update LCD
 	    //buffer = memset((byte)0x00,512);  // clear display buffer
-	    this.buffer = new byte[512];
 	    
-	    copy_to_lcd();
-	    auto_up = 1;              // switch on auto update
+	    this.buffer = new byte[512]; // 0ms
+	    this.copy_to_lcd(); // 24768ms
+	    this.auto_up = 1;              // switch on auto update
 	    // dont do this by default. Make the user call
 	    //claim(stdout);           // redirekt printf to lcd
-	    locate(0,0);
-	    System.out.println("5");
-		set_font((char[])Small_7);  // standart font
-		System.out.println("6");
-		
+	    this.locate(0,0); // 0ms
+	    this.set_font((char[])Small_7);  // standart font 0ms
+	    
+	    
 	}
  
 // set one pixel in buffer
  
-	public void pixel(int x, int y, int color)
+	public void pixel(int i_x, int i_y, int i_color)
 	{
 	    // first check parameter
-	    if(x > 128 || y > 32 || x < 0 || y < 0) return;
+	    if(i_x > 128 || i_y > 32 || i_x < 0 || i_y < 0) return;
 	 
-	    if(draw_mode == NORMAL) {
-	        if(color == 0)
-	            buffer[x + ((y/8) * 128)] &= ~(1 << (y%8));  // erase pixel
+	    if(this.draw_mode == NORMAL) {
+	        if(i_color == 0)
+	        	this.buffer[i_x + ((i_y/8) * 128)] &= ~(1 << (i_y%8));  // erase pixel
 	        else
-	            buffer[x + ((y/8) * 128)] |= (1 << (y%8));   // set pixel
+	        	this.buffer[i_x + ((i_y/8) * 128)] |= (1 << (i_y%8));   // set pixel
 	    } else { // XOR mode
-	        if(color == 1)
-	            buffer[x + ((y/8) * 128)] ^= (1 << (y%8));   // xor pixel
+	        if(i_color == 1)
+	        	this.buffer[i_x + ((i_y/8) * 128)] ^= (1 << (i_y%8));   // xor pixel
 	    }
 	}
  
@@ -352,10 +341,10 @@ public class C12832 extends GraphicsDisplay {
 	    int i;
 	//#endif
 	    //page 0
-	    wr_cmd((char) 0x00);      // set column low nibble 0
-	    wr_cmd((char) 0x10);      // set column hi  nibble 0
-	    wr_cmd((char) 0xB0);      // set page address  0
-	    _A0.write(1);
+	    this.wr_cmd((char) 0x00);      // set column low nibble 0
+	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
+	    this.wr_cmd((char) 0xB0);      // set page address  0
+	    this._A0.write(1);
 	//#if defined TARGET_LPC1768
 	//    _CS = 0;
 	//    // start 128 byte DMA transfer to SPI1
@@ -374,15 +363,15 @@ public class C12832 extends GraphicsDisplay {
 	//    _CS = 1;
 	//#else  // no DMA
 	    for(i=0; i<128; i++) {
-	        wr_dat((char) buffer[i]);
+	    	this.wr_dat((char) buffer[i]);
 	    }
 	//#endif
 	 
 	    // page 1
-	    wr_cmd((char) 0x00);      // set column low nibble 0
-	    wr_cmd((char) 0x10);      // set column hi  nibble 0
-	    wr_cmd((char) 0xB1);      // set page address  1
-	    _A0.write(1);
+	    this.wr_cmd((char) 0x00);      // set column low nibble 0
+	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
+	    this.wr_cmd((char) 0xB1);      // set page address  1
+	    this._A0.write(1);
 	//#if defined TARGET_LPC1768
 	//    _CS = 0;
 	//    // start 128 byte DMA transfer to SPI1
@@ -399,15 +388,15 @@ public class C12832 extends GraphicsDisplay {
 	//    _CS = 1;
 	//#else // no DMA
 	    for(i=128; i<256; i++) {
-	        wr_dat((char) buffer[i]);
+	    	this.wr_dat((char) buffer[i]);
 	    }
 	//#endif
 	 
 	    //page 2
-	    wr_cmd((char) 0x00);      // set column low nibble 0
-	    wr_cmd((char) 0x10);      // set column hi  nibble 0
-	    wr_cmd((char) 0xB2);      // set page address  2
-	    _A0.write(1);
+	    this.wr_cmd((char) 0x00);      // set column low nibble 0
+	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
+	    this.wr_cmd((char) 0xB2);      // set page address  2
+	    this._A0.write(1);
 	//#if defined TARGET_LPC1768
 	//    _CS = 0;
 	//    // start 128 byte DMA transfer to SPI1
@@ -424,17 +413,17 @@ public class C12832 extends GraphicsDisplay {
 	//    _CS = 1;
 	//#else // no DMA
 	    for(i=256; i<384; i++) {
-	        wr_dat((char) buffer[i]);
+	    	this.wr_dat((char) buffer[i]);
 	    }
 	//#endif
 	 
 	    //page 3
-	    wr_cmd((char) 0x00);      // set column low nibble 0
-	    wr_cmd((char) 0x10);      // set column hi  nibble 0
-	    wr_cmd((char) 0xB3);      // set page address  3
-	    _A0.write(1);
+	    this.wr_cmd((char) 0x00);      // set column low nibble 0
+	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
+	    this.wr_cmd((char) 0xB3);      // set page address  3
+	    this._A0.write(1);
 	 
-	    _CS.write(0);
+	    this._CS.write(0);
 	//#if defined TARGET_LPC1768
 	    // start 128 byte DMA transfer to SPI1
 	//    LPC_GPDMA->DMACIntTCClear = 0x1;
@@ -450,7 +439,7 @@ public class C12832 extends GraphicsDisplay {
 	//    _CS = 1;
 	//#else // no DMA
 	    for(i=384; i<512; i++) {
-	        wr_dat((char) buffer[i]);
+	    	this.wr_dat((char) buffer[i]);
 	    }
 	//#endif
 	}
@@ -460,7 +449,7 @@ public class C12832 extends GraphicsDisplay {
 		//this.buffer = memset((byte)0x00,512);  // clear display buffer
 		this.buffer = new byte[512];
 	    try {
-			copy_to_lcd();
+	    	this.copy_to_lcd();
 		} catch (MbedJsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -468,15 +457,15 @@ public class C12832 extends GraphicsDisplay {
 	}
  
  
-	public void line(int x0, int y0, int x1, int y1, int color) throws MbedJsException
+	public void line(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	    int   dx = 0, dy = 0;
 	    int   dx_sym = 0, dy_sym = 0;
 	    int   dx_x2 = 0, dy_x2 = 0;
 	    int   di = 0;
 	 
-	    dx = x1-x0;
-	    dy = y1-y0;
+	    dx = i_x1-i_x0;
+	    dy = i_y1-i_y0;
 	 
 	    //  if (dx == 0) {        /* vertical line */
 	    //      if (y1 > y0) vline(x0,y0,y1,color);
@@ -509,76 +498,76 @@ public class C12832 extends GraphicsDisplay {
 	 
 	    if (dx >= dy) {
 	        di = dy_x2 - dx;
-	        while (x0 != x1) {
+	        while (i_x0 != i_x1) {
 	 
-	            pixel(x0, y0, color);
-	            x0 += dx_sym;
+	        	this.pixel(i_x0, i_y0, i_color);
+	            i_x0 += dx_sym;
 	            if (di<0) {
 	                di += dy_x2;
 	            } else {
 	                di += dy_x2 - dx_x2;
-	                y0 += dy_sym;
+	                i_y0 += dy_sym;
 	            }
 	        }
-	        pixel(x0, y0, color);
+	        this.pixel(i_x0, i_y0, i_color);
 	    } else {
 	        di = dx_x2 - dy;
-	        while (y0 != y1) {
-	            pixel(x0, y0, color);
-	            y0 += dy_sym;
+	        while (i_y0 != i_y1) {
+	        	this.pixel(i_x0, i_y0, i_color);
+	            i_y0 += dy_sym;
 	            if (di < 0) {
 	                di += dx_x2;
 	            } else {
 	                di += dx_x2 - dy_x2;
-	                x0 += dx_sym;
+	                i_x0 += dx_sym;
 	            }
 	        }
-	        pixel(x0, y0, color);
+	        this.pixel(i_x0, i_y0, i_color);
 	    }
-	    if(this.auto_up!=0) copy_to_lcd();
+	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
-	public void rect(int x0, int y0, int x1, int y1, int color) throws MbedJsException
+	public void rect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	 
-	    if (x1 > x0) line(x0,y0,x1,y0,color);
-	    else  line(x1,y0,x0,y0,color);
+	    if (i_x1 > i_x0) this.line(i_x0,i_y0,i_x1,i_y0,i_color);
+	    else  this.line(i_x1,i_y0,i_x0,i_y0,i_color);
 	 
-	    if (y1 > y0) line(x0,y0,x0,y1,color);
-	    else line(x0,y1,x0,y0,color);
+	    if (i_y1 > i_y0) this.line(i_x0,i_y0,i_x0,i_y1,i_color);
+	    else this.line(i_x0,i_y1,i_x0,i_y0,i_color);
 	 
-	    if (x1 > x0) line(x0,y1,x1,y1,color);
-	    else  line(x1,y1,x0,y1,color);
+	    if (i_x1 > i_x0) this.line(i_x0,i_y1,i_x1,i_y1,i_color);
+	    else  this.line(i_x1,i_y1,i_x0,i_y1,i_color);
 	 
-	    if (y1 > y0) line(x1,y0,x1,y1,color);
-	    else line(x1,y1,x1,y0,color);
+	    if (i_y1 > i_y0) this.line(i_x1,i_y0,i_x1,i_y1,i_color);
+	    else this.line(i_x1,i_y1,i_x1,i_y0,i_color);
 	 
-	    if(this.auto_up!=0) copy_to_lcd();
+	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
-	public void fillrect(int x0, int y0, int x1, int y1, int color)
+	public void fillrect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color)
 	{
 	    int l,c,i;
-	    if(x0 > x1) {
-	        i = x0;
-	        x0 = x1;
-	        x1 = i;
+	    if(i_x0 > i_x1) {
+	        i = i_x0;
+	        i_x0 = i_x1;
+	        i_x1 = i;
 	    }
 	 
-	    if(y0 > y1) {
-	        i = y0;
-	        y0 = y1;
-	        y1 = i;
+	    if(i_y0 > i_y1) {
+	        i = i_y0;
+	        i_y0 = i_y1;
+	        i_y1 = i;
 	    }
 	 
-	    for(l = x0; l<= x1; l ++) {
-	        for(c = y0; c<= y1; c++) {
-	            pixel(l,c,color);
+	    for(l = i_x0; l<= i_x1; l ++) {
+	        for(c = i_y0; c<= i_y1; c++) {
+	        	this.pixel(l,c,i_color);
 	        }
 	    }
 	    if(this.auto_up!=0)
 			try {
-				copy_to_lcd();
+				this.copy_to_lcd();
 			} catch (MbedJsException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -587,7 +576,7 @@ public class C12832 extends GraphicsDisplay {
  
  
  
-	public void circle(int x0, int y0, int r, int color)
+	public void circle(int i_x0, int i_y0, int i_r, int i_color)
 	{
 	 
 	    int draw_x0, draw_y0;
@@ -601,41 +590,41 @@ public class C12832 extends GraphicsDisplay {
 	    int xx, yy;
 	    int di;
 	    //WindowMax();
-	    if (r == 0) {       /* no radius */
+	    if (i_r == 0) {       /* no radius */
 	        return;
 	    }
 	 
-	    draw_x0 = draw_x1 = x0;
-	    draw_y0 = draw_y1 = y0 + r;
-	    if (draw_y0 < height()) {
-	        pixel(draw_x0, draw_y0, color);     /* 90 degree */
+	    draw_x0 = draw_x1 = i_x0;
+	    draw_y0 = draw_y1 = i_y0 + i_r;
+	    if (draw_y0 < this.height()) {
+	    	this.pixel(draw_x0, draw_y0, i_color);     /* 90 degree */
 	    }
 	 
-	    draw_x2 = draw_x3 = x0;
-	    draw_y2 = draw_y3 = y0 - r;
+	    draw_x2 = draw_x3 = i_x0;
+	    draw_y2 = draw_y3 = i_y0 - i_r;
 	    if (draw_y2 >= 0) {
-	        pixel(draw_x2, draw_y2, color);    /* 270 degree */
+	    	this.pixel(draw_x2, draw_y2, i_color);    /* 270 degree */
 	    }
 	 
-	    draw_x4 = draw_x6 = x0 + r;
-	    draw_y4 = draw_y6 = y0;
-	    if (draw_x4 < width()) {
-	        pixel(draw_x4, draw_y4, color);     /* 0 degree */
+	    draw_x4 = draw_x6 = i_x0 + i_r;
+	    draw_y4 = draw_y6 = i_y0;
+	    if (draw_x4 < this.width()) {
+	    	this.pixel(draw_x4, draw_y4, i_color);     /* 0 degree */
 	    }
 	 
-	    draw_x5 = draw_x7 = x0 - r;
-	    draw_y5 = draw_y7 = y0;
+	    draw_x5 = draw_x7 = i_x0 - i_r;
+	    draw_y5 = draw_y7 = i_y0;
 	    if (draw_x5>=0) {
-	        pixel(draw_x5, draw_y5, color);     /* 180 degree */
+	    	this.pixel(draw_x5, draw_y5, i_color);     /* 180 degree */
 	    }
 	 
-	    if (r == 1) {
+	    if (i_r == 1) {
 	        return;
 	    }
 	 
-	    di = 3 - 2*r;
+	    di = 3 - 2*i_r;
 	    xx = 0;
-	    yy = r;
+	    yy = i_r;
 	    while (xx < yy) {
 	 
 	        if (di < 0) {
@@ -662,122 +651,122 @@ public class C12832 extends GraphicsDisplay {
 	        draw_y6--;
 	        draw_y7--;
 	 
-	        if ( (draw_x0 <= width()) && (draw_y0>=0) ) {
-	            pixel(draw_x0, draw_y0, color);
+	        if ( (draw_x0 <= this.width()) && (draw_y0>=0) ) {
+	        	this.pixel(draw_x0, draw_y0, i_color);
 	        }
 	 
 	        if ( (draw_x1 >= 0) && (draw_y1 >= 0) ) {
-	            pixel(draw_x1, draw_y1, color);
+	        	this.pixel(draw_x1, draw_y1, i_color);
 	        }
 	 
 	        if ( (draw_x2 <= width()) && (draw_y2 <= height()) ) {
-	            pixel(draw_x2, draw_y2, color);
+	        	this.pixel(draw_x2, draw_y2, i_color);
 	        }
 	 
-	        if ( (draw_x3 >=0 ) && (draw_y3 <= height()) ) {
-	            pixel(draw_x3, draw_y3, color);
+	        if ( (draw_x3 >=0 ) && (draw_y3 <= this.height()) ) {
+	        	this.pixel(draw_x3, draw_y3, i_color);
 	        }
 	 
-	        if ( (draw_x4 <= width()) && (draw_y4 >= 0) ) {
-	            pixel(draw_x4, draw_y4, color);
+	        if ( (draw_x4 <= this.width()) && (draw_y4 >= 0) ) {
+	        	this.pixel(draw_x4, draw_y4, i_color);
 	        }
 	 
 	        if ( (draw_x5 >= 0) && (draw_y5 >= 0) ) {
-	            pixel(draw_x5, draw_y5, color);
+	        	this.pixel(draw_x5, draw_y5, i_color);
 	        }
-	        if ( (draw_x6 <=width()) && (draw_y6 <= height()) ) {
-	            pixel(draw_x6, draw_y6, color);
+	        if ( (draw_x6 <=this.width()) && (draw_y6 <= this.height()) ) {
+	        	this.pixel(draw_x6, draw_y6, i_color);
 	        }
-	        if ( (draw_x7 >= 0) && (draw_y7 <= height()) ) {
-	            pixel(draw_x7, draw_y7, color);
+	        if ( (draw_x7 >= 0) && (draw_y7 <= this.height()) ) {
+	        	this.pixel(draw_x7, draw_y7, i_color);
 	        }
 	    }
 	    if(this.auto_up!=0)
 			try {
-				copy_to_lcd();
+				this.copy_to_lcd();
 			} catch (MbedJsException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	}
  
-	public void fillcircle(int x, int y, int r, int color) throws MbedJsException
+	public void fillcircle(int i_x, int i_y, int i_r, int i_color) throws MbedJsException
 	{
 	    int i,up;
-	    up = auto_up;
-	    auto_up = 0;   // off
-	    for (i = 0; i <= r; i++)
-	        circle(x,y,i,color);
-	    auto_up = up;
-	    if(this.auto_up!=0) copy_to_lcd();
+	    up = this.auto_up;
+	    this.auto_up = 0;   // off
+	    for (i = 0; i <= i_r; i++)
+	    	this.circle(i_x,i_y,i,i_color);
+	    this.auto_up = up;
+	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
-	public void setmode(int mode)
+	public void setmode(int i_mode)
 	{
-	    draw_mode = mode;
+		this.draw_mode = i_mode;
 	}
 	 
-	public void locate(int x, int y)
+	public void locate(int i_x, int i_y)
 	{
-	    char_x = x;
-	    char_y = y;
+		this.char_x = i_x;
+		this.char_y = i_y;
 	}
 	 
  
 	 
 	public int columns()
 	{
-	    return width() / font[1];
+	    return this.width() / this.font[1];
 	}
  
  
 	 
 	public int rows()
 	{
-	    return height() / font[2];
+	    return this.height() / this.font[2];
 	}
  
  
 	 
-	public int _putc(int value) throws MbedJsException
+	public int _putc(int i_value) throws MbedJsException
 	{
-	    if (value == '\n') {    // new line
-	        char_x = 0;
-	        char_y = char_y + font[2];
-	        if (char_y >= height() - font[2]) {
-	            char_y = 0;
+	    if (i_value == '\n') {    // new line
+	    	this.char_x = 0;
+	    	this.char_y = this.char_y + this.font[2];
+	        if (this.char_y >= height() - this.font[2]) {
+	        	this.char_y = 0;
 	        }
 	    } else {
-	        character(char_x, char_y, value);
-	        if(this.auto_up!=0) copy_to_lcd();
+	    	this.character(this.char_x, this.char_y, i_value);
+	        if(this.auto_up!=0) this.copy_to_lcd();
 	    }
-	    return value;
+	    return i_value;
 	}
 	 
-	public void character(int x, int y, int c)
+	public void character(int i_x, int i_y, int i_c)
 	{
 	    int hor,vert,offset,bpl,j,i,b , ofs;
-	    char[] zeichen;
+	    //char[] zeichen;
 	    char z,w;
 	 
-	    if ((c < 31) || (c > 127)) return;   // test char range
+	    if ((i_c < 31) || (i_c > 127)) return;   // test char range
 	 
 	    // read font parameter from start of array
-	    offset = font[0];                    // bytes / char
-	    hor = font[1];                       // get hor size of font
-	    vert = font[2];                      // get vert size of font
-	    bpl = font[3];                       // bytes per line
+	    offset = this.font[0];                    // bytes / char
+	    hor = this.font[1];                       // get hor size of font
+	    vert = this.font[2];                      // get vert size of font
+	    bpl = this.font[3];                       // bytes per line
 	 
-	    if (char_x + hor > width()) {
-	        char_x = 0;
-	        char_y = char_y + vert;
-	        if (char_y >= height() - font[2]) {
-	            char_y = 0;
+	    if (this.char_x + hor > this.width()) {
+	    	this.char_x = 0;
+	    	this.char_y = this.char_y + vert;
+	        if (this.char_y >= this.height() - this.font[2]) {
+	        	this.char_y = 0;
 	        }
 	    }
 	    
 	    //zeichen = &font[((c -32) * offset) + 4]; // start of char bitmap
-	    ofs = ((c -32) * offset) + 4;
+	    ofs = ((i_c -32) * offset) + 4;
 	    
 	    w = this.font[ofs];                          // width of actual char
 	    // construct the char into the buffer
@@ -786,49 +775,49 @@ public class C12832 extends GraphicsDisplay {
 	            z =  this.font[ofs + bpl * i + ((j & 0xF8) >> 3)+1];
 	            b = 1 << (j & 0x07);
 	            if (( z & b ) == 0x00) {
-	                pixel(x+i,y+j,0);
+	            	this.pixel(i_x+i,i_y+j,0);
 	            } else {
-	                pixel(x+i,y+j,1);
+	            	this.pixel(i_x+i,i_y+j,1);
 	            }
 	 
 	        }
 	    }
 	 
-	    char_x += w;
+	    this.char_x += w;
 	}
  
 	 
-	public void set_font(char[] f)
+	public void set_font(char[] i_font)
 	{
-	    font = f;
+		this.font = i_font;
 	}
 	 
-	public void set_auto_up(int up)
+	public void set_auto_up(int i_up)
 	{
-	    if(up!=0 ) auto_up = 1;
-	    else auto_up = 0;
+	    if(i_up!=0 ) this.auto_up = 1;
+	    else this.auto_up = 0;
 	}
 	 
 	private int get_auto_up()
 	{
-	    return (auto_up);
+	    return (this.auto_up);
 	}
  
-	private void print_bm(Bitmap bm, int x, int y)
+	private void print_bm(Bitmap i_bitmap, int i_x, int i_y)
 	{
 	    int h,v,b;
 	    char d;
 	 
-	    for(v=0; v < bm.ySize; v++) {   // lines
-	        for(h=0; h < bm.xSize; h++) { // pixel
-	            if(h + x > 127) break;
-	            if(v + y > 31) break;
-	            d = bm.data[bm.byte_in_Line * v + ((h & 0xF8) >> 3)];
+	    for(v=0; v < i_bitmap.ySize; v++) {   // lines
+	        for(h=0; h < i_bitmap.xSize; h++) { // pixel
+	            if(h + i_x > 127) break;
+	            if(v + i_y > 31) break;
+	            d = i_bitmap.data[i_bitmap.byte_in_Line * v + ((h & 0xF8) >> 3)];
 	            b = 0x80 >> (h & 0x07);
 	            if((d & b) == 0) {
-	                pixel(x+h,y+v,0);
+	            	this.pixel(i_x+h,i_y+v,0);
 	            } else {
-	                pixel(x+h,y+v,1);
+	            	this.pixel(i_x+h,i_y+v,1);
 	            }
 	        }
 	    }
@@ -843,5 +832,18 @@ public class C12832 extends GraphicsDisplay {
 		}
 		
 		return retval;
+	}
+	public static void main(String[] args) throws MbedJsException {
+		System.out.println("start");
+		Mcu mcu = new Mcu("192.168.0.39");
+		C12832 lcd = new C12832(mcu , "test".getBytes());
+		
+		//lcd.line(0, 0, 20, 20, 1);// ok
+		//lcd.rect(10, 10, 20, 20, 1); //ok
+		//lcd.fillrect(10, 10, 20, 20, 1); //ok
+		//lcd.circle(15, 15, 5, 1); //ok
+		//lcd.fillcircle(15, 14, 5, 1); // ok
+		lcd.pixel(10, 10, 1);
+		System.out.println("done");
 	}
 }

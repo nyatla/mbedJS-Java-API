@@ -43,72 +43,72 @@ public class TextDisplay extends DriverBaseClass{
 	public  int	_foreground;
 	public  int _background;
 	private byte[] _path;
-	public TextDisplay() {
-		// TODO Auto-generated constructor stub
-	}
 
-	TextDisplay(byte [] name) //: Stream(name){
+
+	public TextDisplay(byte [] i_name) //: Stream(name){
 	{
-	_row = 0;
-    _column = 0;
-    if (name[0] == '\0') {
-        _path[0] = '\0';
-    } else {
-        _path = new byte[name.length + 2];
-        //sprintf(_path, "/%s", name);
-        _path = name;
-    }
-}
+		
+			
+		this._row = 0;
+		this._column = 0;
+	    if (i_name[0] == '\0') {
+	    	this._path[0] = '\0';
+	    } else {
+	    	this._path = new byte[i_name.length + 2];
+	        //sprintf(_path, "/%s", name);
+	    	this._path = i_name;
+	    }
+	}
     
-	public int _putc(int value) throws MbedJsException 
+	public int _putc(int i_value) throws MbedJsException 
 	{
-	    if(value == '\n') {
-	        _column = 0;
-	        _row++;
-	        if(_row >= rows()) {
-	            _row = 0;
+	    if(i_value == '\n') {
+	    	this._column = 0;
+	    	this._row++;
+	        if(this._row >= this.rows()) {
+	        	this._row = 0;
 	        }
 	    } else {
-	        character(_column, _row, value);
-	        _column++;
-	        if(_column >= columns()) {
-	            _column = 0;
-	            _row++;
-	            if(_row >= rows()) {
-	                _row = 0;
+	    	this.character(this._column, this._row, i_value);
+	    	this._column++;
+	        if(this._column >= this.columns()) {
+	        	this._column = 0;
+	        	this._row++;
+	            if(this._row >= this.rows()) {
+	            	this._row = 0;
 	            }
 	        }
 	    }
-	    return value;
+	    return i_value;
 	}
 	 
 	// crude cls implementation, should generally be overwritten in derived class
-	void cls() {
-	    locate(0, 0);
-	    for(int i=0; i<columns()*rows(); i++) {
-	        putc(' ');
+	public void cls() {
+		this.locate(0, 0);
+	    for(int i=0; i<columns()*this.rows(); i++) {
+	    	this.putc(' ');
 	    }
 	}
  
-	void locate(int column, int row) {
-	    _column = column;
-	    _row = row;
+	public void locate(int i_column, int i_row) {
+		this._column = i_column;
+		this._row = i_row;
 	}
  
 	int _getc() {
 	    return -1;
 	}
         
-	void foreground(int colour) {
-	    _foreground = colour;
+	public void foreground(int i_colour) {
+		this._foreground = i_colour;
 	}
  
-	void background(int colour) {
-	    _background = colour;
+	public void background(int i_colour) {
+		this._background = i_colour;
 	}
  
 	File claim (File i_stream) {
-	    if ( _path[0] == '\0') {
+	    if ( this._path[0] == '\0') {
 	        System.err.println("claim requires a name to be given in the instantioator of the TextDisplay instance!\r\n");
 	        return null;
 	    }
@@ -117,7 +117,7 @@ public class TextDisplay extends DriverBaseClass{
 	        // Failed, should not happen
 	    //    return false;
 	    //}
-	    return new File(_path.toString());
+	    return new File(this._path.toString());
 	    
 	    // make sure we use line buffering
 	    //setvbuf(stdout, NULL, _IOLBF, columns());
