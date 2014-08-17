@@ -151,21 +151,29 @@ public class C12832 extends GraphicsDisplay {
 
 
 
-	public C12832(Mcu i_mcu , byte[] i_name) throws MbedJsException
+	public C12832(Mcu i_mcu , int i_mosi_pin, int i_miso_pin, int i_sclk_pin,
+			int i_reset, int i_A0 , int i_CS,
+			byte[] i_name) throws MbedJsException
     {
 		//TODO: ピンの引数を追加する
 		//: _spi(p5,NC,p7),_reset(p6),_A0(p8),_CS(p11),GraphicsDisplay(name)
 		super(i_name); // 0msec
-		this._spi = new SPI(i_mcu,PinName.p5,PinName.NC , PinName.p7);// 50ms
-	    this._reset = new DigitalOut(i_mcu , PinName.p6); // 11ms
-		this._A0 = new DigitalOut(i_mcu , PinName.p8); // 8ms
-		this._CS = new DigitalOut(i_mcu , PinName.p11); // 9ms
+		this._spi = new SPI(i_mcu,i_mosi_pin,i_miso_pin, i_sclk_pin);// 50ms
+	    this._reset = new DigitalOut(i_mcu , i_reset); // 11ms
+		this._A0 = new DigitalOut(i_mcu , i_A0); // 8ms
+		this._CS = new DigitalOut(i_mcu , i_CS); // 9ms
 		this.orientation = 1; //0ms
 		this.draw_mode = NORMAL; //0ms
 		this.char_x = 0;// 0ms
 		this.lcd_reset(); // 20019ms 
 		
     }
+	public void dispose() throws MbedJsException{
+		this._spi.dispose();
+		this._reset.dispose();
+		this._A0.dispose();
+		this._CS.dispose();
+	}
  
 	public int width()
 	{
@@ -798,12 +806,12 @@ public class C12832 extends GraphicsDisplay {
 	    else this.auto_up = 0;
 	}
 	 
-	private int get_auto_up()
+	public int get_auto_up()
 	{
 	    return (this.auto_up);
 	}
  
-	private void print_bm(Bitmap i_bitmap, int i_x, int i_y)
+	public void print_bm(Bitmap i_bitmap, int i_x, int i_y)
 	{
 	    int h,v,b;
 	    char d;
@@ -845,7 +853,9 @@ public class C12832 extends GraphicsDisplay {
 	public static void main(String[] args) throws MbedJsException {
 		System.out.println("start");
 		Mcu mcu = new Mcu("192.168.0.39");
-		C12832 lcd = new C12832(mcu , "test".getBytes());
+		C12832 lcd = new C12832(mcu , PinName.p5,PinName.NC , PinName.p7,
+				 PinName.p6 ,PinName.p8 , PinName.p11, 
+				 "test".getBytes());
 		
 		//lcd.line(0, 0, 20, 20, 1);// ok
 		//lcd.rect(10, 10, 20, 20, 1); //ok
@@ -855,10 +865,6 @@ public class C12832 extends GraphicsDisplay {
 		//lcd.pixel(10, 10, 1);
 		//lcd.character(1, 1, 'c');
 		lcd.locate(30, 20);
-		lcd._putc('t');
-		lcd._putc('e');
-		lcd._putc('s');
-		lcd._putc('t');
 		lcd.puts("hello mbedJS");
 		System.out.println("done");
 	}
