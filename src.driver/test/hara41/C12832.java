@@ -798,12 +798,12 @@ public class C12832 extends GraphicsDisplay {
 	    else this.auto_up = 0;
 	}
 	 
-	private int get_auto_up()
+	public int get_auto_up()
 	{
 	    return (this.auto_up);
 	}
  
-	private void print_bm(Bitmap i_bitmap, int i_x, int i_y)
+	public void print_bm(Bitmap i_bitmap, int i_x, int i_y)
 	{
 	    int h,v,b;
 	    char d;
@@ -855,10 +855,6 @@ public class C12832 extends GraphicsDisplay {
 		//lcd.pixel(10, 10, 1);
 		//lcd.character(1, 1, 'c');
 		lcd.locate(30, 20);
-		lcd._putc('t');
-		lcd._putc('e');
-		lcd._putc('s');
-		lcd._putc('t');
 		lcd.puts("hello mbedJS");
 		System.out.println("done");
 	}
