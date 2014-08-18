@@ -2,6 +2,12 @@
  * Copyright (c) 2007-2009 sford
  * Released under the MIT License: http://mbed.org/license/mit
  */
+/* original source code
+ * http://mbed.org/users/dreschpe/code/C12832_lcd/
+ */
+/* 2014/08/18
+ * modified by hara41
+ */
  
 package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 import java.io.File;
