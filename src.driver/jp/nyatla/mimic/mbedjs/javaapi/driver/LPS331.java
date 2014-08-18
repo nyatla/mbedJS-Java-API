@@ -158,7 +158,7 @@ public class LPS331{
 //	    _i2c.write(subaddress);
 //	    _i2c.write(data);
 //	    _i2c.stop();
-		this._i2c.write(this._addr,new byte[]{(byte)i_subaddress,(byte)i_data},false);
+		this._i2c.write(this._addr,new byte[]{i_subaddress,i_data},false);
 		
 	}
 	 
