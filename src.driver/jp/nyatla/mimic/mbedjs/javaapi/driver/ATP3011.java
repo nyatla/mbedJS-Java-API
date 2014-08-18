@@ -113,7 +113,6 @@ public class ATP3011 extends DriverBaseClass{
 	}
 	
 	public static void main(String[] args) throws MbedJsException {
-		// TODO Auto-generated method stub
 		Mcu mcu = new Mcu("10.0.0.2");
 		ATP3011 talk = new ATP3011(mcu,PinName.P0_10 , PinName.P0_11,ATP3011.I2C_ADDRESS<<1);
 		for(int n=1 ; ; n++)
