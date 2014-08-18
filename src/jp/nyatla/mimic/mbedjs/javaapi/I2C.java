@@ -73,9 +73,9 @@ public class I2C  extends McuBindClass
 		}
 		return r.getInt32(0);
 	}
-	public int write(int i_ack) throws MbedJsException
+	public int write(int i_data) throws MbedJsException
 	{
-		JsonRpcResult r=this.classRpc("read2",String.format("%d",i_ack));
+		JsonRpcResult r=this.classRpc("read2",String.format("%d",i_data));
 		if(r.isError()){
 			throw new MbedJsException();
 		}
