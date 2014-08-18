@@ -11,7 +11,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+/* このソースコードは以下のものを移植しました
+ * http://mbed.org/users/dreschpe/code/C12832_lcd/
+ */
 
 package test.hara41;
 
