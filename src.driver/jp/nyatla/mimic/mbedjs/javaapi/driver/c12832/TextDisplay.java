@@ -83,7 +83,8 @@ public class TextDisplay extends DriverBaseClass{
 	}
 	 
 	// crude cls implementation, should generally be overwritten in derived class
-	public void cls() {
+	public void cls() throws MbedJsException 
+	{
 		this.locate(0, 0);
 	    for(int i=0; i<columns()*this.rows(); i++) {
 	    	this.putc(' ');

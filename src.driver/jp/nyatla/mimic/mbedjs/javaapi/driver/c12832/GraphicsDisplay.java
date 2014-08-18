@@ -5,6 +5,8 @@
  
 package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 
+import jp.nyatla.mimic.mbedjs.MbedJsException;
+
 public class GraphicsDisplay extends TextDisplay {
 	public void pixel(int i_x, int i_y, int i_colour){return;}
 	public int width() {return 0;}
@@ -180,7 +182,8 @@ public class GraphicsDisplay extends TextDisplay {
 	    }
 	}
     
-	public void cls() {
+	public void cls() throws MbedJsException
+	{
 		this.fill(0, 0, this.width(), this.height(), this._background);
 	}
     
