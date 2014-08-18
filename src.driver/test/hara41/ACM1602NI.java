@@ -1,3 +1,23 @@
+/* An I2C text LCD library for Displaytronic ACM1602NI-FLW-FBW-M01
+ * Copyright 2013, 2014, Takuo WATANABE (wtakuo)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* このソースコードは以下のサイトにあるものを移植しました
+ * http://mbed.org/users/takuo/code/ACM1602NI/ */
+
+
 package test.hara41;
 
 import jp.nyatla.mimic.mbedjs.*;
@@ -95,8 +115,16 @@ public class ACM1602NI extends DriverBaseClass{
 	    this._column = i_column;
 	    this._row = i_row;
 	}
- 
-	public int _putc(int i_value) throws MbedJsException {
+	public int puts(String i_s) throws MbedJsException
+	{
+		int i=0;
+		for(;i<i_s.length();i++){
+			int v=i_s.charAt(i);
+			this._putc((v>255)?'?':v);
+		}
+		return i;
+	}
+	private int _putc(int i_value) throws MbedJsException {
 	    if (i_value == '\n') {
 	    	this._column = 0;
 	    	this._row = (this._row + 1) % this.rows();
@@ -112,7 +140,7 @@ public class ACM1602NI extends DriverBaseClass{
 	    return i_value;
 	}
 	 
-	public int _getc() {
+	private int _getc() {
 	    return -1;
 	}
  
