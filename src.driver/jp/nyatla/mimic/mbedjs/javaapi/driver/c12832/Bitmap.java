@@ -1,4 +1,4 @@
-package test.hara41;
+package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 
 public class Bitmap {
 	public int xSize;

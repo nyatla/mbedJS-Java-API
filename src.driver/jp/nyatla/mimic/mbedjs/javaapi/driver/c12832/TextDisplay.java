@@ -3,7 +3,7 @@
  * Released under the MIT License: http://mbed.org/license/mit
  */
  
-package test.hara41;
+package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 import java.io.File;
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;

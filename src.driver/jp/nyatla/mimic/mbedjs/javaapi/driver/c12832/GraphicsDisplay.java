@@ -3,7 +3,7 @@
  * Released under the MIT License: http://mbed.org/license/mit
  */
  
-package test.hara41;
+package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 
 public class GraphicsDisplay extends TextDisplay {
 	public void pixel(int i_x, int i_y, int i_colour){return;}
