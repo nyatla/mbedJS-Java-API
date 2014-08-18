@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-/* このソースコードは以下のサイトにあるものを移植しました
- * http://mbed.org/users/takuo/code/ACM1602NI/ */
+/* original source code
+ * http://mbed.org/users/takuo/code/ACM1602NI/
+ * 
+ * modified by hara41 hara.shinichi@gmail.com
+ *  */
 
 
 package test.hara41;
