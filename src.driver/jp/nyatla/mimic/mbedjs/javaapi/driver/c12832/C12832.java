@@ -11,7 +11,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+/* original source code
+ * http://mbed.org/users/dreschpe/code/C12832_lcd/
+ */
+/* 2014/08/18
+ * modified by hara41
+ */
 
 package jp.nyatla.mimic.mbedjs.javaapi.driver.c12832;
 
@@ -119,17 +124,6 @@ public class C12832 extends GraphicsDisplay {
 	        0x05, 0x0C, 0x00, 0x04, 0x00, 0x0C, 0x00, 0x08, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // Code for char ~
 	        0x03, 0xFE, 0x01, 0x02, 0x01, 0xFE, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   // Code for char 
 	        };
-	private static final int DMA_CHANNEL_ENABLE = 1;
-	private static final int DMA_TRANSFER_TYPE_M2P =  (1 << 11);
-	private static final int DMA_CHANNEL_TCIE      =  (1 << 31);
-	private static final int DMA_CHANNEL_SRC_INC   =  (1 << 26);
-	private static final int DMA_MASK_IE           =  (1 << 14);
-	private static final int DMA_MASK_ITC          =  (1 << 15);
-	private static final int DMA_SSP1_TX           =  (1 << 2);
-	private static final int DMA_SSP0_TX           =  (0);
-	private static final int DMA_DEST_SSP1_TX      =  (2 << 6);
-	private static final int DMA_DEST_SSP0_TX      =  (0 << 6);
-	
 	public static final int NORMAL = 1;
 	public static final int XOR = 2;
 	
@@ -187,32 +181,7 @@ public class C12832 extends GraphicsDisplay {
 	    else return 32;
 	}
  
- 
-	/*void C12832_LCD::set_orientation(unsigned int o)
-	{
-	    orientation = o;
-	    switch (o) {
-	        case (0):
-	            wr_cmd(0xA0);
-	            wr_cmd(0xC0);
-	            break;
-	        case (1):
-	            wr_cmd(0xA0);
-	            wr_cmd(0xC8);
-	            break;
-	        case (2):
-	            wr_cmd(0xA1);
-	            wr_cmd(0xC8);
-	            break;
-	        case (3):
-	            wr_cmd(0xA1);
-	            wr_cmd(0xC0);
-	            break;
-	    }
-	}
-	 
-	*/
- 
+
 	public void invert(int i_o) throws MbedJsException
 	{
 	    if(i_o == 0) this.wr_cmd((char) 0xA6);
@@ -302,13 +271,6 @@ public class C12832 extends GraphicsDisplay {
 		this.wr_cmd((char) 0xA6);     // display normal
 	 	
 	 
-	//#if defined TARGET_LPC1768          //setup DMA channel 0       
-	//    LPC_SC->PCONP |= (1UL << 29);   // Power up the GPDMA
-	//    LPC_GPDMA->DMACConfig = 1;      // enable DMA controller
-	//    LPC_GPDMA->DMACIntTCClear = 0x1;
-	//    LPC_GPDMA->DMACIntErrClr = 0x1;
-	//    LPC_GPDMACH0->DMACCLLI = 0;
-	//#endif
 	    // clear and update LCD
 	    //buffer = memset((byte)0x00,512);  // clear display buffer
 	    
@@ -345,85 +307,35 @@ public class C12832 extends GraphicsDisplay {
  
 	private void copy_to_lcd() throws MbedJsException
 	{
-	//#ifndef TARGET_LPC1768
 	    int i;
-	//#endif
 	    //page 0
 	    this.wr_cmd((char) 0x00);      // set column low nibble 0
 	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
 	    this.wr_cmd((char) 0xB0);      // set page address  0
 	    this._A0.write(1);
-	//#if defined TARGET_LPC1768
-	//    _CS = 0;
-	//    // start 128 byte DMA transfer to SPI1
-	//    LPC_GPDMACH0->DMACCDestAddr = (uint32_t)&LPC_SSP1->DR; // we send to SSP1
-	//    LPC_SSP1->DMACR = 0x2;  // Enable SSP1 for DMA.
-	//    LPC_GPDMA->DMACIntTCClear = 0x1;
-	//    LPC_GPDMA->DMACIntErrClr = 0x1;
-	//    LPC_GPDMACH0->DMACCSrcAddr = (uint32_t) (buffer);
-	//    LPC_GPDMACH0->DMACCControl = 128 | (1UL << 31) |  DMA_CHANNEL_SRC_INC ; // 8 bit transfer , address increment, interrupt
-	//    LPC_GPDMACH0->DMACCConfig  = DMA_CHANNEL_ENABLE | DMA_TRANSFER_TYPE_M2P | DMA_DEST_SSP1_TX;
-	//    LPC_GPDMA->DMACSoftSReq = 0x1;
-	//    do {
-	//    } while ((LPC_GPDMA->DMACRawIntTCStat & 0x01) == 0); // DMA is running
-	//    do {
-	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // SPI1 not idle
-	//    _CS = 1;
-	//#else  // no DMA
+
 	    for(i=0; i<128; i++) {
 	    	this.wr_dat((char) buffer[i]);
 	    }
-	//#endif
 	 
 	    // page 1
 	    this.wr_cmd((char) 0x00);      // set column low nibble 0
 	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
 	    this.wr_cmd((char) 0xB1);      // set page address  1
 	    this._A0.write(1);
-	//#if defined TARGET_LPC1768
-	//    _CS = 0;
-	//    // start 128 byte DMA transfer to SPI1
-	//    LPC_GPDMA->DMACIntTCClear = 0x1;
-	//    LPC_GPDMA->DMACIntErrClr = 0x1;
-	//    LPC_GPDMACH0->DMACCSrcAddr = (uint32_t) (buffer + 128);
-	//    LPC_GPDMACH0->DMACCControl = 128 | (1UL << 31) |  DMA_CHANNEL_SRC_INC ; // 8 bit transfer , address increment, interrupt
-	//    LPC_GPDMACH0->DMACCConfig  = DMA_CHANNEL_ENABLE | DMA_TRANSFER_TYPE_M2P | DMA_DEST_SSP1_TX;
-	//    LPC_GPDMA->DMACSoftSReq = 0x1;
-	//    do {
-	//    } while ((LPC_GPDMA->DMACRawIntTCStat & 0x01) == 0); // DMA is running
-	//    do {
-	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // SPI1 not idle
-	//    _CS = 1;
-	//#else // no DMA
+
 	    for(i=128; i<256; i++) {
 	    	this.wr_dat((char) buffer[i]);
 	    }
-	//#endif
-	 
 	    //page 2
 	    this.wr_cmd((char) 0x00);      // set column low nibble 0
 	    this.wr_cmd((char) 0x10);      // set column hi  nibble 0
 	    this.wr_cmd((char) 0xB2);      // set page address  2
 	    this._A0.write(1);
-	//#if defined TARGET_LPC1768
-	//    _CS = 0;
-	//    // start 128 byte DMA transfer to SPI1
-	//    LPC_GPDMA->DMACIntTCClear = 0x1;
-	//    LPC_GPDMA->DMACIntErrClr = 0x1;
-	//    LPC_GPDMACH0->DMACCSrcAddr = (uint32_t) (buffer + 256);
-	//    LPC_GPDMACH0->DMACCControl = 128 | (1UL << 31) |  DMA_CHANNEL_SRC_INC ; // 8 bit transfer , address increment, interrupt
-	//    LPC_GPDMACH0->DMACCConfig  = DMA_CHANNEL_ENABLE | DMA_TRANSFER_TYPE_M2P | DMA_DEST_SSP1_TX ;
-	//    LPC_GPDMA->DMACSoftSReq = 0x1;
-	//    do {
-	//    } while ((LPC_GPDMA->DMACRawIntTCStat & 0x01) == 0); // DMA is running
-	//    do {
-	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // SPI1 not idle
-	//    _CS = 1;
-	//#else // no DMA
+
 	    for(i=256; i<384; i++) {
 	    	this.wr_dat((char) buffer[i]);
 	    }
-	//#endif
 	 
 	    //page 3
 	    this.wr_cmd((char) 0x00);      // set column low nibble 0
@@ -432,24 +344,10 @@ public class C12832 extends GraphicsDisplay {
 	    this._A0.write(1);
 	 
 	    this._CS.write(0);
-	//#if defined TARGET_LPC1768
-	    // start 128 byte DMA transfer to SPI1
-	//    LPC_GPDMA->DMACIntTCClear = 0x1;
-	//    LPC_GPDMA->DMACIntErrClr = 0x1;
-	//    LPC_GPDMACH0->DMACCSrcAddr = (uint32_t) (buffer + 384);
-	//    LPC_GPDMACH0->DMACCControl = 128  | (1UL << 31) |  DMA_CHANNEL_SRC_INC ; // 8 bit transfer , address increment, interrupt
-	//    LPC_GPDMACH0->DMACCConfig  = DMA_CHANNEL_ENABLE | DMA_TRANSFER_TYPE_M2P | DMA_DEST_SSP1_TX;
-	//    LPC_GPDMA->DMACSoftSReq = 0x1;
-	//   do {
-	//    } while ((LPC_GPDMA->DMACRawIntTCStat & 0x01) == 0); // DMA is running
-	//    do {
-	//    } while ((LPC_SSP1->SR & 0x10) == 0x10); // SPI1 not idle
-	//    _CS = 1;
-	//#else // no DMA
+
 	    for(i=384; i<512; i++) {
 	    	this.wr_dat((char) buffer[i]);
 	    }
-	//#endif
 	}
  
 	public void cls()
@@ -830,17 +728,6 @@ public class C12832 extends GraphicsDisplay {
 	        }
 	    }
 	}
-	private byte[] memset(byte i_value , int i_length)
-	{
-		byte[] retval = new byte[i_length];
-		
-		for(int i=0;i<i_length ; i++)
-		{
-			retval[i] = i_value;
-		}
-		
-		return retval;
-	}	
 	public int puts(String i_s) throws MbedJsException
 	{
 		int i=0;
