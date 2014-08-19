@@ -350,16 +350,12 @@ public class C12832 extends GraphicsDisplay {
 	    }
 	}
  
-	public void cls()
+	public void cls() throws MbedJsException
 	{
 		//this.buffer = memset((byte)0x00,512);  // clear display buffer
 		this.buffer = new byte[512];
-	    try {
-	    	this.copy_to_lcd();
-		} catch (MbedJsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	this.copy_to_lcd();
+
 	}
  
  
@@ -451,7 +447,7 @@ public class C12832 extends GraphicsDisplay {
 	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
-	public void fillrect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color)
+	public void fillrect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	    int l,c,i;
 	    if(i_x0 > i_x1) {
@@ -472,17 +468,12 @@ public class C12832 extends GraphicsDisplay {
 	        }
 	    }
 	    if(this.auto_up!=0)
-			try {
-				this.copy_to_lcd();
-			} catch (MbedJsException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    	this.copy_to_lcd();
 	}
  
  
  
-	public void circle(int i_x0, int i_y0, int i_r, int i_color)
+	public void circle(int i_x0, int i_y0, int i_r, int i_color) throws MbedJsException
 	{
 	 
 	    int draw_x0, draw_y0;
@@ -588,12 +579,8 @@ public class C12832 extends GraphicsDisplay {
 	        }
 	    }
 	    if(this.auto_up!=0)
-			try {
-				this.copy_to_lcd();
-			} catch (MbedJsException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.copy_to_lcd();
+
 	}
  
 	public void fillcircle(int i_x, int i_y, int i_r, int i_color) throws MbedJsException
