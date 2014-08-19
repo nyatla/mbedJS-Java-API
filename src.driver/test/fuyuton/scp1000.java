@@ -1,24 +1,17 @@
 /**
- * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
- * 
- * @auther fuyuton
- *
- */
-
-/**
  * @section LICENSE
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
- * 
- * You should have received a copy of the GNU General Public License along 
- * with this program; if not, write to the Free Software Foundation, Inc., 
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  * @section DESCRIPTION
@@ -26,166 +19,196 @@
  */
 
 /**
- * #ifndef _SCP1000_H
- * #define _SCP1000_H
-
- * #include "mbed.h"
+ * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
+ *
+ * @auther fuyuton
+ *
  */
 
 /**
  * Class to interface with the SCP1000 pressure and temperature sensor.
  */
 
-package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
-import jp.nyatla.mimic.mbedjs.*;
-import jp.nyatla.mimic.mbedjs.javaapi.*;
+package test.fuyuton;
 
-public class SCP1000
+
+import jp.nyatla.mimic.mbedjs.MbedJsException;
+import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
+import jp.nyatla.mimic.mbedjs.javaapi.PinName;
+import jp.nyatla.mimic.mbedjs.javaapi.SPI;
+import jp.nyatla.mimic.mbedjs.javaapi.DigitalOut;
+import jp.nyatla.mimic.mbedjs.javaapi.DigitalIn;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.DriverBaseClass;
+
+
+public class SCP1000 extends DriverBaseClass
 {
 	private Mcu _mcu;
 
-       	/* SPI m_spi; */
 	private final SPI _spi;
-
-       	/* DigitalOut m_cs; */
 	private final DigitalOut _cs;
+	private final DigitalIn _drdy;
+	private final boolean _is_attached;
+	
+	private final static byte REG_OPERATION = 0x03;
+	private final static byte MODE_HIRESO = 0x0A;
+	private final static byte REG_RSTR = 0x06;
+	private final static byte RST_SOFTRESET = 0x01;
+   	private final static byte REG_PRESSURE = 0x1F;   //Pressure 3 MSB
+   	private final static byte REG_PRESSURE_LSB = 0x20; //Pressure 16 LSB
+   	private final static byte REG_TEMP = 0x21;       //16 bit temp
 
-	/* DRDYとTRIGはINかOUTか不明… */
-	private final DigitalOut _drdy;
-	private final DigitalOut _trig;
-
-       	private final static char PRESSURE = 0x1F;   //Pressure 3 MSB
-       	private final static char PRESSURE_LSB = 0x20; //Pressure 16 LSB
-       	private final static char TEMP = 0x21;       //16 bit temp 
-
-	/**
-	 * ms単位のスリープ
-	 * @param i_ms
-	 * @throws MbedJsException
-	 */
-	private void sleep_ms(long i_ms) throws MbedJsException
-	{
-		try {
-			this.wait(i_ms);
-		} catch (InterruptedException e) {
-			throw new MbedJsException(e);
-		}
-		return;
-	}
-
-/* public: */
+   	/**
+   	 * 既存のSPIに追加する場合?
+   	 * @param i_spi
+   	 * @throws MbedJsException
+   	 */
+   	public SCP1000(SPI i_spi, int i_cs_pin, int i_drdy_pin) throws MbedJsException
+   	{
+   		this._is_attached=false;
+   		this._spi=i_spi;
+		this._cs=new DigitalOut(_mcu, i_cs_pin);
+		this._drdy=new DigitalIn(_mcu, i_drdy_pin);
+   		this._initDevice();
+   	}
         /**
          * Constructor.
          * MCUから直接生成する場合
-	 * @param i_mcu
-         * @param i_mosi SPI MOSI pin
-         * @param i_miso SPI MISO pin
-         * @param i_sclk SPI SCLK pin
-         * @param i_cs Chip select pin
-	 * @throws MbedJsException
+         * @param i_mcu
+         * @param i_mosi_pin SPI MOSI pin
+         * @param i_miso_pin SPI MISO pin
+         * @param i_sclk_pin SPI SCLK pin
+         * @param i_cs_pin Chip select pin
+         * @param i_drdy_pin DataReady pin
+         * @param i_trig_pin Trigger pin
+         * @throws MbedJsException
+         * 秋月版はPDがGNDにつながっているため、Power managementしないモードになる
+         * 
          */
-        /* SCP1000(PinName mosi, PinName miso, PinName sclk, PinName cs); */
-	public SCP1000(int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin, int i_trig_pin)
-	{
-    		private final static m_cs=1;
-		private final static wait_ms=500;
+	public SCP1000(Mcu i_mcu, int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin)
+			throws MbedJsException {
+		this._cs=new DigitalOut(i_mcu, i_cs_pin);
+		this._drdy=new DigitalIn(i_mcu, i_drdy_pin);
+
 
 		this._is_attached=true;
-		this.spi=new SPI(i_mcu, i_mosi_pin, i_miso_pin, i_sclk_pin);
-   		this.spi.frequency(500000); // the fastest of the sensor
-    		this.spi.format(8, 0); // duda son dos palabras de 8 bits? 
-    		/* wait(0.5); */
-    		sleep_ms(wait_ms);
-    		//------------------------------------------------
-    		// pc.printf("RESET\r\n");
-    		write_register(0x06,0x01);
-    		/* wait(0.5); */
-    		sleep_ms(wait_ms);
-
-    		// pc.printf("Initialize High Resolution Constant Reading Mode\r\n");
-    		write_register(0x03,0x0A);
-    		/* wait(0.5); */
-    		sleep_ms(wait_ms);
+		this._spi=new SPI(i_mcu, i_mosi_pin, i_miso_pin, i_sclk_pin);
+   		this._spi.frequency(500000); // the fastest of the sensor
+   		this._spi.format(8, 0); // duda son dos palabras de 8 bits?
+   		this._initDevice();
 	}
 
-        
-        public void dispose() throws MbedJsException
-	{ 
-		if(this._is_attached)
-		{
-			this.spi.dispose();
-		}
-		
-	}
-
-        /**
-         * Read the pressure.
-         *
-         * @returns The pressure in pascals.
-         */
-        /** unsigned long readPressure(); */
-	public unsigned long readPressure() throws MbedJsException 
+	private void _initDevice() throws MbedJsException
 	{
-    		private unsigned long pressure_msb = read_register(PRESSURE);
-    		pressure_msb &= 0x07;
-    		private unsigned long pressure_lsb = read_register16(PRESSURE_LSB);
-    		private unsigned long pressure = ((pressure_msb<<16)| pressure_lsb);
-    		pressure /= 4;
-   		 
-    		return pressure;
+		this._cs.write(1);
+    	this.sleep_ms(60);
+   		this.write_register(REG_RSTR,RST_SOFTRESET);
+   		this.sleep_ms(90);
+    	write_register(REG_OPERATION,MODE_HIRESO);
+    	sleep_ms(500);
 	}
-        
-        /**
-         * Read the temperature.
-         *
-         * @returns The temperature in Celsius.
-         */
-        /* float readTemperature(); */
+
+	public void dispose() throws MbedJsException
+    {
+		if(this._is_attached)
+    	{
+			this._spi.dispose();
+    	}
+
+    }
+
+	/**
+	* Read the pressure.
+	*
+	* @returns The pressure in pascals.
+	*/
+	public float readPressure() throws MbedJsException
+	{
+			do{
+				//DRDYがHIGH(1)になるまで待つ
+			}while(this._drdy.read() != 1);
+    		int pressure_msb = read_register(REG_PRESSURE);
+    		pressure_msb &= 0x07;
+    		int pressure_lsb = read_register16(REG_PRESSURE_LSB);
+    		pressure_lsb &= 0x0000ffff;
+    		int pressure = ((pressure_msb<<16)| pressure_lsb);
+    		float pressure_f = pressure/4.0f/100.0f;
+    		return pressure_f;
+	}
+
+    /**
+     * Read the temperature.
+     *
+     * @returns The temperature in Celsius.
+     */
 	float readTemperature() throws MbedJsException
 	{
-		private float temp_in = read_register16(TEMP);
+		float temp_in = read_register16(REG_TEMP);
 		temp_in /= 20;
 		return temp_in;
 	}
 
 
-
-
-	char SCP1000::read_register(char i_register_name) throws MbedJsException
+	int read_register(byte i_register_name) throws MbedJsException
 	{
-    		i_register_name <<=2;
-    		i_register_name &= 0xFC;
-    		this._cs=0; //Select SPI device
-    		this._spi.write(register_name); //Send register location
-    		private char register_value=m_spi.write(0x00);
-    		_cs=1;
-    		return i_register_value;  
+    	i_register_name <<=2;
+    	i_register_name &= 0xFC;
+    	this._cs.write(0); //Select SPI device
+    	this._spi.write(i_register_name); //Send register location
+    	int register_value=_spi.write(0x00);
+    	this._cs.write(1);
+		return register_value;
 	}
 
-	void SCP1000::write_register(char i_register_name, char i_register_value) throws MbedJsException
+	void write_register(byte i_register_name, byte i_register_value) throws MbedJsException
 	{
-    		i_register_name <<= 2;
-    		i_register_name |= 0x02; //le estamos diciendo que escriba
-    		this._cs=0; //Select SPI device
-    		this._spi.write(register_name); //Send register location
-    		this._spi.write(register_value); //Send value to record into register
-    		this._cs=1;
+		i_register_name &= 0x0ff;
+		i_register_value &= 0x0ff;
+		
+    	i_register_name <<= 2;
+    	i_register_name |= 0x02; //le estamos diciendo que escriba
+    	this._cs.write(0); //Select SPI device
+    	this._spi.write(i_register_name); //Send register location
+    	this._spi.write(i_register_value); //Send value to record into register
+    	this._cs.write(1);
 	}
 
-	float SCP1000::read_register16(char i_register_name) throws MbedJsException
+	int read_register16(byte i_register_name) throws MbedJsException
 	{
-    		i_register_name <<= 2;
-    		i_register_name &= 0xFC; //Read command
-    		this._cs=0; //Select SPI Device
-    		this._spi.write(register_name); //Write byte to device
-    		private int in_byte1 = this._spi.write(0x00);    
-    		private int in_byte2 = this._spi.write(0x00);
-    		this._cs=1;
-    		private float in_word= (in_byte1<<=8) | (in_byte2);   
-    		return(in_word);
+		i_register_name &= 0x000000ff;
+
+    	i_register_name <<= 2;
+    	i_register_name &= 0xFC; //Read command
+    	this._cs.write(0); //Select SPI Device
+    	this._spi.write(i_register_name); //Write byte to device
+    	int in_byte1 = this._spi.write(0x00);
+    	int in_byte2 = this._spi.write(0x00);
+    	this._cs.write(1);
+    	int in_word= (in_byte1<<8) | (in_byte2);
+    	in_word &= 0x0000ffff;
+   		return(in_word);
 	}
+
+	/**
+	 * テストケース
+	 * @param args
+	 */
+	public static void main(String args[])
+	{
+		try
+		{
+			Mcu mcu=new Mcu("192.168.1.39");
+			SCP1000 a=new SCP1000(mcu, PinName.p11, PinName.p12, PinName.p13, PinName.p14, PinName.p15);
+			System.out.println("Temperature: " + a.readTemperature()+"℃");
+			System.out.println("Pressure: " + a.readPressure() + "hPa");
+			mcu.close();
+			System.out.println("done");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 }
-
 /* #endif // _SCP1000_H */
 
