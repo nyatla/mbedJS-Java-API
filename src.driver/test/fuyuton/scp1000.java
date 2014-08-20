@@ -18,12 +18,7 @@
  * Library to interface with the SCP1000 pressure and temperature sensor.
  */
 
-/**
- * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
- *
- * @auther fuyuton
- *
- */
+
 
 /**
  * Class to interface with the SCP1000 pressure and temperature sensor.
@@ -41,7 +36,12 @@ import jp.nyatla.mimic.mbedjs.javaapi.DigitalOut;
 import jp.nyatla.mimic.mbedjs.javaapi.DigitalIn;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.DriverBaseClass;
 
-
+/**
+ * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
+ *
+ * @auther fuyuton
+ *
+ */
 public class SCP1000 extends DriverBaseClass
 {
 	private Mcu _mcu;
@@ -75,6 +75,7 @@ public class SCP1000 extends DriverBaseClass
         /**
          * Constructor.
          * MCUから直接生成する場合
+         * 秋月版はPDがGNDにつながっているため、Power managementしないモードになる
          * @param i_mcu
          * @param i_mosi_pin SPI MOSI pin
          * @param i_miso_pin SPI MISO pin
@@ -83,8 +84,6 @@ public class SCP1000 extends DriverBaseClass
          * @param i_drdy_pin DataReady pin
          * @param i_trig_pin Trigger pin
          * @throws MbedJsException
-         * 秋月版はPDがGNDにつながっているため、Power managementしないモードになる
-         * 
          */
 	public SCP1000(Mcu i_mcu, int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin)
 			throws MbedJsException {
@@ -106,10 +105,10 @@ public class SCP1000 extends DriverBaseClass
    		this.write_register(REG_RSTR,RST_SOFTRESET);
    		this.sleep_ms(90);
     	write_register(REG_OPERATION,MODE_HIRESO);
-    	sleep_ms(500);
+    	sleep_ms(100);
 	}
 
-	public void dispose() throws MbedJsException
+	private void dispose() throws MbedJsException
     {
 		if(this._is_attached)
     	{
@@ -119,62 +118,80 @@ public class SCP1000 extends DriverBaseClass
     }
 
 	/**
-	* Read the pressure.
-	*
+	* 気圧の読み込み
 	* @returns The pressure in pascals.
 	*/
 	public float readPressure() throws MbedJsException
 	{
-			do{
-				//DRDYがHIGH(1)になるまで待つ
-			}while(this._drdy.read() != 1);
-    		int pressure_msb = read_register(REG_PRESSURE);
-    		pressure_msb &= 0x07;
-    		int pressure_lsb = read_register16(REG_PRESSURE_LSB);
-    		pressure_lsb &= 0x0000ffff;
-    		int pressure = ((pressure_msb<<16)| pressure_lsb);
-    		float pressure_f = pressure/4.0f/100.0f;
-    		return pressure_f;
+		do{
+			//DRDYがHIGH(1)になるまで待つ
+			sleep_ms(1);
+		}while(this._drdy.read() != 1);
+		int pressure_msb = read_register(REG_PRESSURE);
+		pressure_msb &= 0x07;	
+		int pressure_lsb = read_register16(REG_PRESSURE_LSB);
+		pressure_lsb &= 0x0000ffff;
+		int pressure = ((pressure_msb<<16)| pressure_lsb);
+		float pressure_f = pressure/4.0f/100.0f;
+		return pressure_f;
 	}
 
     /**
-     * Read the temperature.
-     *
+     * 温度の読み込み
      * @returns The temperature in Celsius.
      */
-	float readTemperature() throws MbedJsException
+	public float readTemperature() throws MbedJsException
 	{
+		do{
+			//DRDYがHIGH(1)になるまで待つ
+			sleep_ms(1);
+		}while(this._drdy.read() != 1);
 		float temp_in = read_register16(REG_TEMP);
 		temp_in /= 20;
 		return temp_in;
 	}
 
-
-	int read_register(byte i_register_name) throws MbedJsException
+	/**
+	 * 8bitレジスタの読み込み
+	 * @param i_register_name
+	 * @throws MbedJsException
+	 */
+	private int read_register(byte i_register_name) throws MbedJsException
 	{
-    	i_register_name <<=2;
-    	i_register_name &= 0xFC;
-    	this._cs.write(0); //Select SPI device
-    	this._spi.write(i_register_name); //Send register location
-    	int register_value=_spi.write(0x00);
-    	this._cs.write(1);
+		i_register_name <<= 2;
+		i_register_name &= 0xFC;
+		this._cs.write(0); //Select SPI device
+		this._spi.write(i_register_name); //Send register location
+		int register_value=_spi.write(0x00);
+		this._cs.write(1);
 		return register_value;
 	}
 
-	void write_register(byte i_register_name, byte i_register_value) throws MbedJsException
+	/**
+	 * 8bitレジスタの書き込み
+	 * @param i_register_name
+	 * @param i_register_value
+	 * @throws MbedJsException
+	 */
+	private void write_register(byte i_register_name, byte i_register_value) throws MbedJsException
 	{
 		i_register_name &= 0x0ff;
 		i_register_value &= 0x0ff;
 		
-    	i_register_name <<= 2;
-    	i_register_name |= 0x02; //le estamos diciendo que escriba
-    	this._cs.write(0); //Select SPI device
-    	this._spi.write(i_register_name); //Send register location
-    	this._spi.write(i_register_value); //Send value to record into register
-    	this._cs.write(1);
+		i_register_name <<= 2;
+		i_register_name |= 0x02; //le estamos diciendo que escriba
+		this._cs.write(0); //Select SPI device
+		this._spi.write(i_register_name); //Send register location
+		this._spi.write(i_register_value); //Send value to record into register
+		this._cs.write(1);
 	}
 
-	int read_register16(byte i_register_name) throws MbedJsException
+	/**
+	 * 16bitレジスタの読み込み
+	 * @param i_register_name
+	 * @throws MbedJsException
+	 */
+	private int read_register16(byte i_register_name) throws MbedJsException
 	{
 		i_register_name &= 0x000000ff;
 
