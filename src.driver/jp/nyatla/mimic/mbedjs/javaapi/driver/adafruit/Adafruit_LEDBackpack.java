@@ -32,27 +32,27 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 	
-	public static byte LED_ON =1;
-	public static byte LED_OFF =0;
+	public final static int LED_ON =1;
+	public final static int LED_OFF =0;
 	 
-	public static byte LED_RED =1;
-	public static byte LED_YELLOW =2;
-	public static byte LED_GREEN =3;
+	public final static int LED_RED =1;
+	public final static int LED_YELLOW =2;
+	public final static int LED_GREEN =3;
 	 
-	private final static short HT16K33_BLINK_CMD =0x80;
-	private final static short HT16K33_BLINK_DISPLAYON =0x01;
-	private final static byte HT16K33_BLINK_OFF =0;
-	private final static byte HT16K33_BLINK_2HZ  =1;
-	private final static byte HT16K33_BLINK_1HZ  =2;
-	private final static byte HT16K33_BLINK_HALFHZ  =3;
-	private final static short HT16K33_CMD_BRIGHTNESS =0x0E;
+	private final static int HT16K33_BLINK_CMD =0x80;
+	private final static int HT16K33_BLINK_DISPLAYON =0x01;
+	private final static int HT16K33_BLINK_OFF =0;
+	private final static int HT16K33_BLINK_2HZ  =1;
+	private final static int HT16K33_BLINK_1HZ  =2;
+	private final static int HT16K33_BLINK_HALFHZ  =3;
+	private final static int HT16K33_CMD_BRIGHTNESS =0x0E;
 	
 	private final I2C _i2c;
 	private int i2c_addr;
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
 	
-	protected byte[] displaybuffer; // 8 
+	protected final short[] displaybuffer= new short[8]; // 8 
 	
 	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) 
 	{
@@ -63,7 +63,6 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		
 		this.i2c_addr = i_address & 0xff;
 		
-		this.displaybuffer = new byte[8];
 	}
 
 	public Adafruit_LEDBackpack(Mcu i_mcu, int i_sda, int i_scl,int i_address)throws MbedJsException
@@ -73,8 +72,7 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		this.i2c_addr=i_address;
 		this._i2c.frequency(10000);
 		
-		this.i2c_addr = i_address & 0xff;
-		this.displaybuffer = new byte[8];
+		this.i2c_addr = i_address;
 	}
 	public void dispose() throws MbedJsException{
 		if(this._is_attached){
@@ -83,8 +81,7 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 	}
 	public void begin() throws MbedJsException
 	{		 
-		  byte[] foo= new byte[1];
-		  foo[0] = 0x21;
+		  byte[] foo= new byte[]{0x21};
 		 
 		  this._i2c.write(this.i2c_addr, foo, false);  // turn on oscillator	 
 		  this.blinkRate(HT16K33_BLINK_OFF);
@@ -101,12 +98,12 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  this._i2c.write(this.i2c_addr, foo, false); 
 		
 	}
-	public void blinkRate(byte i_rate) throws MbedJsException
+	public void blinkRate(int i_rate) throws MbedJsException
 	{
 		  if (i_rate > 3){
 			  i_rate = 0; // turn off if not sure
 		  }
-		  short c = (short) (HT16K33_BLINK_CMD | HT16K33_BLINK_DISPLAYON | (i_rate << 1));
+		  int c = (HT16K33_BLINK_CMD | HT16K33_BLINK_DISPLAYON | (i_rate << 1));
 		  byte[] foo = new byte[1];
 		  foo[0] = (byte) c;
 		  this._i2c.write(this.i2c_addr, foo, false);
@@ -117,10 +114,8 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  foo[0] = 0x00;
 		  int j = 0;
 		  for (short i=1; i<=16; i+=2) {
-		    int x = this.displaybuffer[j] & 0xFF;
-		    foo[i] = (byte) x;
-		    int x2 = this.displaybuffer[j] >> 8;
-		    foo[i+1] = (byte) x2;
+			foo[i] = (byte)(this.displaybuffer[j] & 0x0FF);
+		    foo[i+1] = (byte)((this.displaybuffer[j] >>> 8)& 0x0FF);
 		    j++;
 		  }
 		  this._i2c.write(this.i2c_addr, foo, false);

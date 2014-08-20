@@ -15,7 +15,7 @@ public class Adafruit_8x8martix extends Adafruit_GFX
 		super(i_mcu, i_sda, i_scl, i_address,8,8 );
 	}
 	
-	public void drawPixel(int i_x , int i_y , short i_color)
+	public void drawPixel(int i_x , int i_y , int i_color)
 	{
 		  if ((i_y < 0) || (i_y >= 8)) return;
 		  if ((i_x < 0) || (i_x >= 8)) return;

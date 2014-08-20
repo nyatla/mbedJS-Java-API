@@ -104,6 +104,13 @@ public class Serial extends McuBindClass{
 		}
 		return r.getInt32(0);
 	}
+	public int puts(byte[] i_data) throws MbedJsException{
+		JsonRpcResult r=this.classRpc("puts_2","\""+JsonRpcUtils.byteArray2Bstr(i_data)+"\"");
+		if(r.isError()){
+			throw new MbedJsException();
+		}
+		return r.getInt32(0);
+	}	
 	public int getc() throws MbedJsException{
 		JsonRpcResult r=this.classRpc("getc");
 		if(r.isError()){
@@ -111,13 +118,48 @@ public class Serial extends McuBindClass{
 		}
 		return r.getInt32(0);
 	}
+	/**
+	 * {@link #gets(int,'a')と同じです。
+	 * @param i_len
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public String gets(int i_len) throws MbedJsException{
-		JsonRpcResult r=this.classRpc("gets",Integer.toString(i_len));
-		if(r.isError()){
+		return (String)this.gets(i_len,'a');
+	}
+	/**
+	 * バイナリ/ASCIIフォーマットでシリアルポートから値を読み取ります。
+	 * @param i_len
+	 * 読み取りデータ長
+	 * @param i_mode
+	 * 'b' - byte[]で読出し<br/>
+	 * 'a' - ASCIIで読出し
+	 * @return
+	 * i_mode=='b' - byte[]型のオブジェクト<br/>
+	 * i_mode=='a' - String型のオブジェクト
+	 * @throws MbedJsException
+	 */
+	public Object gets(int i_len,char i_mode) throws MbedJsException
+	{
+		JsonRpcResult r;
+		switch(i_mode)
+		{
+		case 'a':
+			r=this.classRpc("gets",Integer.toString(i_len));
+			if(r.isError()){
+				throw new MbedJsException();
+			}
+			return r.getString(0);
+		case 'b':
+			r=this.classRpc("gets_2",Integer.toString(i_len));
+			if(r.isError()){
+				throw new MbedJsException();
+			}
+			return JsonRpcUtils.bstr2ByteArray(r.getString(0));
+		default:
 			throw new MbedJsException();
 		}
-		return r.getString(0);
-	}
+	}	
 	public void baud(int i_baudrate) throws MbedJsException
 	{
 		JsonRpcResult r=this.classRpc("baud",Integer.toString(i_baudrate));
