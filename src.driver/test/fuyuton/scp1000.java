@@ -225,5 +225,5 @@ public class SCP1000 extends DriverBaseClass
 	}
 
 }
-/* #endif // _SCP1000_H */
+
 
