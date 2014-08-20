@@ -390,11 +390,11 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	    
 	    for (; i_x0<=i_x1; i_x0++)
 	    {
-	        if (steep)
+	        if (steep){
 	            drawPixel(i_y0, i_x0, i_color);
-	        else
+	        }else{
 	            drawPixel(i_x0, i_y0, i_color);
-	 
+	        }
 	        err -= dy;
 	        if (err < 0)
 	        {
@@ -423,8 +423,9 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	public void fillRect(int i_x, int i_y, int i_w, int i_h, int i_color)
 	{
 	    // stupidest version - update in subclasses if desired!
-	    for (int i=i_x; i<i_x+i_w; i++)
-	    	this.drawFastVLine(i, i_y, i_h, i_color); 
+	    for (int i=i_x; i<i_x+i_w; i++){
+	    	this.drawFastVLine(i, i_y, i_h, i_color);
+	    }
 	}
 	public void fillScreen(int i_color)
 	{
@@ -610,7 +611,7 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        if(i_x2 < a)
 	            a = i_x2;
 	        else if(i_x2 > b) b = i_x2;
-	        	this.drawFastHLine(a, i_y0, (short) (b-a+1), i_color);
+	        	this.drawFastHLine(a, i_y0,(b-a+1), i_color);
 	        return;
 	    }
 	 
@@ -733,7 +734,7 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	            else 
 	                line = font[(i_c*5)+i];
 	                
-	            for (short j = 0; j<8; j++)
+	            for (int j = 0; j<8; j++)
 	            {
 	                if ((line & 0x1) != 0)
 	                {
