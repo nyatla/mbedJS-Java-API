@@ -108,7 +108,7 @@ public class SCP1000 extends DriverBaseClass
     	sleep_ms(100);
 	}
 
-	private void dispose() throws MbedJsException
+	public void dispose() throws MbedJsException
     {
 		if(this._is_attached)
     	{
