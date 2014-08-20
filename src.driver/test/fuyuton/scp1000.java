@@ -51,13 +51,13 @@ public class SCP1000 extends DriverBaseClass
 	private final DigitalIn _drdy;
 	private final boolean _is_attached;
 	
-	private final static byte REG_OPERATION = 0x03;
-	private final static byte MODE_HIRESO = 0x0A;
-	private final static byte REG_RSTR = 0x06;
-	private final static byte RST_SOFTRESET = 0x01;
-   	private final static byte REG_PRESSURE = 0x1F;   //Pressure 3 MSB
-   	private final static byte REG_PRESSURE_LSB = 0x20; //Pressure 16 LSB
-   	private final static byte REG_TEMP = 0x21;       //16 bit temp
+	private final static int REG_OPERATION = 0x03;
+	private final static int MODE_HIRESO = 0x0A;
+	private final static int REG_RSTR = 0x06;
+	private final static int RST_SOFTRESET = 0x01;
+	private final static int REG_PRESSURE = 0x1F;   //Pressure 3 MSB
+	private final static int REG_PRESSURE_LSB = 0x20; //Pressure 16 LSB
+	private final static int REG_TEMP = 0x21;       //16 bit temp
 
    	/**
    	 * 既存のSPIに追加する場合?
@@ -105,7 +105,6 @@ public class SCP1000 extends DriverBaseClass
    		this.write_register(REG_RSTR,RST_SOFTRESET);
    		this.sleep_ms(90);
     	write_register(REG_OPERATION,MODE_HIRESO);
-    	sleep_ms(100);
 	}
 
 	public void dispose() throws MbedJsException
@@ -156,13 +155,13 @@ public class SCP1000 extends DriverBaseClass
 	 * @param i_register_name
 	 * @throws MbedJsException
 	 */
-	private int read_register(byte i_register_name) throws MbedJsException
+	private int read_register(int i_register_name) throws MbedJsException
 	{
 		i_register_name <<= 2;
 		i_register_name &= 0xFC;
 		this._cs.write(0); //Select SPI device
 		this._spi.write(i_register_name); //Send register location
-		int register_value=_spi.write(0x00);
+		int register_value = _spi.write(0x00);
 		this._cs.write(1);
 		return register_value;
 	}
@@ -173,13 +172,13 @@ public class SCP1000 extends DriverBaseClass
 	 * @param i_register_value
 	 * @throws MbedJsException
 	 */
-	private void write_register(byte i_register_name, byte i_register_value) throws MbedJsException
+	private void write_register(int i_register_name, int i_register_value) throws MbedJsException
 	{
 		i_register_name &= 0x0ff;
 		i_register_value &= 0x0ff;
-		
 		i_register_name <<= 2;
-		i_register_name |= 0x02; //le estamos diciendo que escriba
+		i_register_name |= 0x02; // Write command
+		i_register_name &= 0x0fe;
 		this._cs.write(0); //Select SPI device
 		this._spi.write(i_register_name); //Send register location
 		this._spi.write(i_register_value); //Send value to record into register
@@ -191,12 +190,11 @@ public class SCP1000 extends DriverBaseClass
 	 * @param i_register_name
 	 * @throws MbedJsException
 	 */
-	private int read_register16(byte i_register_name) throws MbedJsException
+	private int read_register16(int i_register_name) throws MbedJsException
 	{
 		i_register_name &= 0x000000ff;
-
     	i_register_name <<= 2;
-    	i_register_name &= 0xFC; //Read command
+    	i_register_name &= 0x0FC; //Read command
     	this._cs.write(0); //Select SPI Device
     	this._spi.write(i_register_name); //Write byte to device
     	int in_byte1 = this._spi.write(0x00);
