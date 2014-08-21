@@ -60,7 +60,7 @@ public class SCP1000 extends DriverBaseClass
 	private final static int REG_TEMP = 0x21;       //16 bit temp
 
    	/**
-   	 * 既存のSPIに追加する場合?
+   	 * 既存のSPIに追加する場合
    	 * @param i_spi SPI
    	 * @param i_cs_pin Chip Select pin
      * @param i_drdy_pin DataReady pin
