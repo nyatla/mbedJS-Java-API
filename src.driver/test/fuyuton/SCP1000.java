@@ -61,7 +61,9 @@ public class SCP1000 extends DriverBaseClass
 
    	/**
    	 * 既存のSPIに追加する場合?
-   	 * @param i_spi
+   	 * @param i_spi SPI
+   	 * @param i_cs_pin Chip Select pin
+     * @param i_drdy_pin DataReady pin
    	 * @throws MbedJsException
    	 */
    	public SCP1000(SPI i_spi, int i_cs_pin, int i_drdy_pin) throws MbedJsException
@@ -82,7 +84,6 @@ public class SCP1000 extends DriverBaseClass
          * @param i_sclk_pin SPI SCLK pin
          * @param i_cs_pin Chip select pin
          * @param i_drdy_pin DataReady pin
-         * @param i_trig_pin Trigger pin
          * @throws MbedJsException
          */
 	public SCP1000(Mcu i_mcu, int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin)
