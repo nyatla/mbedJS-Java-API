@@ -39,7 +39,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.DriverBaseClass;
 /**
  * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
  *
- * @auther fuyuton
+ * @author fuyuton
  *
  */
 public class SCP1000 extends DriverBaseClass
