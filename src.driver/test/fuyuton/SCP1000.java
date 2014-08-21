@@ -119,7 +119,7 @@ public class SCP1000 extends DriverBaseClass
 
 	/**
 	* 気圧の読み込み
-	* @returns The pressure in pascals.
+	* @throws MbedJsException
 	*/
 	public float readPressure() throws MbedJsException
 	{
@@ -138,7 +138,7 @@ public class SCP1000 extends DriverBaseClass
 
     /**
      * 温度の読み込み
-     * @returns The temperature in Celsius.
+     * @throws MbedJsException
      */
 	public float readTemperature() throws MbedJsException
 	{
