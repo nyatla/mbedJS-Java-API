@@ -17,40 +17,44 @@ public class StepperMotor extends DriverBaseClass{
 	public StepperMotor(Mcu i_mcu) throws MbedJsException
 	{
 		this.mcu = i_mcu;
-		this.CtrlPinA = new DigitalOut(this.mcu,PinName.p22);
-		this.CtrlPinB = new DigitalOut(this.mcu,PinName.p23);
-		this.In1 = new DigitalOut(this.mcu ,PinName.p21 );
-		this.In2 = new DigitalOut(this.mcu ,PinName.p24 );
-		this.In3 = new DigitalOut(this.mcu ,PinName.p25 );
-		this.In4 = new DigitalOut(this.mcu ,PinName.p26 );
+		this.CtrlPinA = new DigitalOut(this.mcu,PinName.p16);
+		this.CtrlPinB = new DigitalOut(this.mcu,PinName.p17);
+		this.In1 = new DigitalOut(this.mcu ,PinName.p15 );
+		this.In2 = new DigitalOut(this.mcu ,PinName.p18 );
+		this.In3 = new DigitalOut(this.mcu ,PinName.p19 );
+		this.In4 = new DigitalOut(this.mcu ,PinName.p20 );
 		
 		this.CtrlPinA.write(1);
 		this.CtrlPinB.write(1);
 		
-		this.sleep_ms(1000);
-		for (int i=0;i<1;i++){
+		this.sleep_ms(100);
+		for (int i=0;i<2;i++){
+						
+			//4			
 			this.In1.write(1);
+			this.In3.write(1);
 			this.In2.write(0);
+			this.In4.write(0);		
+			this.sleep_ms(1000);
+
+			//3
+			this.In1.write(0);
+			this.In3.write(1);
+			this.In2.write(1);
+			this.In4.write(0);
+			this.sleep_ms(1000);
+			//2
+			this.In1.write(0);
 			this.In3.write(0);
+			this.In2.write(1);
 			this.In4.write(1);
 			this.sleep_ms(1000);
 			
-			this.In1.write(0);
-			this.In2.write(0);
-			this.In3.write(1);
-			this.In4.write(1);
-			this.sleep_ms(1000);
-			
-			this.In1.write(0);
-			this.In2.write(1);
-			this.In3.write(1);
-			this.In4.write(0);
-			this.sleep_ms(1000);
-			
+			//1
 			this.In1.write(1);
-			this.In2.write(1);
 			this.In3.write(0);
-			this.In4.write(0);
+			this.In2.write(0);
+			this.In4.write(1);
 			this.sleep_ms(1000);
 			
 		}
