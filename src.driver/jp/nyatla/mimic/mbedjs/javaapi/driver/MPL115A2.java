@@ -85,7 +85,7 @@ public class MPL115A2 extends DriverBaseClass {
 		return r.data;
 	}
 	/**
-	 * 気温と湿度を得ます。
+	 * 気圧と温度を得ます。
 	 * @return
 	 * [0] - 気圧(kPa)
 	 * [1] - 温度(°C)
