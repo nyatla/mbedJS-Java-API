@@ -34,7 +34,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 import jp.nyatla.mimic.mbedjs.javaapi.SPI;
 import jp.nyatla.mimic.mbedjs.javaapi.DigitalOut;
 import jp.nyatla.mimic.mbedjs.javaapi.DigitalIn;
-import jp.nyatla.mimic.mbedjs.javaapi.driver.DriverBaseClass;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 /**
  * http://mbed.org/cookbook/SCP1000-Pressure-Sensor/ をmbedJS-Javaに移植したものです。
@@ -60,8 +60,10 @@ public class SCP1000 extends DriverBaseClass
 	private final static int REG_TEMP = 0x21;       //16 bit temp
 
    	/**
-   	 * 既存のSPIに追加する場合?
-   	 * @param i_spi
+   	 * 既存のSPIに追加する場合
+   	 * @param i_spi SPI
+   	 * @param i_cs_pin Chip Select pin
+     * @param i_drdy_pin DataReady pin
    	 * @throws MbedJsException
    	 */
    	public SCP1000(SPI i_spi, int i_cs_pin, int i_drdy_pin) throws MbedJsException
@@ -82,7 +84,6 @@ public class SCP1000 extends DriverBaseClass
          * @param i_sclk_pin SPI SCLK pin
          * @param i_cs_pin Chip select pin
          * @param i_drdy_pin DataReady pin
-         * @param i_trig_pin Trigger pin
          * @throws MbedJsException
          */
 	public SCP1000(Mcu i_mcu, int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin)
@@ -104,7 +105,7 @@ public class SCP1000 extends DriverBaseClass
     	this.sleep_ms(60);
    		this.write_register(REG_RSTR,RST_SOFTRESET);
    		this.sleep_ms(90);
-    	write_register(REG_OPERATION,MODE_HIRESO);
+    	this.write_register(REG_OPERATION,MODE_HIRESO);
 	}
 
 	public void dispose() throws MbedJsException
@@ -118,7 +119,8 @@ public class SCP1000 extends DriverBaseClass
 
 	/**
 	* 気圧の読み込み
-	* @returns The pressure in pascals.
+	* @throws MbedJsException
+	* @return The return value hPa.
 	*/
 	public float readPressure() throws MbedJsException
 	{
@@ -137,7 +139,8 @@ public class SCP1000 extends DriverBaseClass
 
     /**
      * 温度の読み込み
-     * @returns The temperature in Celsius.
+     * @throws MbedJsException
+     * @return The temperature in Celsius.
      */
 	public float readTemperature() throws MbedJsException
 	{
@@ -154,6 +157,7 @@ public class SCP1000 extends DriverBaseClass
 	 * 8bitレジスタの読み込み
 	 * @param i_register_name
 	 * @throws MbedJsException
+	 * @return value in register.
 	 */
 	private int read_register(int i_register_name) throws MbedJsException
 	{
@@ -189,6 +193,7 @@ public class SCP1000 extends DriverBaseClass
 	 * 16bitレジスタの読み込み
 	 * @param i_register_name
 	 * @throws MbedJsException
+	 * @return value in register.
 	 */
 	private int read_register16(int i_register_name) throws MbedJsException
 	{
