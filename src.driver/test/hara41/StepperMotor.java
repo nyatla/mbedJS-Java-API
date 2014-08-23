@@ -36,7 +36,7 @@ public class StepperMotor extends DriverBaseClass{
 	}
 	/**
 	 * モータの回転
-	 * @param i_step 回転するステップ数と方向
+	 * @param i_step 回転するステップ数と方向(+/-)
 	 * @param i_wait_ms １ステップごとに挿入するウェイト
 	 * @throws MbedJsException
 	 */
@@ -47,12 +47,16 @@ public class StepperMotor extends DriverBaseClass{
 			for (int j=0;j<s;j++)
 			{
 				this.bus.write(mstep[j%4]);
+				//this.sleep_ms(1);
+				//this.bus.write(0);
 				this.sleep_ms(i_wait_ms);
 			}
 		}else{
 			for (int j=0;j<s;j++)
 			{
 				this.bus.write(pstep[j%4]);
+				//this.sleep_ms(1);
+				//this.bus.write(0);
 				this.sleep_ms(i_wait_ms);
 			}
 		}
@@ -74,8 +78,8 @@ public class StepperMotor extends DriverBaseClass{
 	}
 	public static void main(String[] args) throws MbedJsException {
 		Mcu mcu =new Mcu("10.0.0.2");
-		StepperMotor sm = new StepperMotor(mcu,PinName.p16,PinName.p17,
-				PinName.p15,PinName.p19,PinName.p18,PinName.p20);
+		StepperMotor sm = new StepperMotor(mcu,PinName.p22,PinName.p23,
+				PinName.p21,PinName.p25,PinName.p24,PinName.p26);
 		sm.rotate(200, 20);
 		sm.close();
 		mcu.close();
