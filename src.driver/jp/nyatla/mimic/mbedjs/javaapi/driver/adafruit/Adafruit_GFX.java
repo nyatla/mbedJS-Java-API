@@ -549,8 +549,8 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	 
 	        if ((i_cornername & 0x2) != 0)
 	        {
-	        	this.drawFastVLine((i_x0-x), (short)(i_y0-y),(2*y+1+i_delta), i_color);
-	        	this.drawFastVLine((i_x0-y), (short)(i_y0-x),(2*x+1+i_delta), i_color);
+	        	this.drawFastVLine((i_x0-x), (i_y0-y),(2*y+1+i_delta), i_color);
+	        	this.drawFastVLine((i_x0-y), (i_y0-x),(2*x+1+i_delta), i_color);
 	        }
 	    }
 	}
@@ -675,7 +675,7 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        	a=b;
 	        	b=t;
 	        }
-	        this.drawFastHLine(a, y, (short) (b-a+1), i_color);
+	        this.drawFastHLine(a, y, (b-a+1), i_color);
 	    }
 	}
 	public void drawRoundRect(int i_x, int i_y, int i_width, 

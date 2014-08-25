@@ -25,7 +25,7 @@
  */
 
 
-package test.fuyuton;
+package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;
@@ -74,18 +74,18 @@ public class SCP1000 extends DriverBaseClass
 		this._drdy=new DigitalIn(_mcu, i_drdy_pin);
    		this._initDevice();
    	}
-        /**
-         * Constructor.
-         * MCUから直接生成する場合
-         * 秋月版はPDがGNDにつながっているため、Power managementしないモードになる
-         * @param i_mcu
-         * @param i_mosi_pin SPI MOSI pin
-         * @param i_miso_pin SPI MISO pin
-         * @param i_sclk_pin SPI SCLK pin
-         * @param i_cs_pin Chip select pin
-         * @param i_drdy_pin DataReady pin
-         * @throws MbedJsException
-         */
+    /**
+     * Constructor.
+     * MCUから直接生成する場合
+     * 秋月版はPDがGNDにつながっているため、Power managementしないモードになる
+     * @param i_mcu
+     * @param i_mosi_pin SPI MOSI pin
+     * @param i_miso_pin SPI MISO pin
+     * @param i_sclk_pin SPI SCLK pin
+     * @param i_cs_pin Chip select pin
+     * @param i_drdy_pin DataReady pin
+     * @throws MbedJsException
+     */
 	public SCP1000(Mcu i_mcu, int i_mosi_pin, int i_miso_pin, int i_sclk_pin, int i_cs_pin, int i_drdy_pin)
 			throws MbedJsException {
 		this._cs=new DigitalOut(i_mcu, i_cs_pin);
