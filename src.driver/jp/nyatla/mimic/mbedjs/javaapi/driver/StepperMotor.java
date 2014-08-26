@@ -1,4 +1,8 @@
-
+/**
+ * Hブリッジ２系統を使ったステッピングモータ
+ * 検証ドライバ：L293D
+ * 
+ */
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.*;
@@ -16,12 +20,12 @@ public class StepperMotor extends DriverBaseClass{
 	/**
 	 * Hブリッジ2系統使用したステッピングモータドライバ
 	 * @param i_mcu　mcu
-	 * @param i_ctrlA A相のイネーブル線（D9）
-	 * @param i_ctrlB B相のイネーブル線(D10)
-	 * @param i_in1 入力１（D8)
-	 * @param i_in2 入力２(D12)
-	 * @param i_in3 入力３(D11)
-	 * @param i_in4 入力４(D13)
+	 * @param i_ctrlA A相のイネーブル線
+	 * @param i_ctrlB B相のイネーブル線
+	 * @param i_in1 入力１
+	 * @param i_in2 入力２
+	 * @param i_in3 入力３
+	 * @param i_in4 入力４
 	 * @throws MbedJsException
 	 */
 	public StepperMotor(Mcu i_mcu,int i_ctrlA,int i_ctrlB ,
