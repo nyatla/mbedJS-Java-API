@@ -26,15 +26,15 @@ public class HMC6352 extends DriverBaseClass{
 	/**
 	 * Mcuから直接生成する場合
 	 * @param i_mcu
-	 * @param sda
-	 * @param scl
+	 * @param i_sda
+	 * @param i_scl
 	 * @param i_address
 	 * @throws MbedJsException
 	 */
-	public HMC6352(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
+	public HMC6352(Mcu i_mcu, int i_sda, int i_scl, int i_address) throws MbedJsException
 	{
 		this._is_attached=true;
-		this._i2c=new I2C(i_mcu, sda, scl);
+		this._i2c=new I2C(i_mcu, i_sda, i_scl);
 		this._addr=i_address;
 		this._i2c.frequency(10000);
 	}
