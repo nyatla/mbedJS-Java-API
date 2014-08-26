@@ -43,27 +43,27 @@ public class HMC6352 extends DriverBaseClass{
 			this._i2c.dispose();
 		}
 	}
-	public void writeEEPROM(byte data) throws MbedJsException
+	public void writeEEPROM(byte i_address ,byte i_data) throws MbedJsException
 	{
-		byte[] str = {0x77 , data};
+		byte[] str = {0x77 , i_address, i_data};
 		this._i2c.write(this._addr, str, false);	
 	}
-	public byte readEEPROM() throws MbedJsException
+	public byte readEEPROM(byte i_address) throws MbedJsException
 	{
-		byte[] str = {0x72};
+		byte[] str = {0x72 , i_address};
 		this._i2c.write(this._addr, str, false);
 
-		I2C.ReadResult rr = this._i2c.read(this._addr, 2, false);
+		I2C.ReadResult rr = this._i2c.read(this._addr, 1, false);
 		return rr.data[0];
 	}
-	public void writeRAMRegister(byte data) throws MbedJsException
+	public void writeRAMRegister(byte i_address , byte i_data) throws MbedJsException
 	{
-		byte[] str = {0x47 , data};
+		byte[] str = {0x47 ,i_address , i_data};
 		this._i2c.write(this._addr, str, false);	
 	}
-	public byte readRAMRegister() throws MbedJsException
+	public byte readRAMRegister(byte i_address) throws MbedJsException
 	{
-		byte[] str = {0x67};
+		byte[] str = {0x67 , i_address};
 		this._i2c.write(this._addr, str, false);
 
 		I2C.ReadResult rr = this._i2c.read(this._addr, 1, false);
