@@ -4,9 +4,9 @@ import jp.nyatla.mimic.mbedjs.MbedJsException;
 import jp.nyatla.mimic.mbedjs.javaapi.I2C;
 import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
-import jp.nyatla.mimic.mbedjs.javaapi.driver.LM75B;
+import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
-public class HMC6352 {
+public class HMC6352 extends DriverBaseClass{
 	private final I2C _i2c;
 	private final int _addr;
 	/** I2Cを内部生成したか*/
@@ -43,14 +43,79 @@ public class HMC6352 {
 			this._i2c.dispose();
 		}
 	}
-	public float read() throws MbedJsException
+	public void writeEEPROM(byte data) throws MbedJsException
+	{
+		byte[] str = {0x77 , data};
+		this._i2c.write(this._addr, str, false);	
+	}
+	public byte readEEPROM() throws MbedJsException
+	{
+		byte[] str = {0x72};
+		this._i2c.write(this._addr, str, false);
+
+		I2C.ReadResult rr = this._i2c.read(this._addr, 2, false);
+		return rr.data[0];
+	}
+	public void writeRAMRegister(byte data) throws MbedJsException
+	{
+		byte[] str = {0x47 , data};
+		this._i2c.write(this._addr, str, false);	
+	}
+	public byte readRAMRegister() throws MbedJsException
+	{
+		byte[] str = {0x67};
+		this._i2c.write(this._addr, str, false);
+
+		I2C.ReadResult rr = this._i2c.read(this._addr, 1, false);
+		return rr.data[0];
+	}
+	
+	public void enterSleepMode() throws MbedJsException
+	{
+		byte [] data ={0x53};
+		this._i2c.write(this._addr, data, false);	
+	}
+	public void exitSleepMode() throws MbedJsException
+	{
+		byte [] data ={0x57};
+		this._i2c.write(this._addr, data, false);
+	}
+
+	public void updateBridgeOffsets() throws MbedJsException
+	{
+		byte [] data ={0x4f};
+		this._i2c.write(this._addr, data, false);	
+	}
+
+	public void enterUserCalibraationMode() throws MbedJsException
+	{
+		byte [] data ={0x43};
+		this._i2c.write(this._addr, data, false);	
+	}
+
+	public void exitUserCalibrationMode() throws MbedJsException
+	{
+		byte [] data ={0x45};
+		this._i2c.write(this._addr, data, false);	
+	}
+
+	public void saveOpModeToEEPROM() throws MbedJsException
+	{
+		byte [] data ={0x4c};
+		this._i2c.write(this._addr, data, false);	
+	}
+	public float getData() throws MbedJsException
 	{
 		byte [] data ={0x41};
-		
 		this._i2c.write(this._addr, data, false);
+		this.sleep_ms(6);
 		I2C.ReadResult rr = this._i2c.read(this._addr, 2, false);
-		float retval = (((rr.data[0]& 0x0ff) << 8) | (rr.data[1]& 0x0ff)) /1.0f;
+		float retval = (((rr.data[0]& 0x0ff) << 8) | (rr.data[1]& 0x0ff)) /10.0f;
 		return retval;
+	}
+	public float read() throws MbedJsException
+	{
+		return this.getData();
 	}
 	public static void main(String[] args) throws MbedJsException {
 		// TODO Auto-generated method stub
