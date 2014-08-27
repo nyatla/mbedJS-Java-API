@@ -2,6 +2,8 @@
  * このソースコードは以下の仕様書を元に製作しました
  * http://strawberry-linux.com/pub/HMC6352.pdf
  * http://strawberry-linux.com/pub/hmc6352-manual.pdf
+ * 
+ * Created by hara.shinichi@gmail.com
  */
 
 package test.hara41;
@@ -133,7 +135,6 @@ public class HMC6352 extends DriverBaseClass{
 		return this.getData();
 	}
 	public static void main(String[] args) throws MbedJsException {
-		// TODO Auto-generated method stub
 		Mcu mcu=new Mcu("10.0.0.2");
 		HMC6352 a=new HMC6352(mcu,PinName.p28,PinName.p27,0x80);
 		System.out.println(a.read());
