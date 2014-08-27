@@ -46,26 +46,28 @@ public class HMC6352 extends DriverBaseClass{
 	public void writeEEPROM(byte i_address ,byte i_data) throws MbedJsException
 	{
 		byte[] str = {0x77 , i_address, i_data};
-		this._i2c.write(this._addr, str, false);	
+		this._i2c.write(this._addr, str, false);
+		this.sleep_ms(1);
 	}
 	public byte readEEPROM(byte i_address) throws MbedJsException
 	{
 		byte[] str = {0x72 , i_address};
 		this._i2c.write(this._addr, str, false);
-
+		this.sleep_ms(1);
 		I2C.ReadResult rr = this._i2c.read(this._addr, 1, false);
 		return rr.data[0];
 	}
 	public void writeRAMRegister(byte i_address , byte i_data) throws MbedJsException
 	{
 		byte[] str = {0x47 ,i_address , i_data};
-		this._i2c.write(this._addr, str, false);	
+		this._i2c.write(this._addr, str, false);
+		this.sleep_ms(1);
 	}
 	public byte readRAMRegister(byte i_address) throws MbedJsException
 	{
 		byte[] str = {0x67 , i_address};
 		this._i2c.write(this._addr, str, false);
-
+		this.sleep_ms(1);
 		I2C.ReadResult rr = this._i2c.read(this._addr, 1, false);
 		return rr.data[0];
 	}
@@ -74,35 +76,41 @@ public class HMC6352 extends DriverBaseClass{
 	{
 		byte [] data ={0x53};
 		this._i2c.write(this._addr, data, false);	
+		this.sleep_ms(1);
 	}
 	public void exitSleepMode() throws MbedJsException
 	{
 		byte [] data ={0x57};
 		this._i2c.write(this._addr, data, false);
+		this.sleep_ms(1);
 	}
 
 	public void updateBridgeOffsets() throws MbedJsException
 	{
 		byte [] data ={0x4f};
 		this._i2c.write(this._addr, data, false);	
+		this.sleep_ms(6);
 	}
 
 	public void enterUserCalibraationMode() throws MbedJsException
 	{
 		byte [] data ={0x43};
 		this._i2c.write(this._addr, data, false);	
+		this.sleep_ms(1);
 	}
 
 	public void exitUserCalibrationMode() throws MbedJsException
 	{
 		byte [] data ={0x45};
 		this._i2c.write(this._addr, data, false);	
+		this.sleep_ms(14);
 	}
 
 	public void saveOpModeToEEPROM() throws MbedJsException
 	{
 		byte [] data ={0x4c};
-		this._i2c.write(this._addr, data, false);	
+		this._i2c.write(this._addr, data, false);
+		this.sleep_ms(1);
 	}
 	public float getData() throws MbedJsException
 	{
@@ -113,6 +121,7 @@ public class HMC6352 extends DriverBaseClass{
 		float retval = (((rr.data[0]& 0x0ff) << 8) | (rr.data[1]& 0x0ff)) /10.0f;
 		return retval;
 	}
+	/* 他のクラスと同じ名前のデータ取得関数*/
 	public float read() throws MbedJsException
 	{
 		return this.getData();
