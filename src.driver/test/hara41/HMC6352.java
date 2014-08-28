@@ -1,3 +1,11 @@
+/**
+ * このソースコードは以下の仕様書を元に製作しました
+ * http://strawberry-linux.com/pub/HMC6352.pdf
+ * http://strawberry-linux.com/pub/hmc6352-manual.pdf
+ * 
+ * Created by hara.shinichi@gmail.com
+ */
+
 package test.hara41;
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;
