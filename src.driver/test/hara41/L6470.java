@@ -1,7 +1,3 @@
-/**
- * 
- * @author hara.shinichi@gmail.com
- */
 package test.hara41;
 
 import jp.nyatla.mimic.mbedjs.*;
@@ -23,6 +19,7 @@ public class L6470 extends DriverBaseClass{
     		int i_cs) throws MbedJsException
     {
     	this.spi = new SPI(i_mcu,i_mosi_pin,i_miso_pin, i_sclk_pin);// 50ms
+<<<<<<< HEAD
     	this.spi.frequency(1000000);
     	this.spi.format(8, 3);
     	
@@ -171,6 +168,11 @@ public class L6470 extends DriverBaseClass{
     	
     	//System.out.println(String.format("sendByte-recv: %1$x", ret));
     	return ret;
+=======
+    	this.cs = new DigitalOut(i_mcu , i_cs);
+    	this.cs.write(1);
+    	
+>>>>>>> parent of ba45def... 2nd
     }
     public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
     {
@@ -186,8 +188,6 @@ public class L6470 extends DriverBaseClass{
 		// TODO Auto-generated method stub
 		Mcu mcu = new Mcu("10.0.0.2");
 		L6470 amp = new L6470(mcu ,PinName.p5 , PinName.p6 ,PinName.p7 ,PinName.p8);
-		mcu.close();
-		System.out.println("done.");
 	}
 
 
