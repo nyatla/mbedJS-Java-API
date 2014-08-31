@@ -29,45 +29,10 @@ public class L6470 extends DriverBaseClass{
     	this.init();
 
     }
-    public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x68 | i_dir;
-    	value[1] = (0xff0000 & i_abs_pos)>>16;
-    	value[2] = (0x00ff00 & i_abs_pos)>>8;
-    	value[3] = (0x0000ff & i_abs_pos);
-    	this.sendRecive(value, 4);
-    }
-    public void goTo(int i_abs_pos) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x60 ;
-    	value[1] = (0xff0000 & i_abs_pos)>>16;
-    	value[2] = (0x00ff00 & i_abs_pos)>>8;
-    	value[3] = (0x0000ff & i_abs_pos);
-    	this.sendRecive(value, 4);
-    
-    }
-    public void move(int i_dir , int i_n_step) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x40 | i_dir;
-    	value[1] = (0xff0000 & i_n_step)>>16;
-    	value[2] = (0x00ff00 & i_n_step)>>8;
-    	value[3] = (0x0000ff & i_n_step);
-    	this.sendRecive(value, 4);
-    	
-    }
-    public void run(int i_dir,int i_spd) throws MbedJsException
-    {
-    	int[] value = new int[4]; 
-    	value[0] = 0x50 | i_dir;
-    	value[1] = (0xff0000 & i_spd)>>16;
-    	value[2] = (0x00ff00 & i_spd)>>8;
-    	value[3] = (0x0000ff & i_spd);
-    	this.sendRecive(value, 4);
-    	
-    }
+    /**
+     * 初期化
+     * @throws MbedJsException
+     */
     private void init() throws MbedJsException
     {
        	this.cs.write(1);
@@ -89,23 +54,87 @@ public class L6470 extends DriverBaseClass{
     	
   	
     }
-    /*
-    private void view_ret(int[]ret)
+    /**
+     * 絶対位置まで移動
+     * @param i_dir 移動する方向（1：正転、0:逆転）
+     * @param i_abs_pos 絶対位置
+     * @throws MbedJsException
+     */
+    public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
     {
-    	int value = 0;
-    	for (int i=0;i<ret.length;i++)
-    	{
-    		//System.out.println(String.format("%1$x", ret[i]));
-    		value = (value<<8)|ret[i];
-    	}
-    	System.out.println(String.format("%1$x", value));
+     	int[] value = new int[4]; 
+    	value[0] = 0x68 | i_dir;
+    	value[1] = (0xff0000 & i_abs_pos)>>16;
+    	value[2] = (0x00ff00 & i_abs_pos)>>8;
+    	value[3] = (0x0000ff & i_abs_pos);
+    	this.sendRecive(value, 4);
     }
-    */
+    /**
+     * 一番近い方向に向かって絶対位置まで移動
+     * @param i_abs_pos 絶対位置
+     * @throws MbedJsException
+     */
+    public void goTo(int i_abs_pos) throws MbedJsException
+    {
+     	int[] value = new int[4]; 
+    	value[0] = 0x60 ;
+    	value[1] = (0xff0000 & i_abs_pos)>>16;
+    	value[2] = (0x00ff00 & i_abs_pos)>>8;
+    	value[3] = (0x0000ff & i_abs_pos);
+    	this.sendRecive(value, 4);
+    
+    }
+    /**
+     * 指定した方向に指定ステップ数回転
+     * @param i_dir 回転する方向（1：正転、0:逆転）
+     * @param i_n_step 回転するステップ数
+     * @throws MbedJsException
+     */
+    public void move(int i_dir , int i_n_step) throws MbedJsException
+    {
+     	int[] value = new int[4]; 
+    	value[0] = 0x40 | i_dir;
+    	value[1] = (0xff0000 & i_n_step)>>16;
+    	value[2] = (0x00ff00 & i_n_step)>>8;
+    	value[3] = (0x0000ff & i_n_step);
+    	this.sendRecive(value, 4);
+    	
+    }
+    /**
+     * 速度と方向を指定して回転
+     * @param i_dir 方向（1：正転、0:逆転）
+     * @param i_spd 回転速度
+     * @throws MbedJsException
+     */
+    public void run(int i_dir,int i_spd) throws MbedJsException
+    {
+    	int[] value = new int[4]; 
+    	value[0] = 0x50 | i_dir;
+    	value[1] = (0xff0000 & i_spd)>>16;
+    	value[2] = (0x00ff00 & i_spd)>>8;
+    	value[3] = (0x0000ff & i_spd);
+    	this.sendRecive(value, 4);
+    	
+    }
+    /**
+     * パラメータの書き込み２
+     * @param i_param パラメータ名
+     * @param i_value 値
+     * @param i_len パラメータの長さ
+     * @throws MbedJsException
+     */
     public void setParam2(int i_param, int[] i_value,int i_len) throws MbedJsException
     {
     	this.setParam(i_param, i_value, i_len);
     	this.setParam(i_param, i_value, i_len);
     }
+    /**
+     * パラメータの書き込み
+     * @param i_param パラメータ名
+     * @param i_value 値
+     * @param i_len パラメータの長さ
+     * @throws MbedJsException
+     */
     private void setParam(int i_param, int[] i_value,int i_len) throws MbedJsException
     {
     	int value = (i_param & 0x1f);
@@ -121,6 +150,12 @@ public class L6470 extends DriverBaseClass{
     		this.sendByte(i_value[i]);
     	}
     }
+    /**
+     * パラメータの読み込み
+     * @param i_param パラメータ名
+     * @param i_len パラメータの長さ
+     * @throws MbedJsException
+     */
     public int getParam(int i_param, int i_len) throws MbedJsException
     {
     	int ret = 0;
@@ -140,7 +175,13 @@ public class L6470 extends DriverBaseClass{
 		System.out.println(String.format("getParam: %1$x", retval));
 		return retval;
 	}
-
+    /**
+     * 送受信関数
+     * @param i_value 送信するデータ
+     * @param i_length データの長さ
+     * @return
+     * @throws MbedJsException
+     */
     private int[] sendRecive(int[] i_value, int i_length) throws MbedJsException
     {    	
     	int [] retval = new int[i_length]; 
@@ -155,13 +196,21 @@ public class L6470 extends DriverBaseClass{
     	return retval;
     }
     
-
+    /**
+     * リセット
+     * @throws MbedJsException
+     */
     public void resetDevice() throws MbedJsException
     {
     	int []str = {0xc0};
     	this.sendRecive(str, 1);
     }
-    
+    /**
+     * 1バイト送信
+     * @param i_value　送信する値
+     * @return 受信した値
+     * @throws MbedJsException
+     */
     private int sendByte(int i_value) throws MbedJsException
     {
     	this.sleep_ms(1);
@@ -180,26 +229,47 @@ public class L6470 extends DriverBaseClass{
 
     	
     }
+    /**
+     * 減速してから停止
+     * @throws MbedJsException
+     */
     public void softStop() throws MbedJsException
     {
     	int []str = {0xb0};
     	this.sendRecive(str, 1);
     }
+    /**
+     * （減速せずに）強制的に停止
+     * @throws MbedJsException
+     */
     public void hardStop() throws MbedJsException
     {
     	int []str = {0xb8};
     	this.sendRecive(str, 1);
     }
+    /**
+     * 減速してからハイインピーダンスに設定
+     * @throws MbedJsException
+     */
     public void softHiZ() throws MbedJsException
     {
     	int []str = {0xa0};
     	this.sendRecive(str, 1);
     }
+    /**
+     * 減速せずにハイインピーダンスに設定
+     * @throws MbedJsException
+     */
     public void hardHiZ() throws MbedJsException
     {
     	int []str = {0xa8};
     	this.sendRecive(str, 1);
     }
+    /**
+     * ステータスの取得
+     * @return ステータス
+     * @throws MbedJsException
+     */
     public int getStatus() throws MbedJsException
     {
     	int []str = {0xd0 , 0x00 , 0x00};
@@ -207,11 +277,19 @@ public class L6470 extends DriverBaseClass{
     	int retval = (ret[1]<<8) | ret[2];
     	return retval;
     }
+    /**
+     * 位置のリセット
+     * @throws MbedJsException
+     */
     public void resetPos() throws MbedJsException
     {
     	int []str = {0xd8};
     	this.sendRecive(str, 1);
     }
+    /**
+     * ホームポジションに戻る
+     * @throws MbedJsException
+     */
     public void goHome() throws MbedJsException
     {
     	int []str = {0x70};
