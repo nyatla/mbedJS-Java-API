@@ -27,24 +27,7 @@ public class L6470 extends DriverBaseClass{
     	this.cs = new DigitalOut(i_mcu , i_cs);
     	
     	this.init();
-    	//this.setParam2(PARAM_ABS_POS, 0x3fff38, LENGTH_ABS_POS);
-    	/*
-    	int[] s0 = {0x3f ,0xff , 0x38};
-    	this.setParam(PARAM_ABS_POS,s0, LENGTH_ABS_POS);
-    	int ret = this.getParam(PARAM_ABS_POS, LENGTH_ABS_POS);
-    	
-    	System.out.println(String.format("%1$x", ret));
-    	*/
-    	/*
-    	this.sendByte(0x69);
-    	this.sendByte(0x00);
-    	this.sendByte(0x07);
-    	this.sendByte(0xD0);
-    	*/
-    	this.goTo_dir(0, -2000);//ok
-    	//this.run(1, 100); // ok
-    	//this.move(1, 400); 
-    	//this.goTo(100); // ok
+
     }
     public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
     {
@@ -92,20 +75,21 @@ public class L6470 extends DriverBaseClass{
     	
         int ret;	
     	int [] s1 = {0x03 , 0xe8};
-    	this.setParam(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
+    	this.setParam2(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
     	
     	int [] s2 = {0x03 , 0xe8};
-    	this.setParam(L6470.PARAM_DEC, s2, L6470.LENGTH_DEC);
+    	this.setParam2(L6470.PARAM_DEC, s2, L6470.LENGTH_DEC);
     	
     	
     	int [] s3 = {0x00 , 0x23};
-    	this.setParam(L6470.PARAM_MAX_SPEED, s3 , L6470.LENGTH_MAX_SPEED);
+    	this.setParam2(L6470.PARAM_MAX_SPEED, s3 , L6470.LENGTH_MAX_SPEED);
     	
     	int [] s4 = {0x00 ,0x00};
-    	this.setParam(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
+    	this.setParam2(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
     	
   	
     }
+    /*
     private void view_ret(int[]ret)
     {
     	int value = 0;
@@ -116,30 +100,14 @@ public class L6470 extends DriverBaseClass{
     	}
     	System.out.println(String.format("%1$x", value));
     }
-    
-    public void view_ret(int i_param, int[] i_value,int i_len) throws MbedJsException
+    */
+    public void setParam2(int i_param, int[] i_value,int i_len) throws MbedJsException
     {
-    	int value = (i_param & 0x1f);
-    	int length = i_len / 8;
-    	if(i_len%8!=0){
-    		length =length +1;
-    	}
-    	
-    	// 書き込み対策、2度書き込む
-    	for (int j=0;j<2;j++){
-    		this.sendByte(value);
-    	
-	    	for(int i=0;i<length ; i++)
-	    	{
-	    		//System.out.println(String.format(">send: %1$x", i_value[i]));
-	    		this.sendByte(i_value[i]);
-	    	}
-    	}
+    	this.setParam(i_param, i_value, i_len);
+    	this.setParam(i_param, i_value, i_len);
     }
     private void setParam(int i_param, int[] i_value,int i_len) throws MbedJsException
     {
-    	int ret = 0;
-    	int retval =0;
     	int value = (i_param & 0x1f);
     	int length = i_len / 8;
     	if(i_len%8!=0){
@@ -150,7 +118,7 @@ public class L6470 extends DriverBaseClass{
     	for(int i=0;i<length ; i++)
     	{
     		//System.out.println(String.format(">send: %1$x", i_value[i]));
-    		ret =this.sendByte(i_value[i]);
+    		this.sendByte(i_value[i]);
     	}
     }
     public int getParam(int i_param, int i_len) throws MbedJsException
@@ -212,35 +180,68 @@ public class L6470 extends DriverBaseClass{
 
     	
     }
-
-    
+    public void softStop() throws MbedJsException
+    {
+    	int []str = {0xb0};
+    	this.sendRecive(str, 1);
+    }
+    public void hardStop() throws MbedJsException
+    {
+    	int []str = {0xb8};
+    	this.sendRecive(str, 1);
+    }
+    public void softHiZ() throws MbedJsException
+    {
+    	int []str = {0xa0};
+    	this.sendRecive(str, 1);
+    }
+    public void hardHiZ() throws MbedJsException
+    {
+    	int []str = {0xa8};
+    	this.sendRecive(str, 1);
+    }
+    public int getStatus() throws MbedJsException
+    {
+    	int []str = {0xd0 , 0x00 , 0x00};
+    	int []ret = this.sendRecive(str, 3);
+    	int retval = (ret[1]<<8) | ret[2];
+    	return retval;
+    }
+    public void resetPos() throws MbedJsException
+    {
+    	int []str = {0xd8};
+    	this.sendRecive(str, 1);
+    }
+    public void goHome() throws MbedJsException
+    {
+    	int []str = {0x70};
+    	this.sendRecive(str, 1);
+    }
 	public static void main(String[] args) throws MbedJsException {
 		// TODO Auto-generated method stub
 		Mcu mcu = new Mcu("10.0.0.2");
 		L6470 amp = new L6470(mcu ,PinName.p5 , PinName.p6 ,PinName.p7 ,PinName.p8);
+		
+		int ret = amp.getStatus();// ok ただし値の確認未
+    	System.out.println(String.format("%1$x", ret));
+    	
+    	amp.run(0, 10000); // ok
+		//amp.goHome(); //ok
+    	
+    	//amp.resetPos();
+    	//amp.softStop(); //ok
+		//amp.hardStop(); // ok
+		//amp.hardHiZ(); //ok
+		//amp.softHiZ();//ok
+		
+		//amp.resetDevice(); //ok
+    	    	
+    	//amp.goTo_dir(0, -2000);//ok
+    	//this.goTo(200);//ok
+    	//this.run(1, 10000); // ok
+    	//amp.move(0, 1); 
 		mcu.close();
 		System.out.println("done.");
 	}
-	/*
-    public void setParam2(int i_param, int i_value,int i_len) throws MbedJsException
-    {
-    	// 送信文字列の数決定
-    	int length = i_len / 8;
-    	if(i_len%8!=0){
-    		length =length +1;
-    	}
-    	int[] value = new int[length];
-    	int tmp = i_value;
-    	//送信データの分割
-    	for(int i=length;i>0;i--){
-    		value[i-1] = tmp & 0xff;
-    		tmp = tmp >> 8;
-    	}
-    	view_ret(value);
-    	
-    	this.sendRecive(value,length);
-    	
-    }
-    */
 
 }
