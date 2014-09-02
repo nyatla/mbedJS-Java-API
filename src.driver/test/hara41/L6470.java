@@ -46,7 +46,7 @@ public class L6470 extends DriverBaseClass{
         int ret;	
 
        	// モータパラメータ：型番17PM-K044
-        // 加速度　step/tic^2
+        // 加速度　step/tic^2 tic=250ns
         int [] s1 = {0x03 , 0xe8};
     	this.setParam2(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
     	// 減速度　step/tic^2
@@ -276,7 +276,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * ドライバのステータスの取得
+     * ドライバステータスの取得
      * @return ステータス
      * @throws MbedJsException
      */
@@ -288,7 +288,7 @@ public class L6470 extends DriverBaseClass{
     	return retval;
     }
     /**
-     * 絶対位置のカウンタのリセット
+     * 現在位置を絶対位置の0に設定する
      * @throws MbedJsException
      */
     public void resetPos() throws MbedJsException
