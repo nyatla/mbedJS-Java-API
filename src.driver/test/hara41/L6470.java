@@ -1,3 +1,8 @@
+/**
+ * http://akizukidenshi.com/download/ds/st/L6470.pdf
+ * 
+ */
+
 package test.hara41;
 
 import jp.nyatla.mimic.mbedjs.*;
@@ -30,7 +35,7 @@ public class L6470 extends DriverBaseClass{
 
     }
     /**
-     * 初期化
+     * モータパラメータの初期化
      * @throws MbedJsException
      */
     private void init() throws MbedJsException
@@ -39,23 +44,25 @@ public class L6470 extends DriverBaseClass{
        	this.resetDevice(); // ok
     	
         int ret;	
-    	int [] s1 = {0x03 , 0xe8};
+
+       	// モータパラメータ：型番17PM-K044
+        // 加速度　step/tic^2
+        int [] s1 = {0x03 , 0xe8};
     	this.setParam2(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
-    	
+    	// 減速度　step/tic^2
     	int [] s2 = {0x03 , 0xe8};
     	this.setParam2(L6470.PARAM_DEC, s2, L6470.LENGTH_DEC);
-    	
-    	
+    	// 最大速度　step/tic
     	int [] s3 = {0x00 , 0x23};
     	this.setParam2(L6470.PARAM_MAX_SPEED, s3 , L6470.LENGTH_MAX_SPEED);
-    	
+    	//　最小速度　step/tic
     	int [] s4 = {0x00 ,0x00};
     	this.setParam2(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
     	
   	
     } 
     /**
-     * 1バイト送受信
+     * SPIを使って1バイトのデータを送受信
      * @param i_value　送信する値
      * @return 受信した値
      * @throws MbedJsException
@@ -79,7 +86,7 @@ public class L6470 extends DriverBaseClass{
     	
     }   
     /**
-     * 送受信
+     * 複数バイトのデータを送受信
      * @param i_value 送信するデータ
      * @param i_length データの長さ
      * @return　受信したデータ
@@ -101,7 +108,7 @@ public class L6470 extends DriverBaseClass{
     /**
      * 指定した絶対位置へ移動
      * @param i_dir 移動する方向（1：正転、0:逆転）
-     * @param i_abs_pos 絶対位置
+     * @param i_abs_pos 絶対位置(10ビットで指定）
      * @throws MbedJsException
      */
     public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
@@ -115,7 +122,7 @@ public class L6470 extends DriverBaseClass{
     }
     /**
      * 指定した絶対位置へ移動（方向は自動設定）
-     * @param i_abs_pos 絶対位置
+     * @param i_abs_pos 絶対位置(10ビットで指定)
      * @throws MbedJsException
      */
     public void goTo(int i_abs_pos) throws MbedJsException
@@ -129,9 +136,9 @@ public class L6470 extends DriverBaseClass{
     
     }
     /**
-     * 指定した方向に指定ステップ数回転
+     * 現在位置から指定した方向に指定ステップ数回転
      * @param i_dir 回転する方向（1：正転、0:逆転）
-     * @param i_n_step 回転するステップ数
+     * @param i_n_step 回転するステップ数(10ビット）
      * @throws MbedJsException
      */
     public void move(int i_dir , int i_n_step) throws MbedJsException
@@ -147,7 +154,7 @@ public class L6470 extends DriverBaseClass{
     /**
      * 速度と方向を指定して回転
      * @param i_dir 方向（1：正転、0:逆転）
-     * @param i_spd 回転速度
+     * @param i_spd 回転速度(step/tick),tick=250ns
      * @throws MbedJsException
      */
     public void run(int i_dir,int i_spd) throws MbedJsException
@@ -161,7 +168,7 @@ public class L6470 extends DriverBaseClass{
     	
     }
     /**
-     * パラメータに値の書き込み２
+     * パラメータレジスタに値の書き込み２
      * @param i_param パラメータ名
      * @param i_value 値
      * @param i_len パラメータの長さ
@@ -173,7 +180,7 @@ public class L6470 extends DriverBaseClass{
     	this.setParam(i_param, i_value, i_len);
     }
     /**
-     * パラメータに値の書き込み
+     * パラメータレジスタに値の書き込み
      * @param i_param パラメータ名
      * @param i_value 値
      * @param i_len パラメータの長さ
@@ -195,7 +202,7 @@ public class L6470 extends DriverBaseClass{
     	}
     }
     /**
-     * パラメータから値の読み込み
+     * パラメータレジスタから値の読み込み
      * @param i_param パラメータ名
      * @param i_len パラメータの長さ
      * @throws MbedJsException
@@ -222,7 +229,7 @@ public class L6470 extends DriverBaseClass{
 
     
     /**
-     * リセット
+     * デバイスのリセット
      * @throws MbedJsException
      */
     public void resetDevice() throws MbedJsException
@@ -231,7 +238,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 減速して停止
+     * モータを減速して停止（現在位置を保持するトルクはかけ続けます）
      * @throws MbedJsException
      */
     public void softStop() throws MbedJsException
@@ -240,7 +247,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 停止
+     * モータの停止（現在位置を保持するトルクはかけ続けます）
      * @throws MbedJsException
      */
     public void hardStop() throws MbedJsException
@@ -249,7 +256,8 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 減速してハイインピーダンスに設定
+     * モータを減速してブリッジ入力をハイインピーダンスに設定
+     * 現在位置を保持しません
      * @throws MbedJsException
      */
     public void softHiZ() throws MbedJsException
@@ -258,7 +266,8 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * ハイインピーダンスに設定
+     * ドライバのブリッジ入力をハイインピーダンスに設定
+     * 現在位置を保持しません
      * @throws MbedJsException
      */
     public void hardHiZ() throws MbedJsException
@@ -267,7 +276,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * ステータスの取得
+     * ドライバのステータスの取得
      * @return ステータス
      * @throws MbedJsException
      */
@@ -279,7 +288,7 @@ public class L6470 extends DriverBaseClass{
     	return retval;
     }
     /**
-     * 位置のリセット
+     * 絶対位置のカウンタのリセット
      * @throws MbedJsException
      */
     public void resetPos() throws MbedJsException
@@ -288,7 +297,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * ホームポジションに戻る
+     * ホームポジション(絶対位置の0)に移動
      * @throws MbedJsException
      */
     public void goHome() throws MbedJsException
