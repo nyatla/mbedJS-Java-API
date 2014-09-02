@@ -53,9 +53,53 @@ public class L6470 extends DriverBaseClass{
     	this.setParam2(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
     	
   	
+    } 
+    /**
+     * 1バイト送受信
+     * @param i_value　送信する値
+     * @return 受信した値
+     * @throws MbedJsException
+     */
+    private int sendByte(int i_value) throws MbedJsException
+    {
+    	this.sleep_ms(1);
+    	this.cs.write(0);
+    	this.sleep_ms(1);
+    	
+    	//System.out.println(String.format("sendByte-send: %1$x", i_value));
+    	int ret = this.spi.write(i_value);
+
+    	this.sleep_ms(1);
+    	this.cs.write(1);
+    	this.sleep_ms(1);
+    	
+    	//System.out.println(String.format("sendByte-recv: %1$x", ret));
+    	return ret;
+
+    	
+    }   
+    /**
+     * 送受信関数
+     * @param i_value 送信するデータ
+     * @param i_length データの長さ
+     * @return　受信したデータ
+     * @throws MbedJsException
+     */
+    private int[] sendRecive(int[] i_value, int i_length) throws MbedJsException
+    {    	
+    	int [] retval = new int[i_length]; 
+    	
+    	for(int i=0;i<i_length;i++){
+    		retval[i] = this.sendByte(i_value[i]);    		
+    	}
+    	// 書き込み対策　2度書き込む
+    	for(int i=0;i<i_length;i++){
+    		retval[i] = this.sendByte(i_value[i]);    		
+    	}
+    	return retval;
     }
     /**
-     * 絶対位置まで移動
+     * 指定した絶対位置へ移動
      * @param i_dir 移動する方向（1：正転、0:逆転）
      * @param i_abs_pos 絶対位置
      * @throws MbedJsException
@@ -70,7 +114,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(value, 4);
     }
     /**
-     * 一番近い方向に向かって絶対位置まで移動
+     * 指定した絶対位置へ移動（方向は自動設定）
      * @param i_abs_pos 絶対位置
      * @throws MbedJsException
      */
@@ -117,7 +161,7 @@ public class L6470 extends DriverBaseClass{
     	
     }
     /**
-     * パラメータの書き込み２
+     * パラメータに値の書き込み２
      * @param i_param パラメータ名
      * @param i_value 値
      * @param i_len パラメータの長さ
@@ -129,7 +173,7 @@ public class L6470 extends DriverBaseClass{
     	this.setParam(i_param, i_value, i_len);
     }
     /**
-     * パラメータの書き込み
+     * パラメータに値の書き込み
      * @param i_param パラメータ名
      * @param i_value 値
      * @param i_len パラメータの長さ
@@ -151,7 +195,7 @@ public class L6470 extends DriverBaseClass{
     	}
     }
     /**
-     * パラメータの読み込み
+     * パラメータから値の読み込み
      * @param i_param パラメータ名
      * @param i_len パラメータの長さ
      * @throws MbedJsException
@@ -175,26 +219,7 @@ public class L6470 extends DriverBaseClass{
 		System.out.println(String.format("getParam: %1$x", retval));
 		return retval;
 	}
-    /**
-     * 送受信関数
-     * @param i_value 送信するデータ
-     * @param i_length データの長さ
-     * @return
-     * @throws MbedJsException
-     */
-    private int[] sendRecive(int[] i_value, int i_length) throws MbedJsException
-    {    	
-    	int [] retval = new int[i_length]; 
-    	
-    	for(int i=0;i<i_length;i++){
-    		retval[i] = this.sendByte(i_value[i]);    		
-    	}
-    	// 書き込み対策　2度書き込む
-    	for(int i=0;i<i_length;i++){
-    		retval[i] = this.sendByte(i_value[i]);    		
-    	}
-    	return retval;
-    }
+
     
     /**
      * リセット
@@ -206,31 +231,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 1バイト送信
-     * @param i_value　送信する値
-     * @return 受信した値
-     * @throws MbedJsException
-     */
-    private int sendByte(int i_value) throws MbedJsException
-    {
-    	this.sleep_ms(1);
-    	this.cs.write(0);
-    	this.sleep_ms(1);
-    	
-    	//System.out.println(String.format("sendByte-send: %1$x", i_value));
-    	int ret = this.spi.write(i_value);
-
-    	this.sleep_ms(1);
-    	this.cs.write(1);
-    	this.sleep_ms(1);
-    	
-    	//System.out.println(String.format("sendByte-recv: %1$x", ret));
-    	return ret;
-
-    	
-    }
-    /**
-     * 減速してから停止
+     * 減速して停止
      * @throws MbedJsException
      */
     public void softStop() throws MbedJsException
@@ -239,7 +240,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * （減速せずに）強制的に停止
+     * （減速せずに）停止
      * @throws MbedJsException
      */
     public void hardStop() throws MbedJsException
@@ -248,7 +249,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 減速してからハイインピーダンスに設定
+     * 減速してハイインピーダンスに設定
      * @throws MbedJsException
      */
     public void softHiZ() throws MbedJsException
@@ -257,7 +258,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * 減速せずにハイインピーダンスに設定
+     * （減速せずに）ハイインピーダンスに設定
      * @throws MbedJsException
      */
     public void hardHiZ() throws MbedJsException
