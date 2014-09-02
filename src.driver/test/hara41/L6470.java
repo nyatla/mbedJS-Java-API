@@ -50,9 +50,9 @@ public class L6470 extends DriverBaseClass{
 	public final static int LENGTH_ADC_OUT = 5;
 	public final static int PARAM_OCD_TH = 0x13;//
 	public final static int LENGTH_OCD_TH = 4;
-	public final static int PARAM_STALL_TH = 0x14;//
+	public final static int PARAM_STALL_TH = 0x14;//ストール検出の閾値
 	public final static int LENGTH_STALL_TH = 7;
-	public final static int PARAM_STEP_MODE = 0x16;//
+	public final static int PARAM_STEP_MODE = 0x16;//ステップの設定(後述)
 	public final static int LENGTH_STEP_MODE = 8;
 	public final static int PARAM_ALARM_EN = 0x17;//
 	public final static int LENGTH_ALARM_EN = 8;
