@@ -10,16 +10,57 @@ import jp.nyatla.mimic.mbedjs.javaapi.*;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public class L6470 extends DriverBaseClass{
-	public final static int PARAM_ABS_POS = 0x01;
+	public final static int PARAM_ABS_POS = 0x01;//絶対位置
 	public final static int LENGTH_ABS_POS = 22;
-	public final static int PARAM_ACC = 0x05;
+	public final static int PARAM_EL_POS = 0x02;//電気的位置
+	public final static int LENGTH_EL_POS = 9;
+	public final static int PARAM_MARK = 0x03;//マーク
+	public final static int LENGTH_MARK = 22;
+	public final static int PARAM_SPEED = 0x04;//現在の速度
+	public final static int LENGTH_SPEED = 20;
+	public final static int PARAM_ACC = 0x05;//加速度
 	public final static int LENGTH_ACC = 12;
-	public final static int PARAM_DEC = 0x06;
+	public final static int PARAM_DEC = 0x06;//減速度
 	public final static int LENGTH_DEC = 12;
-	public final static int PARAM_MAX_SPEED = 0x07;
+	public final static int PARAM_MAX_SPEED = 0x07;//最大速度
 	public final static int LENGTH_MAX_SPEED = 10;
-	public final static int PARAM_MIN_SPEED = 0x08;
+	public final static int PARAM_MIN_SPEED = 0x08;//最小速度
 	public final static int LENGTH_MIN_SPEED = 13;
+	public final static int PARAM_FS_SPD = 0x15;//フルステップモードに移行する最小速度
+	public final static int LENGTH_FS_SPD = 10;
+	public final static int PARAM_KVAL_HOLD = 0x09;//
+	public final static int LENGTH_KVAL_HOLD = 8;
+	public final static int PARAM_KVAL_RUN = 0x0a;//
+	public final static int LENGTH_KVAL_RUN = 8;
+	public final static int PARAM_KVAL_ACC = 0x0b;//
+	public final static int LENGTH_KVAL_ACC = 8;
+	public final static int PARAM_KVAL_DEC = 0x0c;//
+	public final static int LENGTH_KVAL_DEC = 8;
+	public final static int PARAM_INT_SPEED = 0x0d;//
+	public final static int LENGTH_INT_SPEED = 14;
+	public final static int PARAM_ST_SLP = 0x0e;//
+	public final static int LENGTH_ST_SLP = 8;
+	public final static int PARAM_FN_SLP_ACC = 0x0f;//
+	public final static int LENGTH_FN_SLP_ACC = 8;
+	public final static int PARAM_FN_SLP_DEC = 0x10;//
+	public final static int LENGTH_FN_SLP_DEC = 8;
+	public final static int PARAM_K_THERM = 0x11;//
+	public final static int LENGTH_K_THERM = 4;
+	public final static int PARAM_ADC_OUT = 0x12;//
+	public final static int LENGTH_ADC_OUT = 5;
+	public final static int PARAM_OCD_TH = 0x13;//
+	public final static int LENGTH_OCD_TH = 4;
+	public final static int PARAM_STALL_TH = 0x14;//
+	public final static int LENGTH_STALL_TH = 7;
+	public final static int PARAM_STEP_MODE = 0x16;//
+	public final static int LENGTH_STEP_MODE = 8;
+	public final static int PARAM_ALARM_EN = 0x17;//
+	public final static int LENGTH_ALARM_EN = 8;
+	public final static int PARAM_CONFIG = 0x18;//
+	public final static int LENGTH_CONFIG = 16;
+	public final static int PARAM_STATUS = 0x19;//
+	public final static int LENGTH_STATUS = 16;
+	
 	private final SPI spi;
     private final DigitalOut cs;
     public L6470(Mcu i_mcu , int i_mosi_pin, int i_miso_pin, int i_sclk_pin,
