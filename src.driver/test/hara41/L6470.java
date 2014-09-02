@@ -1,6 +1,7 @@
 /**
+ * このソースコードは以下の仕様書を元に製作しました。
  * http://akizukidenshi.com/download/ds/st/L6470.pdf
- * 
+ * Created by hara.shinichi@gmail.com
  */
 
 package test.hara41;
