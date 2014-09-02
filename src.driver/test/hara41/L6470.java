@@ -280,7 +280,8 @@ public class L6470 extends DriverBaseClass{
     }
     /**
      * スイッチ入力があるまで回転する。スイッチが入力したとき、
-     * @param i_act 0:スイッチが入力した位置を絶対位置の0に設定する、1:絶対位置をMARKレジスタにコピーする
+     * @param i_act 0:スイッチが入力した位置を絶対位置の0に設定する、
+     * 			　　　	1:現在の絶対位置をMARKレジスタにコピーする
      * @param i_dir 移動する方向（1：正転、0:逆転）
      * @param i_spd 速度step/tic
      * @throws MbedJsException 
@@ -296,7 +297,8 @@ public class L6470 extends DriverBaseClass{
     }
     /**
      * スイッチ入力が解除されるまで回転する。スイッチが解除されたときに
-     * @param i_act　0:スイッチが解除された位置を絶対位置の0に設定する、1:絶対位置をMARKレジスタにコピーする
+     * @param i_act　0:スイッチが解除された位置を絶対位置の0に設定する、
+     *              1:現在の絶対位置をMARKレジスタにコピーする
      * @param i_dir　移動する方向（1：正転、0:逆転）
      * @throws MbedJsException
      */
