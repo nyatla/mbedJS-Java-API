@@ -138,7 +138,7 @@ public class L6470 extends DriverBaseClass{
     /**
      * 現在位置から指定した方向に指定ステップ数回転
      * @param i_dir 回転する方向（1：正転、0:逆転）
-     * @param i_n_step 回転するステップ数(10ビット）
+     * @param i_n_step 回転するステップ数(10ビットで指定）
      * @throws MbedJsException
      */
     public void move(int i_dir , int i_n_step) throws MbedJsException
