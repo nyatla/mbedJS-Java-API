@@ -146,111 +146,51 @@ public class L6470 extends DriverBaseClass{
     	}
     	return retval;
     }
-    /**
-     * 指定した絶対位置へ移動
-     * @param i_dir 移動する方向（1：正転、0:逆転）
-     * @param i_abs_pos 絶対位置(10ビットで指定）
-     * @throws MbedJsException
-     */
-    public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x68 | i_dir;
-    	value[1] = (0xff0000 & i_abs_pos)>>16;
-    	value[2] = (0x00ff00 & i_abs_pos)>>8;
-    	value[3] = (0x0000ff & i_abs_pos);
-    	this.sendRecive(value, 4);
-    }
-    /**
-     * 指定した絶対位置へ移動（方向は自動設定）
-     * @param i_abs_pos 絶対位置(10ビットで指定)
-     * @throws MbedJsException
-     */
-    public void goTo(int i_abs_pos) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x60 ;
-    	value[1] = (0xff0000 & i_abs_pos)>>16;
-    	value[2] = (0x00ff00 & i_abs_pos)>>8;
-    	value[3] = (0x0000ff & i_abs_pos);
-    	this.sendRecive(value, 4);
     
-    }
-    /**
-     * 現在位置から指定した方向に指定ステップ数回転
-     * @param i_dir 回転する方向（1：正転、0:逆転）
-     * @param i_n_step 回転するステップ数(10ビットで指定）
-     * @throws MbedJsException
-     */
-    public void move(int i_dir , int i_n_step) throws MbedJsException
-    {
-     	int[] value = new int[4]; 
-    	value[0] = 0x40 | i_dir;
-    	value[1] = (0xff0000 & i_n_step)>>16;
-    	value[2] = (0x00ff00 & i_n_step)>>8;
-    	value[3] = (0x0000ff & i_n_step);
-    	this.sendRecive(value, 4);
-    	
-    }
-    /**
-     * 速度と方向を指定して回転
-     * @param i_dir 方向（1：正転、0:逆転）
-     * @param i_spd 回転速度(step/tick),tick=250ns
-     * @throws MbedJsException
-     */
-    public void run(int i_dir,int i_spd) throws MbedJsException
-    {
-    	int[] value = new int[4]; 
-    	value[0] = 0x50 | i_dir;
-    	value[1] = (0xff0000 & i_spd)>>16;
-    	value[2] = (0x00ff00 & i_spd)>>8;
-    	value[3] = (0x0000ff & i_spd);
-    	this.sendRecive(value, 4);
-    	
-    }
-    /**
-     * パラメータレジスタに値の書き込み２
-     * @param i_param パラメータ名
-     * @param i_value 値
-     * @param i_len パラメータの長さ
-     * @throws MbedJsException
-     */
-    public void setParam2(int i_param, int[] i_value,int i_len) throws MbedJsException
-    {
-    	this.setParam(i_param, i_value, i_len);
-    	this.setParam(i_param, i_value, i_len);
-    }
-    /**
-     * パラメータレジスタに値の書き込み
-     * @param i_param パラメータ名
-     * @param i_value 値
-     * @param i_len パラメータの長さ
-     * @throws MbedJsException
-     */
-    private void setParam(int i_param, int[] i_value,int i_len) throws MbedJsException
-    {
-    	int value = (i_param & 0x1f);
-    	int length = i_len / 8;
-    	if(i_len%8!=0){
-    		length =length +1;
-    	}
-    	this.sendByte(value);
-    	
-    	for(int i=0;i<length ; i++)
-    	{
-    		//System.out.println(String.format(">send: %1$x", i_value[i]));
-    		this.sendByte(i_value[i]);
-    	}
-    }
-    /**
-     * パラメータレジスタから値の読み込み
-     * @param i_param パラメータ名
-     * @param i_len パラメータの長さ
-     * @throws MbedJsException
-     */
-    public int getParam(int i_param, int i_len) throws MbedJsException
-    {
-    	int ret = 0;
+
+	/**
+	 * パラメータレジスタに値の書き込み２
+	 * @param i_param パラメータ名
+	 * @param i_value 値
+	 * @param i_len パラメータの長さ
+	 * @throws MbedJsException
+	 */
+	public void setParam2(int i_param, int[] i_value,int i_len) throws MbedJsException
+	{
+		this.setParam(i_param, i_value, i_len);
+		this.setParam(i_param, i_value, i_len);
+	}
+	/**
+	 * パラメータレジスタに値の書き込み
+	 * @param i_param パラメータ名
+	 * @param i_value 値
+	 * @param i_len パラメータの長さ
+	 * @throws MbedJsException
+	 */
+	private void setParam(int i_param, int[] i_value,int i_len) throws MbedJsException
+	{
+		int value = (i_param & 0x1f);
+		int length = i_len / 8;
+		if(i_len%8!=0){
+			length =length +1;
+		}
+		this.sendByte(value);
+		
+		for(int i=0;i<length ; i++)
+		{
+			//System.out.println(String.format(">send: %1$x", i_value[i]));
+			this.sendByte(i_value[i]);
+		}
+	}
+	/**
+	 * パラメータレジスタから値の読み込み
+	 * @param i_param パラメータ名
+	 * @param i_len パラメータの長さ
+	 * @throws MbedJsException
+	 */
+	public int getParam(int i_param, int i_len) throws MbedJsException
+	{
+		int ret = 0;
 		int retval =0;
 		int value = 0x20 | (i_param & 0x1f);
 		int length = i_len / 8;
@@ -267,7 +207,105 @@ public class L6470 extends DriverBaseClass{
 		System.out.println(String.format("getParam: %1$x", retval));
 		return retval;
 	}
-
+    /**
+     * 速度と方向を指定して回転
+     * @param i_dir 方向（1：正転、0:逆転）
+     * @param i_spd 回転速度(step/tick),tick=250ns
+     * @throws MbedJsException
+     */
+    public void run(int i_dir,int i_spd) throws MbedJsException
+    {
+    	int[] value = new int[4]; 
+    	value[0] = 0x50 | i_dir;
+    	value[1] = (0xff0000 & i_spd)>>16;
+    	value[2] = (0x00ff00 & i_spd)>>8;
+    	value[3] = (0x0000ff & i_spd);
+    	this.sendRecive(value, 4);
+    }    
+    /**
+     * ステップクロックモード（入力したクロックに同期して回転する）に切り替える
+     * @param i_dir　方向（1：正転、0:逆転）
+     * @throws MbedJsException
+     */
+    public void stepClock(int i_dir) throws MbedJsException
+    {
+    	int[] value=new int[1];
+    	value[0] = 0x58 | i_dir;
+    	this.sendRecive(value,1);    	
+    }
+    /**
+     * 現在位置から指定した方向に指定ステップ数回転
+     * @param i_dir 回転する方向（1：正転、0:逆転）
+     * @param i_n_step 回転するステップ数(10ビットで指定）
+     * @throws MbedJsException
+     */
+    public void move(int i_dir , int i_n_step) throws MbedJsException
+    {
+     	int[] value = new int[4]; 
+    	value[0] = 0x40 | i_dir;
+    	value[1] = (0xff0000 & i_n_step)>>16;
+    	value[2] = (0x00ff00 & i_n_step)>>8;
+    	value[3] = (0x0000ff & i_n_step);
+    	this.sendRecive(value, 4);
+    }
+    /**
+     * 指定した絶対位置へ回転（方向は自動設定）
+     * @param i_abs_pos 絶対位置(10ビットで指定)
+     * @throws MbedJsException
+     */
+    public void goTo(int i_abs_pos) throws MbedJsException
+    {
+     	int[] value = new int[4]; 
+    	value[0] = 0x60 ;
+    	value[1] = (0xff0000 & i_abs_pos)>>16;
+    	value[2] = (0x00ff00 & i_abs_pos)>>8;
+    	value[3] = (0x0000ff & i_abs_pos);
+    	this.sendRecive(value, 4);
+    
+    }   
+    /**
+     * 指定した絶対位置へ回転
+     * @param i_dir 移動する方向（1：正転、0:逆転）
+     * @param i_abs_pos 絶対位置(10ビットで指定）
+     * @throws MbedJsException
+     */
+    public void goTo_dir(int i_dir , int i_abs_pos) throws MbedJsException
+    {
+     	int[] value = new int[4]; 
+    	value[0] = 0x68 | i_dir;
+    	value[1] = (0xff0000 & i_abs_pos)>>16;
+    	value[2] = (0x00ff00 & i_abs_pos)>>8;
+    	value[3] = (0x0000ff & i_abs_pos);
+    	this.sendRecive(value, 4);
+    }
+    /**
+     * スイッチ入力があるまで回転する。スイッチが入力したとき、
+     * @param i_act 0:スイッチが入力した位置を絶対位置の0に設定する、1:絶対位置をMARKレジスタにコピーする
+     * @param i_dir 移動する方向（1：正転、0:逆転）
+     * @param i_spd 速度step/tic
+     * @throws MbedJsException 
+     */
+    public void goUntil(int i_act,int i_dir,int i_spd) throws MbedJsException
+    {
+    	int[] value = new int[4]; 
+    	value[0] = 0x80 |(i_act<<3) | i_dir;
+    	value[1] = (0xff0000 & i_spd)>>16;
+    	value[2] = (0x00ff00 & i_spd)>>8;
+    	value[3] = (0x0000ff & i_spd);
+    	this.sendRecive(value, 4);
+    }
+    /**
+     * スイッチ入力が解除されるまで回転する。スイッチが解除されたときに
+     * @param i_act　0:スイッチが解除された位置を絶対位置の0に設定する、1:絶対位置をMARKレジスタにコピーする
+     * @param i_dir　移動する方向（1：正転、0:逆転）
+     * @throws MbedJsException
+     */
+    public void releaseSW(int i_act,int i_dir) throws MbedJsException
+    {
+    	int [] value = new int[1];
+    	value[0] = 0x90 |(i_act<<3) | i_dir;
+    	this.sendRecive(value, 1);
+    }
     
     /**
      * デバイスのリセット
@@ -361,6 +399,15 @@ public class L6470 extends DriverBaseClass{
     public void goHome() throws MbedJsException
     {
     	int []str = {0x70};
+    	this.sendRecive(str, 1);
+    }
+    /**
+     * マーク位置に移動　
+     * @throws MbedJsException
+     */
+    public void goMark() throws MbedJsException
+    {
+    	int []str = {0x78};
     	this.sendRecive(str, 1);
     }
 	public static void main(String[] args) throws MbedJsException {
