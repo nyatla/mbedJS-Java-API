@@ -276,9 +276,26 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * ドライバステータスの取得
+     * ドライバステータスの取得とフラグのリセット
      * @return ステータス
+     * bit15:SCK_MOD ステップクロックモードのとき1
+     * bit14:STEP_LOSS_B B相のストール時に0
+     * bit13:STEP_LOSS_A A相のストール時に0
+     * bit12:OCD 電流制限を超えた場合に0
+     * bit11:TH_SD 温度制限を超えた場合に0
+     * bit10:TH_WRN 温度警告時に0
+     * bit09:UVLO 電源電圧の低下時に0
+     * bit08:WRONG_CMD コマンドが間違っている場合に1
+     * bit07:NOTPERF_CMD コマンドが実行できない場合に1
+     * bit06:MOT_STATUS モータの加速状態を表す(以下)
+     * bit05:MOT_STATUS b00:停止、b01：加速  b10:減速　b11:一定速度
+     * bit04:DIR 現在の回転方向、1:正転,0:逆転
+     * bit03:SW_EVN 外部スイッチの入力を検出した時に1
+     * bit02:SW_F 外部スイッチの状態を出力、0:OFF,1:ON
+     * bit01:BUSY 回転中など駆動コマンドの実行中に0
+     * bit00:HiZ ドライバのブリッジがハイインピーダンスに設定された場合に1
      * @throws MbedJsException
+     * 
      */
     public int getStatus() throws MbedJsException
     {
