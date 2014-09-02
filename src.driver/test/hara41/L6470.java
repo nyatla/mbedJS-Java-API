@@ -79,7 +79,7 @@ public class L6470 extends DriverBaseClass{
     	
     }   
     /**
-     * 送受信関数
+     * 送受信
      * @param i_value 送信するデータ
      * @param i_length データの長さ
      * @return　受信したデータ
@@ -240,7 +240,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * （減速せずに）停止
+     * 停止
      * @throws MbedJsException
      */
     public void hardStop() throws MbedJsException
@@ -258,7 +258,7 @@ public class L6470 extends DriverBaseClass{
     	this.sendRecive(str, 1);
     }
     /**
-     * （減速せずに）ハイインピーダンスに設定
+     * ハイインピーダンスに設定
      * @throws MbedJsException
      */
     public void hardHiZ() throws MbedJsException
