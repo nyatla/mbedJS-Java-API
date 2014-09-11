@@ -204,8 +204,9 @@ public class LPS331{
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("192.168.128.39");
-			LM75B a=new LM75B(mcu,PinName.p28,PinName.p27,0x90);
-			System.out.println(a.read());
+			LPS331 a=new LPS331(mcu,PinName.p28,PinName.p27,0x90);
+			System.out.println("Temperture:"+a.getTemperature());
+			System.out.println("Pressure:"+a.getPressure());
 			mcu.close();
 			System.out.println("done");
 		} catch (Exception e) {
