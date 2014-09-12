@@ -62,7 +62,7 @@ public class JsonRpc
 				char t=this._rx.charAt(i);
 				switch(rxst){
 				case 2:
-					if(t!='"'){
+					if(t=='"'){
 						rxst=1;
 					}
 					break;

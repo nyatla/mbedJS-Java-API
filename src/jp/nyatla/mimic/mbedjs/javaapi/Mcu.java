@@ -47,9 +47,22 @@ public class Mcu
 	}
 	private final String RPC_CLASS="mbedJS:Mcu";
 	private JsonRpc _rpc;
+	/**
+	 * i_addrに指定したアドレスに接続してMCUインスタンスを生成します。
+	 * @param i_addr
+	 * ws://で始まるmbedJSのフルパス、又はホスト名を指定します。
+	 * ホスト名の場合は、ws://{i_addr}/rpc/に接続します。
+	 * @throws MbedJsException
+	 */
 	public Mcu(String i_addr) throws MbedJsException
 	{
-		this._rpc=new JsonRpc("ws://"+i_addr+"/rpc/");
+		String path;
+		if(i_addr.matches("^ws://.*")){
+			path=i_addr;
+		}else{
+			path="ws://"+i_addr+"/rpc/";
+		}
+		this._rpc=new JsonRpc(path);
 	}
 	/**
 	 * mbedJSのgetInfo関数を実行します。
