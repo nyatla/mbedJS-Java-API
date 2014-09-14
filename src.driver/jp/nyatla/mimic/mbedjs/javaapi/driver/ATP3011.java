@@ -117,8 +117,8 @@ public class ATP3011 extends DriverBaseClass{
 		ATP3011 talk = new ATP3011(mcu,PinName.P0_10 , PinName.P0_11,ATP3011.I2C_ADDRESS<<1);
 		for(int n=1 ; ; n++)
 		{
-			String str = String.format("<NUMK VAL={0}>.", n);
-			byte[] msg = new byte[32];
+			String str = String.format("ohayou", n);
+			byte[] msg;
 			msg = str.getBytes();
 			talk.synthe(msg);
 		}

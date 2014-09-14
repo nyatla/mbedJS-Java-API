@@ -75,7 +75,7 @@ public class LPS331{
 		this._is_attached=true;
 		this._i2c=new I2C(i_mcu, sda, scl);
 		this._addr=i_address;
-		this._i2c.frequency(10000);
+		this._i2c.frequency(100000);
 		this._initDevice();
 	}
 	private void _initDevice() throws MbedJsException
@@ -204,7 +204,9 @@ public class LPS331{
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("192.168.128.39");
-			LPS331 a=new LPS331(mcu,PinName.p28,PinName.p27,0x90);
+			LPS331 a=new LPS331(mcu,PinName.p9,PinName.p10,0xba);
+			a.setActive(true);
+			System.out.println("Whoami:"+a.whoami());
 			System.out.println("Temperture:"+a.getTemperature());
 			System.out.println("Pressure:"+a.getPressure());
 			mcu.close();
