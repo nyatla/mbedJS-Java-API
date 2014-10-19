@@ -188,10 +188,12 @@ public class MMA7660 extends DriverBaseClass
 	{
 		int tiltreg = this.read(MMA7660_TILT_R);
 		tiltreg &= 0x03;
-		if(tiltreg == 0x01)
-			return Left;
-		if(tiltreg == 0x02)
-			return Right;
+		if(tiltreg == 0x01){
+			return Front;
+		}
+		if(tiltreg == 0x02){
+			return Back;
+		}
 		return Unknown;		
 	}
 	/**
@@ -204,14 +206,18 @@ public class MMA7660 extends DriverBaseClass
 		int tiltreg = this.read(MMA7660_TILT_R);
 		tiltreg &= 0x07<<2;
 		tiltreg >>=2;
-		if(tiltreg == 0x01)
+		if(tiltreg == 0x01){
 			return Left;
-		if(tiltreg == 0x02)
+		}
+		if(tiltreg == 0x02){
 			return Right;
-		if(tiltreg == 0x05)
+		}
+		if(tiltreg == 0x05){
 			return Down;
-		if(tiltreg == 0x06)
+		}
+		if(tiltreg == 0x06){
 			return Up;
+		}
 		return Unknown;
 			
 	}
