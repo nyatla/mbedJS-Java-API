@@ -28,7 +28,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.*;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 /**
  * I2C接続のLCDディスプレイACM1602NI
- * @author hara41
+ * @author hara.shinichi@gmail.com
  *
  */
 public class ACM1602NI extends DriverBaseClass{
