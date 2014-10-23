@@ -1,3 +1,8 @@
+/**
+ * 大気圧センサLPS331
+ * このドライバは以下の仕様書をもとに作成しました
+ * 	http://akizukidenshi.com/download/ds/st/lps331ap.pdf
+ */
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;
@@ -88,12 +93,20 @@ public class LPS331{
 			this._i2c.dispose();
 		}
 	}
-	 
+	/**
+	 * デバイスのIDを返す
+	 * @return　ID（デフォルトでは0xbb）
+	 * @throws MbedJsException
+	 */
 	public int whoami() throws MbedJsException
 	{
 	    return (this._read((byte)0x0f) & 0x0ff);
 	}
-	 
+	/**
+	 *  デバイスが存在するか調べる
+	 * @return 存在する場合Trueを返す
+	 * @throws MbedJsException
+	 */
 	public boolean isAvailable() throws MbedJsException
 	{
 	    if(this.whoami() == 0xbb) {
@@ -102,12 +115,21 @@ public class LPS331{
 	    
 	    return false;
 	}
-	 
+	/**
+	 * 分解能を設定する 
+	 * @param i_pressure_avg
+	 * @param i_temp_avg
+	 * @throws MbedJsException
+	 */
 	public void setResolution(int i_pressure_avg,int i_temp_avg) throws MbedJsException
 	{
 		this._write((byte)0x10, (byte)(((i_temp_avg & 0x07) << 4) | (i_pressure_avg & 0x0f)));
 	}
-	 
+	/**
+	 *  パワーダウンモードを切って通常モードにする
+	 * @param i_is_active　true:通常モード、false:パワーダウンモード
+	 * @throws MbedJsException
+	 */
 	public void setActive(boolean i_is_active) throws MbedJsException
 	{
 	    if(i_is_active) {
@@ -118,7 +140,11 @@ public class LPS331{
 	 
 	    this._write((byte)0x20,(byte)this._ctrlreg1);
 	}
-	 
+	/**
+	 * データレートの設定	 
+	 * @param i_datarate
+	 * @throws MbedJsException
+	 */
 	public void setDataRate(int i_datarate) throws MbedJsException
 	{
 	    int d= i_datarate & 0x07;
@@ -129,7 +155,11 @@ public class LPS331{
 	    this._write((byte)0x20,(byte)this._ctrlreg1);
 	}
 	 
-	    
+	/**
+	 * 気圧を取得する
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float getPressure() throws MbedJsException
 	{
 	    byte[] data=this._read_multibyte((byte)0x28,3);
@@ -137,7 +167,11 @@ public class LPS331{
 	    float pressure  = (data[0]&0x0ff)|((data[1]&0x0ff) << 8)|((data[2]&0x0ff) << 16);
 	    return pressure/4096.0f;
 	}
-	 
+	/**
+	 * 温度を取得する 
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float getTemperature() throws MbedJsException
 	{
 		byte[] b=this._read_multibyte((byte)0x2b, 2);
