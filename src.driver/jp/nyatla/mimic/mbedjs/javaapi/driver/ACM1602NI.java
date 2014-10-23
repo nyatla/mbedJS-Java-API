@@ -26,7 +26,11 @@ package jp.nyatla.mimic.mbedjs.javaapi.driver;
 import jp.nyatla.mimic.mbedjs.*;
 import jp.nyatla.mimic.mbedjs.javaapi.*;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
-
+/**
+ * I2C接続のLCDディスプレイACM1602NI
+ * @author hara41
+ *
+ */
 public class ACM1602NI extends DriverBaseClass{
 	/**
 	 * 7bitI2Cアドレスです。I2C_ADDRESS<<1を指定してください。
@@ -45,6 +49,14 @@ public class ACM1602NI extends DriverBaseClass{
 
 	private final boolean _is_attached;
 	private final int _addr;
+	/**
+	 * Mcuから直接インスタンスを生成する場合のコンストラクタ
+	 * @param i_mcu
+	 * @param i_sda
+	 * @param i_scl
+	 * @param i_address
+	 * @throws MbedJsException
+	 */
 	public ACM1602NI(Mcu i_mcu,int i_sda, int i_scl,int i_address) throws MbedJsException {
 
 		this._is_attached=true;
@@ -53,7 +65,12 @@ public class ACM1602NI extends DriverBaseClass{
 		this._i2c.frequency(10000);
 		this.init();
 	}
- 
+	/**
+	 * 既存のI2Cをインスタンスに追加する場合のコンストラクタ
+	 * @param i_i2c
+	 * @param i_address
+	 * @throws MbedJsException
+	 */
 	public ACM1602NI(I2C i_i2c , int i_address) throws MbedJsException {
 		this._is_attached=false;
 		this._i2c=i_i2c;
@@ -104,21 +121,41 @@ public class ACM1602NI extends DriverBaseClass{
 	    return I2C_SUCCESS;
 	}
 */
+	/**
+	 * 1文字を表示する
+	 * @param i_column　行
+	 * @param i_row　列
+	 * @param i_c　文字
+	 * @throws MbedJsException
+	 */
 	public void character(int i_column, int i_row, int i_c) throws MbedJsException {
 	    this.writeCommand(address(i_column, i_row));
 	    this.writeData(i_c);
 	}
- 
+	/**
+	 * スクリーンをクリアする
+	 * @throws MbedJsException
+	 */
 	public void cls() throws MbedJsException {
 	    this.writeCommand(0x01);
 	    this.wait_ms(I2C_COMMAND_WAIT_MS);
 	    this.locate(0, 0);
 	}
- 
+	/**
+	 * カーソルを任意の位置に移動する
+	 * @param i_column 行
+	 * @param i_row 列
+	 */
 	public void locate(int i_column, int i_row) {
 	    this._column = i_column;
 	    this._row = i_row;
 	}
+	/**
+	 * 文字列を表示する
+	 * @param i_s 文字列
+	 * @return　文字数
+	 * @throws MbedJsException
+	 */
 	public int puts(String i_s) throws MbedJsException
 	{
 		int i=0;
