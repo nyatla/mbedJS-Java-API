@@ -6,8 +6,9 @@ import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.PinName;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 /**
+ * 加速度センサ MMA7660
  * Port from https://mbed.org/components/MMA7660/
- * @author hara41
+ * @author hara.shinichi@gmail.com
  */
 public class MMA7660 extends DriverBaseClass
 {
@@ -82,7 +83,12 @@ public class MMA7660 extends DriverBaseClass
 		}else{
 			return 0xffffffe0|v;
 		}
-	}	
+	}
+	/**
+	 * 接続テスト
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public boolean testConnection() throws MbedJsException
 	{
 		int ret = this._i2c.write(this._addr ,new byte[]{0x00}, false);
@@ -92,6 +98,11 @@ public class MMA7660 extends DriverBaseClass
 			return false;
 		}
 	}
+	/**
+	 * 動作モードの切り替え
+	 * @param i_state 
+	 * @throws MbedJsException
+	 */
 	public void setActive(boolean i_state) throws MbedJsException
 	{
 		this._active = i_state;
@@ -106,6 +117,11 @@ public class MMA7660 extends DriverBaseClass
 		this.write(MMA7660_MODE_R,(byte) modereg);
 		
 	}
+	/**
+	 * intデータの読み取り
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public int[] readData_int() throws MbedJsException
 	{
 		int [] retval = new int[3];
@@ -136,6 +152,11 @@ public class MMA7660 extends DriverBaseClass
 		}
 		return retval;
 	}
+	/**
+	 * データの読み取り
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float[] readData() throws MbedJsException
 	{
 		float[] retval= new float[3];
@@ -147,15 +168,35 @@ public class MMA7660 extends DriverBaseClass
 		}
 		return retval;
 	}
+	/**
+	 * X軸の加速度
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float x() throws MbedJsException{
 		return this.getSingle(0);
 	}
+	/**
+	 * Y軸の加速度
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float y() throws MbedJsException{
 		return this.getSingle(1);
 	}
+	/**
+	 * Z軸の加速度
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public float z() throws MbedJsException{
 		return this.getSingle(2);
 	}
+	/**
+	 * サンプルレートの設定
+	 * @param i_samplerate
+	 * @throws MbedJsException
+	 */
 	public void setSampleRate(int i_samplerate) throws MbedJsException
 	{
 		boolean active_old = this._active;
@@ -180,8 +221,8 @@ public class MMA7660 extends DriverBaseClass
 		this.setActive(active_old);
 	}
 	/**
-	 * 	
-	 * @return Left,Right
+	 * 	方向の検出 TODO
+	 * @return Front,Back
 	 * @throws MbedJsException
 	 */
 	public int getSide() throws MbedJsException
@@ -197,7 +238,7 @@ public class MMA7660 extends DriverBaseClass
 		return Unknown;		
 	}
 	/**
-	 * 
+	 * 方位の検出
 	 * @return Left,Right,Up,Down,Unknown
 	 * @throws MbedJsException
 	 */
