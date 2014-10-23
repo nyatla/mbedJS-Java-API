@@ -4,7 +4,7 @@
  * http://mbed.org/users/va009039/code/ATP3011/
  */
 /**
- * modified by hara41
+ * modified by hara.shinichi@gmail.com
  */
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
@@ -26,7 +26,7 @@ public class ATP3011 extends DriverBaseClass{
 	/** I2Cを内部生成したか*/
 	private final boolean _is_attached;
 	/**
-	 * 既存のI2Cに追加する場合
+	 * 既存のI2Cをインスタンスに追加する場合
 	 * @param i_i2c
 	 * @param i_address
 	 * @throws MbedJsException
@@ -39,7 +39,7 @@ public class ATP3011 extends DriverBaseClass{
 		this._initDevice();
 	}
 	/**
-	 * Mcuから直接生成する場合
+	 * Mcuから直接インスタンスを生成する場合
 	 * @param i_mcu
 	 * @param sda
 	 * @param scl
@@ -65,7 +65,12 @@ public class ATP3011 extends DriverBaseClass{
 		}
 	}
 
- 
+	/**
+	 * デバイスの検出
+	 * @param i_timeout_ms
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public boolean isActive(int i_timeout_ms) throws MbedJsException
 	{
 	    sleep_ms(ATP3011.AQTK_STARTUP_WAIT_MS);
@@ -79,7 +84,11 @@ public class ATP3011 extends DriverBaseClass{
 	    }while(System.currentTimeMillis()-start<i_timeout_ms);
 	    return false;
 	}
-    
+    /**
+     * 発声
+     * @param i_msg
+     * @throws MbedJsException
+     */
 	public void synthe(byte[] i_msg) throws MbedJsException
 	{
 	    while(this.isBusy()){
@@ -88,13 +97,21 @@ public class ATP3011 extends DriverBaseClass{
 	    this.write(i_msg);
 	    this.write(new byte[]{'\r'});
 	}
-	 
+	/**
+	 * コマンドの書き込み
+	 * @param i_msg
+	 * @throws MbedJsException
+	 */
 	public void write(byte[] i_msg) throws MbedJsException
 	{
 	    this._i2c.write(this._addr, i_msg, false);
 	    this._last_call_in_msec=System.currentTimeMillis();
 	}
-	 
+	/**
+	 * ビジー状態のチェック
+	 * @return
+	 * @throws MbedJsException
+	 */
 	public boolean isBusy() throws MbedJsException
 	{
 		//最終呼び出し時刻チェック
