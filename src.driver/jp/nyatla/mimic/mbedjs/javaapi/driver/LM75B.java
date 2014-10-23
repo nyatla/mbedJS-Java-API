@@ -9,7 +9,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 /**
  * http://mbed.org/users/chris/code/LM75B/ をmbedJS-Javaに移植したものです
  * 
- * @author hara4_000
+ * @author hara.shinichi@gmail.com
  * 
  */
 public class LM75B extends DriverBaseClass
@@ -59,7 +59,11 @@ public class LM75B extends DriverBaseClass
 			this._i2c.dispose();
 		}
 	}
-
+	/**
+	 * 温度の読み込み
+	 * @return　温度[deg]
+	 * @throws MbedJsException
+	 */
 	public float read() throws MbedJsException{
 		byte[] str = { 0x00 };
 		I2C.ReadResult rr = null;
