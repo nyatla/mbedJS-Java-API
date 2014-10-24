@@ -70,6 +70,7 @@ public class TextLCD extends DriverBaseClass
 	 * @param i_d3_pin
 	 * Data lines for using as a 4-bit interface(3)
 	 * @param i_lcd_type LCD
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public TextLCD(Mcu i_mcu , int i_rs_pin, int i_ee_pin,
 	int i_d0_pin, int i_d1_pin, int i_d2_pin, int i_d3_pin,int i_lcd_type) throws MbedJsException
@@ -142,8 +143,8 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * カーソルの位置を移動する
-	 * @param i_column 
-	 * @param i_row
+	 * @param i_column 縦の列
+	 * @param i_row　横の行
 	 */
 	public void locate(int i_column , int i_row){
 		this._column = i_column;
@@ -179,7 +180,6 @@ public class TextLCD extends DriverBaseClass
 	/**
 	 * 縦の列を返す
 	 * @return 縦の列
-	 * @throws MbedJsException MbedJS例外 
 	 */
 	public int columns(){
 		switch(this._lcd_type){

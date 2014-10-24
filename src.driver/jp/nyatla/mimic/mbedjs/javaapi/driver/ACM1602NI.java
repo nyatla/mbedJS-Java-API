@@ -32,10 +32,8 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
  *
  */
 public class ACM1602NI extends DriverBaseClass{
-	/**
-	 * 7bitI2Cアドレスです。I2C_ADDRESS<<1を指定してください。
-	 */
-    public final static int I2C_ADDRESS = 0x50;
+	//7bitI2Cアドレスです。I2C_ADDRESS<<1を指定してください。
+	public final static int I2C_ADDRESS = 0x50;
 //    private static final int I2C_BIT_WAIT_US = 20;
     private static final int I2C_COMMAND_WAIT_MS = 4;
  
@@ -55,7 +53,7 @@ public class ACM1602NI extends DriverBaseClass{
 	 * @param i_sda SDAピン
 	 * @param i_scl SCLピン
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ACM1602NI(Mcu i_mcu,int i_sda, int i_scl,int i_address) throws MbedJsException {
 
@@ -69,7 +67,7 @@ public class ACM1602NI extends DriverBaseClass{
 	 * 既存のI2Cをインスタンスに追加する場合のコンストラクタ
 	 * @param i_i2c I2Cインスタンス
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ACM1602NI(I2C i_i2c , int i_address) throws MbedJsException {
 		this._is_attached=false;

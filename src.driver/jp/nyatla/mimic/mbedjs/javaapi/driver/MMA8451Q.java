@@ -121,10 +121,7 @@ public class MMA8451Q extends DriverBaseClass
 			this.getXX((byte)0x05)
 		);
 	}
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");

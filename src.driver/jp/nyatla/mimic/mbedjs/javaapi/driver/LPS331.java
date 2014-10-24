@@ -58,7 +58,7 @@ public class LPS331{
 	 * 既存のI2Cに追加する場合
 	 * @param i_i2c I2Cインスタンス
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LPS331(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -73,7 +73,7 @@ public class LPS331{
 	 * @param sda SDAピン
 	 * @param scl SCLピン
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LPS331(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -96,7 +96,7 @@ public class LPS331{
 	/**
 	 * デバイスのIDを返す
 	 * @return　ID（デフォルトでは0xbb）
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int whoami() throws MbedJsException
 	{
@@ -105,7 +105,7 @@ public class LPS331{
 	/**
 	 *  デバイスが存在するか調べる
 	 * @return 存在する場合Trueを返す
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public boolean isAvailable() throws MbedJsException
 	{
@@ -231,10 +231,7 @@ public class LPS331{
 	    I2C.ReadResult rs=this._i2c.read(this._addr,i_count,false);
 	    return rs.data;		
 	}
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("192.168.128.39");

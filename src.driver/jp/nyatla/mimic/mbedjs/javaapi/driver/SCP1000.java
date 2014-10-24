@@ -119,7 +119,6 @@ public class SCP1000 extends DriverBaseClass
 
 	/**
 	* 気圧の読み込み
-	* @throws MbedJsException
 	* @return The return value hPa.
 	* @throws MbedJsException MbedJS例外
 	*/
@@ -140,7 +139,6 @@ public class SCP1000 extends DriverBaseClass
 
     /**
      * 温度の読み込み
-     * @throws MbedJsException
      * @return The temperature in Celsius.
      * @throws MbedJsException MbedJS例外
      */
@@ -214,10 +212,7 @@ public class SCP1000 extends DriverBaseClass
    		return(in_word);
 	}
 
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[])
 	{
 		try

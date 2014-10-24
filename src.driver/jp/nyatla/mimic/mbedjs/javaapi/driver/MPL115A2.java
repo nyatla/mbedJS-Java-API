@@ -13,9 +13,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.Mcu;
 import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 
 public class MPL115A2 extends DriverBaseClass {
-	/**
-	 * 7bitアドレスです。mbedSDKに指定するときは(0x60<<1)を指定してください。
-	 */
+	// 7bitアドレスです。mbedSDKに指定するときは(0x60<<1)を指定してください。
 	public final static int I2C_ADDRESS = 0x60;
 	private final I2C _i2c;
 	private final int _addr;
@@ -120,7 +118,7 @@ public class MPL115A2 extends DriverBaseClass {
 	/**
 	 * 気圧センサの値を返します。
 	 * @return　気圧[kPa]
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float getPressure() throws MbedJsException
 	{

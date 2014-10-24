@@ -21,7 +21,7 @@ public class MMA7660 extends DriverBaseClass
 	 * 既存のI2Cに追加する場合
 	 * @param i_i2c　I2Cインスタンス
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public MMA7660(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -33,10 +33,10 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * Mcuから直接生成する場合
 	 * @param i_mcu MCUインスタンス
-	 * @param sda SDAピン
-	 * @param scl SCLピン
+	 * @param i_sda SDAピン
+	 * @param i_scl SCLピン
 	 * @param i_address I2Cアドレス
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public MMA7660(Mcu i_mcu, int i_sda, int i_scl, int i_address) throws MbedJsException
 	{
@@ -88,7 +88,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * 接続テスト
 	 * @return true:デバイスを検出
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public boolean testConnection() throws MbedJsException
 	{
@@ -102,7 +102,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * 動作モードの切り替え
 	 * @param i_state true:active mode,false:standby mode
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void setActive(boolean i_state) throws MbedJsException
 	{
@@ -121,7 +121,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * intデータの読み取り
 	 * @return 加速度データ{x,y,z}
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int[] readData_int() throws MbedJsException
 	{
@@ -155,8 +155,8 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * データの読み取り
-	 * @return 加速度データ{x,y,z}
-	 * @throws MbedJsException　MbedJS例外
+	 * @return 読み取りデータ{x,y,z}
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float[] readData() throws MbedJsException
 	{
@@ -172,7 +172,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * X軸の加速度
 	 * @return X軸の加速度
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float x() throws MbedJsException{
 		return this.getSingle(0);
@@ -180,7 +180,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * Y軸の加速度
 	 * @return Y軸の加速度
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float y() throws MbedJsException{
 		return this.getSingle(1);
@@ -188,7 +188,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * Z軸の加速度
 	 * @return Z軸の加速度
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float z() throws MbedJsException{
 		return this.getSingle(2);
@@ -196,7 +196,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * サンプルレートの設定
 	 * @param i_samplerate サンプルレート
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void setSampleRate(int i_samplerate) throws MbedJsException
 	{
@@ -224,7 +224,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * 	傾き方向の検出
 	 * @return Front,Back
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int getSide() throws MbedJsException
 	{
@@ -241,7 +241,7 @@ public class MMA7660 extends DriverBaseClass
 	/**
 	 * 傾き方位の検出
 	 * @return Left,Right,Up,Down,Unknown
-	 * @throws MbedJsException　MbedJS例外
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int getOrientation() throws MbedJsException
 	{
@@ -323,10 +323,7 @@ public class MMA7660 extends DriverBaseClass
 	private boolean _active;
 	private float _samplerate=1; 
 	//-----------------------------------------------------
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[]){
 		
 		try {
