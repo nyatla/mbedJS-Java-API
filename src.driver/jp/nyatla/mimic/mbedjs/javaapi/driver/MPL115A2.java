@@ -33,7 +33,12 @@ public class MPL115A2 extends DriverBaseClass {
 		int d = 1 << (fbits + zpad);
 		return (float)v / d;
 	}
-	
+	/**
+	 * 既存のI2Cに追加する場合
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public MPL115A2(I2C i_i2c, int i_address) throws MbedJsException {
 		this._is_attached = false;
 		this._i2c = i_i2c;
@@ -43,12 +48,11 @@ public class MPL115A2 extends DriverBaseClass {
 
 	/**
 	 * Mcuから直接生成する場合
-	 * 
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu　MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl　SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public MPL115A2(Mcu i_mcu, int sda, int scl, int i_address)
 			throws MbedJsException {
@@ -68,8 +72,8 @@ public class MPL115A2 extends DriverBaseClass {
 	}	
 	/**
 	 * センサからの生バイト列を返します。
-	 * @return
-	 * @throws MbedJsException
+	 * @return センサからのデータ
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public byte[] readRaw() throws MbedJsException{
 		// start AD conversions
@@ -89,7 +93,7 @@ public class MPL115A2 extends DriverBaseClass {
 	 * @return
 	 * [0] - 気圧(kPa)
 	 * [1] - 温度(°C)
-	 * @throws MbedJsException 
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float[] read() throws MbedJsException
 	{
@@ -106,8 +110,8 @@ public class MPL115A2 extends DriverBaseClass {
 	}
 	/**
 	 * 温度センサの値を返します。
-	 * @return float - The local pressure in °C 
-	 * @throws MbedJsException 
+	 * @return 温度[deg] 
+	 * @throws MbedJsException　 MbedJS例外
 	 **/
 	public float getTemperature() throws MbedJsException
 	{
@@ -115,8 +119,8 @@ public class MPL115A2 extends DriverBaseClass {
 	}
 	/**
 	 * 気圧センサの値を返します。
-	 * @return
-	 * @throws MbedJsException
+	 * @return　気圧[kPa]
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public float getPressure() throws MbedJsException
 	{

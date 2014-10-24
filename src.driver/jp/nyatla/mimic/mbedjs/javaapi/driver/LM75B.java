@@ -21,9 +21,9 @@ public class LM75B extends DriverBaseClass
 	private final boolean _is_attached;
 	/**
 	 * 既存のI2Cに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LM75B(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -34,11 +34,11 @@ public class LM75B extends DriverBaseClass
 	}
 	/**
 	 * Mcuから直接生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LM75B(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -62,7 +62,7 @@ public class LM75B extends DriverBaseClass
 	/**
 	 * 温度の読み込み
 	 * @return　温度[deg]
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float read() throws MbedJsException{
 		byte[] str = { 0x00 };
@@ -72,10 +72,7 @@ public class LM75B extends DriverBaseClass
 		float ret= (((rr.data[0]& 0x0ff) << 8) | (rr.data[1]& 0x0ff)) / 256.0f;
 		return ret;
 	}
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("192.168.128.39");

@@ -8,6 +8,7 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
 /**
  * 加速度センサ MMA7660
  * Port from https://mbed.org/components/MMA7660/
+ * http://www.freescale.com.cn/files/sensors/doc/data_sheet/MMA7660FC.pdf?fpsp=1
  * @author hara.shinichi@gmail.com
  */
 public class MMA7660 extends DriverBaseClass
@@ -18,9 +19,9 @@ public class MMA7660 extends DriverBaseClass
 	private final boolean _is_attached;
 	/**
 	 * 既存のI2Cに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c　I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public MMA7660(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -31,11 +32,11 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * Mcuから直接生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public MMA7660(Mcu i_mcu, int i_sda, int i_scl, int i_address) throws MbedJsException
 	{
@@ -86,8 +87,8 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * 接続テスト
-	 * @return
-	 * @throws MbedJsException
+	 * @return true:デバイスを検出
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public boolean testConnection() throws MbedJsException
 	{
@@ -100,8 +101,8 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * 動作モードの切り替え
-	 * @param i_state 
-	 * @throws MbedJsException
+	 * @param i_state true:active mode,false:standby mode
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public void setActive(boolean i_state) throws MbedJsException
 	{
@@ -119,8 +120,8 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * intデータの読み取り
-	 * @return
-	 * @throws MbedJsException
+	 * @return 加速度データ{x,y,z}
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public int[] readData_int() throws MbedJsException
 	{
@@ -154,8 +155,8 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * データの読み取り
-	 * @return
-	 * @throws MbedJsException
+	 * @return 加速度データ{x,y,z}
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public float[] readData() throws MbedJsException
 	{
@@ -170,32 +171,32 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * X軸の加速度
-	 * @return
-	 * @throws MbedJsException
+	 * @return X軸の加速度
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public float x() throws MbedJsException{
 		return this.getSingle(0);
 	}
 	/**
 	 * Y軸の加速度
-	 * @return
-	 * @throws MbedJsException
+	 * @return Y軸の加速度
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public float y() throws MbedJsException{
 		return this.getSingle(1);
 	}
 	/**
 	 * Z軸の加速度
-	 * @return
-	 * @throws MbedJsException
+	 * @return Z軸の加速度
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public float z() throws MbedJsException{
 		return this.getSingle(2);
 	}
 	/**
 	 * サンプルレートの設定
-	 * @param i_samplerate
-	 * @throws MbedJsException
+	 * @param i_samplerate サンプルレート
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public void setSampleRate(int i_samplerate) throws MbedJsException
 	{
@@ -221,9 +222,9 @@ public class MMA7660 extends DriverBaseClass
 		this.setActive(active_old);
 	}
 	/**
-	 * 	方向の検出 TODO
+	 * 	傾き方向の検出
 	 * @return Front,Back
-	 * @throws MbedJsException
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public int getSide() throws MbedJsException
 	{
@@ -238,9 +239,9 @@ public class MMA7660 extends DriverBaseClass
 		return Unknown;		
 	}
 	/**
-	 * 方位の検出
+	 * 傾き方位の検出
 	 * @return Left,Right,Up,Down,Unknown
-	 * @throws MbedJsException
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	public int getOrientation() throws MbedJsException
 	{
@@ -269,9 +270,9 @@ public class MMA7660 extends DriverBaseClass
 	}
 	/**
 	 * unsigned charとして読出し
-	 * @param i_address
-	 * @return
-	 * @throws MbedJsException
+	 * @param i_address 読み出しアドレス
+	 * @return　読み出しデータ
+	 * @throws MbedJsException　MbedJS例外
 	 */
 	private int read(byte i_address) throws MbedJsException
 	{
