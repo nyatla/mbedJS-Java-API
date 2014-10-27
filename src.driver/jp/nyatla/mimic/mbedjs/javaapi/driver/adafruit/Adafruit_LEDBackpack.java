@@ -21,7 +21,7 @@
  *  Modified by Luiz Hespanha (http://www.d3.do) 8/16/2013 for use in LPC1768
  */
 /**
- * ported by hara41.
+ * ported by hara.shinichi@gmail.com
  */
 package jp.nyatla.mimic.mbedjs.javaapi.driver.adafruit;
 
@@ -53,7 +53,13 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 	private final boolean _is_attached;
 	
 	protected final short[] displaybuffer= new short[8]; // 8 
-	
+	/**
+	 * 既存のI2Cに追加する場合
+	 * @param 
+	 * i_i2c I2Cインスタンス
+	 * @param 
+	 * i_address I2Cアドレス
+	 */	
 	public Adafruit_LEDBackpack(I2C i_i2c,int i_address) 
 	{
 		//I2Cの設定
@@ -64,7 +70,19 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		this.i2c_addr = i_address & 0xff;
 		
 	}
-
+	/**
+	 * Mcuから直接生成する場合
+	 * @param 
+	 * i_mcu MCUインスタンス
+	 * @param 
+	 * i_sda SDAピン
+	 * @param 
+	 * i_scl SCLピン
+	 * @param 
+	 * i_address I2Cアドレス
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public Adafruit_LEDBackpack(Mcu i_mcu, int i_sda, int i_scl,int i_address)throws MbedJsException
 	{
 		this._is_attached=true;
@@ -79,6 +97,11 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 			this._i2c.dispose();
 		}
 	}
+	/**
+	 * 初期化
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void begin() throws MbedJsException
 	{		 
 		  byte[] foo= new byte[]{0x21};
@@ -87,6 +110,13 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  this.blinkRate(HT16K33_BLINK_OFF);
 		  this.setBrightness(15); // max brightness
 	}
+	/**
+	 * ブライトネス(明るさ)の設定
+	 * @param 
+	 * i_bright 明るさ
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void setBrightness(int i_bright) throws MbedJsException
 	{
 		  if (i_bright > 15){
@@ -98,6 +128,13 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  this._i2c.write(this.i2c_addr, foo, false); 
 		
 	}
+	/**
+	 * 点滅間隔の設定
+	 * @param 
+	 * i_rate 点滅間隔
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void blinkRate(int i_rate) throws MbedJsException
 	{
 		  if (i_rate > 3){
@@ -108,6 +145,11 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  foo[0] = (byte) c;
 		  this._i2c.write(this.i2c_addr, foo, false);
 	}
+	/**
+	 * ディスプレイに表示する
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void writeDisplay() throws MbedJsException
 	{
 		  byte[] foo=new byte[17];
@@ -120,6 +162,9 @@ public abstract class Adafruit_LEDBackpack extends DriverBaseClass{
 		  }
 		  this._i2c.write(this.i2c_addr, foo, false);
 	}
+	/**
+	 * 表示のクリア
+	 */
 	public void clear()
 	{
 		for (short i=0; i<8; i++) {

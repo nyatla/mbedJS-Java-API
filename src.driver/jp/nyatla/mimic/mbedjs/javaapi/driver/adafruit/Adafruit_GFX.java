@@ -298,13 +298,40 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	{
 		return (1<<(i_bit));
 	}
-	 
+	/**
+	 * 既存のI2Cに追加する場合
+	 * @param 
+	 * i_i2c I2Cインスタンス
+	 * @param 
+	 * i_address I2Cアドレス
+	 * @param 
+	 * i_width 横幅
+	 * @param 
+	 * i_height 高さ
+	 */
 	public Adafruit_GFX(I2C i_i2c,int i_address , int i_width , int i_height)
 	{
 		super(i_i2c, i_address);
 		this._init(i_width, i_height);
 		
 	}
+	/**
+	 * Mcuから直接生成する場合
+	 * @param 
+	 * i_mcu MCUインスタンス
+	 * @param 
+	 * i_sda SDAピン
+	 * @param 
+	 * i_scl SCLピン
+	 * @param 
+	 * i_address I2Cアドレス
+	 * @param 
+	 * i_width 横幅
+	 * @param 
+	 * i_height 高さ
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public Adafruit_GFX(Mcu i_mcu, int i_sda, int i_scl,int i_address,int i_width , int i_height) throws MbedJsException{
 		super(i_mcu, i_sda, i_scl, i_address);
 		this._init(i_width, i_height);
@@ -341,7 +368,19 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	{ 
 		return -1;
 	}*/
-	
+	/**
+	 * 線を描画する
+	 * @param 
+	 * i_x0 始点のX座標
+	 * @param 
+	 * i_y0 始点のY座標
+	 * @param 
+	 * i_x1 終点のX座標
+	 * @param 
+	 * i_y1 終点のY座標
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawLine(int i_x0 , int i_y0, int i_x1 , int i_y1,int i_color)
 	{
 	    //short steep = Math.abs(i_y1 - i_y0) > Math.abs(i_x1 - i_x0);
@@ -403,16 +442,51 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }		
 	}
+	/**
+	 * 垂直方向へ線を描画
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_height 始点から終点までの高さ
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawFastVLine(int i_x, int i_y, int i_height, int i_color)
 	{
 	    // stupidest version - update in subclasses if desired!
 	    this.drawLine(i_x, i_y, i_x, (i_y+i_height-1), i_color);
 	}
+	/**
+	 * 水平方向へ線を描画
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_w 始点から終点までの幅
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawFastHLine(int i_x, int i_y, int i_w, int i_color)
 	{
 	    // stupidest version - update in subclasses if desired!
 		this.drawLine(i_x, i_y,(i_x+i_w-1), i_y, i_color);
 	}
+	/**
+	 * 四角形の描画
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_w 四角形の幅
+	 * @param 
+	 * i_h 四角形の高さ
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawRect(int i_x, int i_y, int i_w, int i_h, int i_color)
 	{
 		this.drawFastHLine(i_x, i_y, i_w, i_color);
@@ -420,6 +494,19 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.drawFastVLine(i_x, i_y, i_h, i_color);
 		this.drawFastVLine((i_x+i_w-1), i_y, i_h, i_color);		
 	}
+	/**
+	 * 四角形の塗りつぶし
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_w 四角形の幅
+	 * @param 
+	 * i_h 四角形の高さ
+	 * @param 
+	 * i_color 四角形の色
+	 */
 	public void fillRect(int i_x, int i_y, int i_w, int i_h, int i_color)
 	{
 	    // stupidest version - update in subclasses if desired!
@@ -427,11 +514,26 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	    	this.drawFastVLine(i, i_y, i_h, i_color);
 	    }
 	}
+	/**
+	 * スクリーン全体の塗りつぶし
+	 * @param 
+	 * i_color 塗りつぶす色
+	 */
 	public void fillScreen(int i_color)
 	{
 		this.fillRect(0,0, this._width, this._height, i_color);
 	}
-	 
+	/**
+	 * 円の描画
+	 * @param 
+	 * i_x0 中心のX座標
+	 * @param 
+	 * i_y0 中心のY座標
+	 * @param 
+	 * i_r 半径
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawCircle(int i_x0, int i_y0, int i_r, int i_color)
 	{
 		int f = (1 - i_r);
@@ -515,6 +617,17 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }
 	}
+	/**
+	 * 円領域の塗りつぶし
+	 * @param 
+	 * i_x0 円の中心のX座標
+	 * @param 
+	 * i_y0 円の中心のY座標
+	 * @param 
+	 * i_r 円の半径
+	 * @param 
+	 * i_color 円の色
+	 */
 	public void fillCircle(int i_x0, int i_y0, int i_r, int i_color)
 	{
 		this.drawFastVLine(i_x0,( i_y0-i_r),( 2*i_r+1), i_color);
@@ -554,7 +667,23 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }
 	}
-	 
+	/**
+	 * 頂点３カ所を指定した三角形の描画
+	 * @param 
+	 * i_x0 頂点０のX座標
+	 * @param 
+	 * i_y0 頂点０のY座標
+	 * @param 
+	 * i_x1 頂点１のX座標
+	 * @param 
+	 * i_y1 頂点１のY座標
+	 * @param 
+	 * i_x2 頂点２のX座標
+	 * @param 
+	 * i_y2 頂点２のY座標
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawTriangle(int i_x0, int i_y0, int i_x1, int i_y1,
 			int i_x2, int i_y2, int i_color)
 	{
@@ -563,6 +692,23 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.drawLine(i_x1, i_y1, i_x2, i_y2, i_color);
 		this.drawLine(i_x2, i_y2, i_x0, i_y0, i_color);
 	}
+	/**
+	 * 頂点３カ所を指定した三角形領域の塗りつぶし
+	 * @param 
+	 * i_x0 頂点０のX座標
+	 * @param 
+	 * i_y0 頂点０のY座標
+	 * @param 
+	 * i_x1 頂点１のX座標
+	 * @param 
+	 * i_y1 頂点１のY座標
+	 * @param 
+	 * i_x2 頂点２のX座標
+	 * @param 
+	 * i_y2 頂点２のY座標
+	 * @param 
+	 * i_color 三角形の色
+	 */
 	public void fillTriangle(int i_x0, int i_y0, int i_x1, int i_y1,
 			int i_x2, int i_y2, int i_color)
 	{
@@ -678,6 +824,21 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        this.drawFastHLine(a, y, (b-a+1), i_color);
 	    }
 	}
+	/**
+	 * 角の丸い四角形の描画
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_width 四角形の幅
+	 * @param 
+	 * i_height 四角形の高さ
+	 * @param 
+	 * i_r 角の円弧の半径
+	 * @param 
+	 * i_color 線の色
+	 */
 	public void drawRoundRect(int i_x, int i_y, int i_width, 
 			int i_height, int i_r, int i_color)
 	{
@@ -692,6 +853,21 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.drawCircleHelper((i_x+i_width-i_r-1),( i_y+i_height-i_r-1), i_r,4, i_color);
 		this.drawCircleHelper((i_x+i_r)    ,( i_y+i_height-i_r-1), i_r,8, i_color);
 	}
+	/**
+	 * 角の丸い四角形の塗りつぶし
+	 * @param
+	 * i_x 始点のX座標
+	 * @param
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_w 四角形の幅
+	 * @param 
+	 * i_h 四角形の高さ
+	 * @param 
+	 * i_r 角の円弧の半径
+	 * @param 
+	 * i_color 四角形の色
+	 */
 	public void fillRoundRect(int i_x, int i_y, int i_w, int i_h, 
 			int i_r, int i_color) 
 	{
@@ -702,7 +878,21 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 		this.fillCircleHelper((i_x+i_w-i_r-1),( i_y+i_r), i_r, 1,( i_h-2*i_r-1), i_color);
 		this.fillCircleHelper((i_x+i_r    ),( i_y+i_r), i_r, 2,( i_h-2*i_r-1), i_color);
 	}
-	 
+	/**
+	 * ビットマップの描画
+	 * @param 
+	 * i_x 始点のX座標
+	 * @param 
+	 * i_y 始点のY座標
+	 * @param 
+	 * i_bitmap ビットマップの配列
+	 * @param 
+	 * i_w ビットマップの幅
+	 * @param 
+	 * i_h ビットマップの高さ
+	 * @param 
+	 * i_color ビットマップの色
+	 */
 	public void drawBitmap(int i_x, int i_y, byte[] i_bitmap,int i_w, int i_h, int i_color) 
 	{
 	    for (int j=0; j<i_h; j++)
@@ -714,14 +904,29 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	        }
 	    }
 	}
-	public void drawChar(int i_x, int y, int i_c, 
+	/**
+	 * 文字の描画
+	 * @param 
+	 * i_x 文字の始点のX座標
+	 * @param 
+	 * i_y 文字の始点のY座標
+	 * @param 
+	 * i_c 描画する文字
+	 * @param 
+	 * i_color 文字の色
+	 * @param 
+	 * i_bg 文字の背景の色
+	 * @param 
+	 * i_size 文字のサイズ
+	 */
+	public void drawChar(int i_x, int i_y, int i_c, 
 			int i_color, int i_bg, int i_size) 
 	{
 	    if(
 	            (i_x >= this._width) || // Clip right
-	            (y >= this._height) || // Clip bottom
+	            (i_y >= this._height) || // Clip bottom
 	            ((i_x + 5 * i_size - 1) < 0) || // Clip left
-	            ((y + 8 * i_size - 1) < 0) // Clip top
+	            ((i_y + 8 * i_size - 1) < 0) // Clip top
 	            )
 	        return;
 	        
@@ -739,26 +944,30 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	                if ((line & 0x1) != 0)
 	                {
 	                    if (i_size == 1) // default size
-	                    	this.drawPixel(i_x+i, y+j, i_color);
+	                    	this.drawPixel(i_x+i, i_y+j, i_color);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((i_x+(i*i_size)), (y+(j*i_size)), i_size, i_size, i_color);
+	                    	this.fillRect((i_x+(i*i_size)), (i_y+(j*i_size)), i_size, i_size, i_color);
 	    //#endif
 	                }
 	                else if (i_bg != i_color)
 	                {
 	                    if (i_size == 1) // default size
-	                    	this.drawPixel(i_x+i, y+j, i_bg);
+	                    	this.drawPixel(i_x+i, i_y+j, i_bg);
 	    //#ifdef WANT_ABSTRACTS
 	                    else // big size
-	                    	this.fillRect((i_x+i*i_size), (y+j*i_size), i_size, i_size, i_bg);
+	                    	this.fillRect((i_x+i*i_size), (i_y+j*i_size), i_size, i_size, i_bg);
 	    //#endif
 	                }
 	                line >>= 1;
 	            }
 	        }
 	}
-	public int writeChar(int i_ch)
+	/**
+	 * setCursor,setTextSize,setTextColorで設定した条件で文字を描画する
+	 * @param i_ch 描画する文字
+	 */
+	public void writeChar(int i_ch)
 	{
 	    if (i_ch == '\n')
 	    {
@@ -778,7 +987,6 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	            this.cursor_x = 0;
 	        }
 	    }
-	    return 1;
 	}
 	 
 	public int width() { 
@@ -787,21 +995,44 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	public int height(){ 
 		return this._height; 
 	}
-	 
+	/**
+	 * 指定した位置にカーソルを移動する
+	 * @param 
+	 * i_x カーソルのX座標
+	 * @param 
+	 * i_y カーソルのY座標
+	 */
 	public void setCursor(int i_x, int i_y)  
 	{ 
 		this.cursor_x = i_x;
 		this.cursor_y = i_y; 
 	}
+	/**
+	 * テキストのサイズを変更する
+	 * @param 
+	 * i_size テキストのサイズ
+	 */
 	public void setTextSize(int i_size) 
 	{
 		this.textsize = (i_size > 0) ? i_size : 1; 
 	}
+	/**
+	 * テキストと背景の色を変更する
+	 * @param 
+	 * i_color テキストと背景の色
+	 */
 	public void setTextColor(int i_color) 
 	{
 		this.textcolor = i_color; 
 		this.textbgcolor = i_color; 
 	}
+	/**
+	 * テキストと背景の色を変更する
+	 * @param 
+	 * i_col テキストの色
+	 * @param 
+	 * i_bg 背景の色
+	 */
 	public void setTextColor(int i_col, int i_bg)
 	{ 
 		this.textcolor = i_col; 
@@ -811,7 +1042,11 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	{
 		this.wrap = i_wrap; 
 	}
-	 
+	/**
+	 * テキストの回転方向の設定 
+	 * @param 
+	 * i_x 回転方向(0~3)
+	 */
 	public void setRotation(int i_x) 
 	{
 	    i_x %= 4;  // cant be higher than 3
@@ -830,11 +1065,13 @@ public abstract class Adafruit_GFX extends Adafruit_LEDBackpack
 	            break;
 	    }
 	}
+	/**
+	 * テキストの回転方向を取得
+	 * @return 
+	 * 回転方向
+	 */
 	public int getRotation()
 	{
 		this.rotation %= 4; return this.rotation;
 	}
-	 
-
-
 }
