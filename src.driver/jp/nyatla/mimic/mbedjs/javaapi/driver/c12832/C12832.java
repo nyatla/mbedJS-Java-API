@@ -144,12 +144,31 @@ public class C12832 extends GraphicsDisplay {
     private int auto_up;
 
 
-
+    /**
+     * 
+     * @param 
+     * i_mcu MCUインスタンス
+     * @param 
+     * i_mosi_pin mosiピン
+     * @param 
+     * i_miso_pin misoピン
+     * @param 
+     * i_sclk_pin sclkピン
+     * @param 
+     * i_reset resetピン
+     * @param 
+     * i_A0 A0ピン
+     * @param 
+     * i_CS CSピン
+     * @param 
+     * i_name 
+     * @throws 
+     * MbedJsException MbedJS例外
+     */
 	public C12832(Mcu i_mcu , int i_mosi_pin, int i_miso_pin, int i_sclk_pin,
 			int i_reset, int i_A0 , int i_CS,
 			byte[] i_name) throws MbedJsException
     {
-		//TODO: ピンの引数を追加する
 		//: _spi(p5,NC,p7),_reset(p6),_A0(p8),_CS(p11),GraphicsDisplay(name)
 		super(i_name); // 0msec
 		this._spi = new SPI(i_mcu,i_mosi_pin,i_miso_pin, i_sclk_pin);// 50ms
@@ -169,33 +188,52 @@ public class C12832 extends GraphicsDisplay {
 		this._CS.dispose();
 	}
  
+	/**
+	 * 描画領域の幅を返す
+	 */
 	public int width()
 	{
 	    if (this.orientation == 0 || this.orientation == 2) return 32;
 	    else return 128;
 	}
- 
+	/**
+	 * 描画領域の高さを返す
+	 */
 	public int height()
 	{
 	    if (this.orientation == 0 || this.orientation == 2) return 128;
 	    else return 32;
 	}
- 
-
+	/**
+	 * 画面を上下逆にする
+	 * @param i_o 0:標準 1:逆転
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
+	
 	public void invert(int i_o) throws MbedJsException
 	{
 	    if(i_o == 0) this.wr_cmd((char) 0xA6);
 	    else this.wr_cmd((char) 0xA7);
 	}
  
- 
+	/**
+	 * コントラストを設定する
+	 * @param 
+	 * i_o コントラスト
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void set_contrast(int i_o) throws MbedJsException
 	{
 		this.contrast = i_o;
 		this.wr_cmd((char) 0x81);      //  set volume
 		this.wr_cmd((char) (i_o & 0x3F));
 	}
-	 
+	/**
+	 * コントラストを得る
+	 * @return コントラスト
+	 */
 	public int get_contrast()
 	{
 	    return(contrast);
@@ -286,7 +324,15 @@ public class C12832 extends GraphicsDisplay {
 	}
  
 // set one pixel in buffer
- 
+	/**
+	 * 点を描画する
+	 * @param
+	 * i_x X座標
+	 * @param
+	 * i_y Y座標
+	 * @param
+	 * i_color 色
+	 */
 	public void pixel(int i_x, int i_y, int i_color)
 	{
 	    // first check parameter
@@ -304,7 +350,11 @@ public class C12832 extends GraphicsDisplay {
 	}
  
 // update lcd
- 
+	/**
+	 * LCDへ描画データを反映させる
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	private void copy_to_lcd() throws MbedJsException
 	{
 	    int i;
@@ -349,7 +399,9 @@ public class C12832 extends GraphicsDisplay {
 	    	this.wr_dat((char) buffer[i]);
 	    }
 	}
- 
+	/**
+	 * 画面のクリア
+	 */
 	public void cls() throws MbedJsException
 	{
 		//this.buffer = memset((byte)0x00,512);  // clear display buffer
@@ -358,7 +410,21 @@ public class C12832 extends GraphicsDisplay {
 
 	}
  
- 
+	/**
+	 * 線の描画
+	 * @param 
+	 * i_x0 始点のX座標
+	 * @param 
+	 * i_y0 始点のY座標
+	 * @param 
+	 * i_x1 終点のX座標
+	 * @param 
+	 * i_y1 終点のY座標
+	 * @param 
+	 * i_color 色
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void line(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	    int   dx = 0, dy = 0;
@@ -428,7 +494,21 @@ public class C12832 extends GraphicsDisplay {
 	    }
 	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
- 
+	/**
+	 * 四角形の描画
+	 * @param 
+	 * i_x0 左下の頂点のX座標
+	 * @param 
+	 * i_y0 左下の頂点のY座標
+	 * @param 
+	 * i_x1 右上の頂点のX座標
+	 * @param 
+	 * i_y1 右上の頂点のY座標
+	 * @param 
+	 * i_color 色
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void rect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	 
@@ -447,6 +527,21 @@ public class C12832 extends GraphicsDisplay {
 	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
+	/**
+	 * 内部を塗りつぶした四角形を描画する
+	 * @param 
+	 * i_x0 左下の頂点のX座標
+	 * @param 
+	 * i_y0 左下の頂点のY座標
+	 * @param 
+	 * i_x1 右上の頂点のX座標
+	 * @param 
+	 * i_y1 右上の頂点のY座標
+	 * @param 
+	 * i_color 色
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void fillrect(int i_x0, int i_y0, int i_x1, int i_y1, int i_color) throws MbedJsException
 	{
 	    int l,c,i;
@@ -472,7 +567,19 @@ public class C12832 extends GraphicsDisplay {
 	}
  
  
- 
+	/**
+	 * 円を描画する
+	 * @param 
+	 * i_x0 X座標
+	 * @param 
+	 * i_y0 Y座標
+	 * @param 
+	 * i_r 半径
+	 * @param 
+	 * i_color 色
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void circle(int i_x0, int i_y0, int i_r, int i_color) throws MbedJsException
 	{
 	 
@@ -582,7 +689,19 @@ public class C12832 extends GraphicsDisplay {
 			this.copy_to_lcd();
 
 	}
- 
+	/**
+	 * 円の内部を塗りつぶす
+	 * @param 
+	 * i_x X座標
+	 * @param 
+	 * i_y Y座標
+	 * @param 
+	 * i_r 半径
+	 * @param 
+	 * i_color 色
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public void fillcircle(int i_x, int i_y, int i_r, int i_color) throws MbedJsException
 	{
 	    int i,up;
@@ -594,11 +713,22 @@ public class C12832 extends GraphicsDisplay {
 	    if(this.auto_up!=0) this.copy_to_lcd();
 	}
  
+	/**
+	 * draw_modeの設定、NormalとXORモードがある
+	 * @param 
+	 * i_mode モード
+	 */
 	public void setmode(int i_mode)
 	{
 		this.draw_mode = i_mode;
 	}
-	 
+	/**
+	 * カーソルの位置を設定する
+	 * @param 
+	 * i_x X座標
+	 * @param
+	 * i_y Y座標
+	 */
 	public void locate(int i_x, int i_y)
 	{
 		this.char_x = i_x;
@@ -606,21 +736,30 @@ public class C12832 extends GraphicsDisplay {
 	}
 	 
  
-	 
+	/**
+	 * 水平方向の幅を返す
+	 */
 	public int columns()
 	{
 	    return this.width() / this.font[1];
 	}
  
  
-	 
+	/**
+	 * 垂直方向の高さを返す 
+	 */
 	public int rows()
 	{
 	    return this.height() / this.font[2];
 	}
  
- 
-	 
+	/**
+	 * 現在の位置に文字を表示する
+	 * @param 
+	 * i_value 文字 
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public int _putc(int i_value) throws MbedJsException
 	{
 	    if (i_value == '\n') {    // new line
@@ -635,7 +774,15 @@ public class C12832 extends GraphicsDisplay {
 	    }
 	    return i_value;
 	}
-	 
+	/**
+	 * 文字を指定した座標に描画する
+	 * @param 
+	 * i_x X座標
+	 * @param 
+	 * i_y Y座標
+	 * @param 
+	 * i_c 文字
+	 */
 	public void character(int i_x, int i_y, int i_c)
 	{
 	    int hor,vert,offset,bpl,j,i,b , ofs;
@@ -679,23 +826,43 @@ public class C12832 extends GraphicsDisplay {
 	    this.char_x += w;
 	}
  
-	 
+	/**
+	 * 外部フォントの設定
+	 * @param 
+	 * i_font フォントデータ
+	 */
 	public void set_font(char[] i_font)
 	{
 		this.font = i_font;
 	}
-	 
+	/**
+	 * 描画に関する関数を呼んだ後にLCDに反映するかしないかのフラグを設定する
+	 * @param 
+	 * i_up フラグ
+	 */
 	public void set_auto_up(int i_up)
 	{
 	    if(i_up!=0 ) this.auto_up = 1;
 	    else this.auto_up = 0;
 	}
-	 
+	 /**
+	  * 描画に関する関数を呼んだ後にLCDに反映するかしないかのフラグを返す
+	  * @return 
+	  * フラグ
+	  */
 	public int get_auto_up()
 	{
 	    return (this.auto_up);
 	}
- 
+	/**
+	 * ビットマップの表示
+	 * @param 
+	 * i_bitmap ビットマップ
+	 * @param 
+	 * i_x X座標
+	 * @param 
+	 * i_y Y座標
+	 */
 	public void print_bm(Bitmap i_bitmap, int i_x, int i_y)
 	{
 	    int h,v,b;
@@ -715,6 +882,15 @@ public class C12832 extends GraphicsDisplay {
 	        }
 	    }
 	}
+	/**
+	 * 文字列を表示する
+	 * @param 
+	 * i_s 表示する文字列
+	 * @return 
+	 * 表示した文字数
+	 * @throws 
+	 * MbedJsException MbedJS例外
+	 */
 	public int puts(String i_s) throws MbedJsException
 	{
 		int i=0;
