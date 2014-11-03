@@ -85,24 +85,6 @@ public class L6470 extends DriverBaseClass{
     {
        	this.cs.write(1);
        	this.resetDevice(); // ok
-    	
-        int ret;	
-
-       	// モータパラメータ：型番17PM-K044
-        // 加速度　step/tic^2 tic=250ns
-        int [] s1 = {0x03 , 0xe8};
-    	this.setParam2(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
-    	// 減速度　step/tic^2
-    	int [] s2 = {0x03 , 0xe8};
-    	this.setParam2(L6470.PARAM_DEC, s2, L6470.LENGTH_DEC);
-    	// 最大速度　step/tic
-    	int [] s3 = {0x00 , 0x23};
-    	this.setParam2(L6470.PARAM_MAX_SPEED, s3 , L6470.LENGTH_MAX_SPEED);
-    	//　最小速度　step/tic
-    	int [] s4 = {0x00 ,0x00};
-    	this.setParam2(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
-    	
-  	
     } 
     /**
      * SPIを使って1バイトのデータを送受信
@@ -205,6 +187,8 @@ public class L6470 extends DriverBaseClass{
 	 * i_param パラメータ名
 	 * @param 
 	 * i_len パラメータの長さ
+	 * @return
+	 * 読み込んだ値
      * @throws 
      * MbedJsException MbedJS例外
 	 */
@@ -467,6 +451,20 @@ public class L6470 extends DriverBaseClass{
 		Mcu mcu = new Mcu("10.0.0.2");
 		L6470 amp = new L6470(mcu ,PinName.p5 , PinName.p6 ,PinName.p7 ,PinName.p8);
 		
+       	// モータパラメータ：型番17PM-K044
+        // 加速度　step/tic^2 tic=250ns
+        int [] s1 = {0x03 , 0xe8};
+    	amp.setParam2(L6470.PARAM_ACC, s1, L6470.LENGTH_ACC);
+    	// 減速度　step/tic^2
+    	int [] s2 = {0x03 , 0xe8};
+    	amp.setParam2(L6470.PARAM_DEC, s2, L6470.LENGTH_DEC);
+    	// 最大速度　step/tic
+    	int [] s3 = {0x00 , 0x23};
+    	amp.setParam2(L6470.PARAM_MAX_SPEED, s3 , L6470.LENGTH_MAX_SPEED);
+    	//　最小速度　step/tic
+    	int [] s4 = {0x00 ,0x00};
+    	amp.setParam2(L6470.PARAM_MIN_SPEED, s4 , L6470.LENGTH_MIN_SPEED);
+  		
 		int ret = amp.getStatus();// ok ただし値の確認未
     	System.out.println(String.format("%1$x", ret));
     	
