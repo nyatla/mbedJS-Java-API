@@ -42,9 +42,9 @@ public class TMP102 {
 	private final boolean _is_attached;
 	/**
 	 * 既存のI2Cに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	public TMP102(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -54,11 +54,11 @@ public class TMP102 {
 	}
 	/**
 	 * Mcuから直接生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	public TMP102(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -73,8 +73,9 @@ public class TMP102 {
 		}
 	}
 	/**
+	 * 温度の読み込み
 	 * @return 温度
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	public float read() throws MbedJsException
 	{
@@ -88,8 +89,8 @@ public class TMP102 {
 	}
 	/**
 	 * See http://www.ti.com/lit/ds/symlink/tmp102.pdf
-	 * @param i_data
-	 * @return
+	 * @param i_data 温度レジスタの値
+	 * @return 温度
 	 */
 	private static float tempreg2temp(byte[] i_data){
 		// 16bitに変換

@@ -32,10 +32,8 @@ import jp.nyatla.mimic.mbedjs.javaapi.driver.utils.DriverBaseClass;
  *
  */
 public class ACM1602NI extends DriverBaseClass{
-	/**
-	 * 7bitI2Cアドレスです。I2C_ADDRESS<<1を指定してください。
-	 */
-    public final static int I2C_ADDRESS = 0x50;
+	//7bitI2Cアドレスです。I2C_ADDRESS<<1を指定してください。
+	public final static int I2C_ADDRESS = 0x50;
 //    private static final int I2C_BIT_WAIT_US = 20;
     private static final int I2C_COMMAND_WAIT_MS = 4;
  
@@ -51,11 +49,11 @@ public class ACM1602NI extends DriverBaseClass{
 	private final int _addr;
 	/**
 	 * Mcuから直接インスタンスを生成する場合のコンストラクタ
-	 * @param i_mcu
-	 * @param i_sda
-	 * @param i_scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param i_sda SDAピン
+	 * @param i_scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ACM1602NI(Mcu i_mcu,int i_sda, int i_scl,int i_address) throws MbedJsException {
 
@@ -67,9 +65,9 @@ public class ACM1602NI extends DriverBaseClass{
 	}
 	/**
 	 * 既存のI2Cをインスタンスに追加する場合のコンストラクタ
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ACM1602NI(I2C i_i2c , int i_address) throws MbedJsException {
 		this._is_attached=false;
@@ -126,7 +124,7 @@ public class ACM1602NI extends DriverBaseClass{
 	 * @param i_column　行
 	 * @param i_row　列
 	 * @param i_c　文字
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void character(int i_column, int i_row, int i_c) throws MbedJsException {
 	    this.writeCommand(address(i_column, i_row));
@@ -134,7 +132,7 @@ public class ACM1602NI extends DriverBaseClass{
 	}
 	/**
 	 * スクリーンをクリアする
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void cls() throws MbedJsException {
 	    this.writeCommand(0x01);
@@ -154,7 +152,7 @@ public class ACM1602NI extends DriverBaseClass{
 	 * 文字列を表示する
 	 * @param i_s 文字列
 	 * @return　文字数
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int puts(String i_s) throws MbedJsException
 	{

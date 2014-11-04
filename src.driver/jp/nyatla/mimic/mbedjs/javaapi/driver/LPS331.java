@@ -56,9 +56,9 @@ public class LPS331{
 	private int _ctrlreg1;
 	/**
 	 * 既存のI2Cに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LPS331(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -69,11 +69,11 @@ public class LPS331{
 	}
 	/**
 	 * Mcuから直接生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public LPS331(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -96,7 +96,7 @@ public class LPS331{
 	/**
 	 * デバイスのIDを返す
 	 * @return　ID（デフォルトでは0xbb）
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public int whoami() throws MbedJsException
 	{
@@ -105,7 +105,7 @@ public class LPS331{
 	/**
 	 *  デバイスが存在するか調べる
 	 * @return 存在する場合Trueを返す
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public boolean isAvailable() throws MbedJsException
 	{
@@ -117,9 +117,9 @@ public class LPS331{
 	}
 	/**
 	 * 分解能を設定する 
-	 * @param i_pressure_avg
-	 * @param i_temp_avg
-	 * @throws MbedJsException
+	 * @param i_pressure_avg　気圧の平均化数
+	 * @param i_temp_avg 温度の平均化数
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void setResolution(int i_pressure_avg,int i_temp_avg) throws MbedJsException
 	{
@@ -128,7 +128,7 @@ public class LPS331{
 	/**
 	 *  パワーダウンモードを切って通常モードにする
 	 * @param i_is_active　true:通常モード、false:パワーダウンモード
-	 * @throws MbedJsException
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void setActive(boolean i_is_active) throws MbedJsException
 	{
@@ -142,8 +142,8 @@ public class LPS331{
 	}
 	/**
 	 * データレートの設定	 
-	 * @param i_datarate
-	 * @throws MbedJsException
+	 * @param i_datarate　データーレート
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void setDataRate(int i_datarate) throws MbedJsException
 	{
@@ -157,8 +157,8 @@ public class LPS331{
 	 
 	/**
 	 * 気圧を取得する
-	 * @return
-	 * @throws MbedJsException
+	 * @return 気圧
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float getPressure() throws MbedJsException
 	{
@@ -169,8 +169,8 @@ public class LPS331{
 	}
 	/**
 	 * 温度を取得する 
-	 * @return
-	 * @throws MbedJsException
+	 * @return 温度
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public float getTemperature() throws MbedJsException
 	{
@@ -231,10 +231,7 @@ public class LPS331{
 	    I2C.ReadResult rs=this._i2c.read(this._addr,i_count,false);
 	    return rs.data;		
 	}
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("192.168.128.39");

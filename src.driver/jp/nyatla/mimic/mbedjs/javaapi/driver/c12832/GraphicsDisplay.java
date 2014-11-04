@@ -155,7 +155,17 @@ public class GraphicsDisplay extends TextDisplay {
 		//blitbit(column * 8, row * 8, 8, 8, (char*)&(FONT8x8[value - 0x1F][0]));
 		this.blitbit(i_column * 8, i_row * 8, 8, 8, (FONT8x8[i_value - 0x1F]));
 	}
- 
+	/**
+	 * 描画するウィンドウを設定する
+	 * @param 
+	 * i_x ウインドウ右下の頂点のX座標
+	 * @param 
+	 * i_y ウインドウ右下の頂点のY座標
+	 * @param 
+	 * i_w ウインドウの幅
+	 * @param 
+	 * i_h ウィンドウの高さ
+	 */
 	public void window(int i_x, int i_y, int i_w, int i_h) {
 	    // current pixel location
 		this._x =(short) (i_x & 0xff);
@@ -167,6 +177,11 @@ public class GraphicsDisplay extends TextDisplay {
 		this._y2 = (short) ((i_y + i_h - 1)&0xff);
 	}
     
+	/**
+	 * 現在の位置に点を打つ
+	 * @param 
+	 * i_colour 点の色
+	 */
 	public void putp(int i_colour) {
 	    // put pixel at current pixel location
 		this.pixel(_x, _y, i_colour);
@@ -180,26 +195,63 @@ public class GraphicsDisplay extends TextDisplay {
 	        }
 	    }
 	}
- 
+	/**
+	 * 矩形領域の塗りつぶし
+	 * @param 
+	 * i_x 右下の頂点のX座標
+	 * @param 
+	 * i_y 右下の頂点のY座標
+	 * @param 
+	 * i_w 領域の幅
+	 * @param 
+	 * i_h 領域の高さ
+	 * @param 
+	 * colour 塗りつぶす色
+	 */
 	public void fill(int i_x, int i_y, int i_w, int i_h, int colour) { 
 		this.window(i_x, i_y, i_w, i_h);
 	    for(int i=0; i<i_w*i_h; i++) {
 	    	this.putp(colour);
 	    }
 	}
-    
+    /**
+     * 画面のクリア
+     */
 	public void cls() throws MbedJsException
 	{
 		this.fill(0, 0, this.width(), this.height(), this._background);
 	}
-    
+    /**
+     * i_colourで指定したカラーパターンを指定領域に描画する
+     * @param 
+     * i_x 領域の始点のX座標
+     * @param 
+     * i_y 領域の始点のY座標
+     * @param 
+     * i_w 領域の幅
+     * @param 
+     * i_h 領域の高さ
+     * @param 
+     * i_colour カラーパターン
+     */
 	public void blit(int i_x, int i_y, int i_w, int i_h, int []i_colour) { 
 		this.window(i_x, i_y, i_w, i_h);
 	    for(int i=0; i<i_w*i_h; i++) {
 	    	this.putp(i_colour[i]);
 	    }
 	}
-    
+    /**
+     * foregroundとbackgroundカラーで領域を描画
+     * @param 
+     * i_x 領域の始点のX座標
+     * @param 
+     * i_y 領域の始点のY座標
+     * @param 
+     * i_w 領域の幅
+     * @param 
+     * i_h 領域の高さ
+     * @param i_colour
+     */
 	void blitbit(int i_x, int i_y, int i_w, int i_h, int[] i_colour) {
 		this.window(i_x, i_y, i_w, i_h);
 	    for(int i = 0; i < i_w*i_h; i++) {
@@ -209,12 +261,16 @@ public class GraphicsDisplay extends TextDisplay {
 	        this.putp(c);
 	    }
 	}
-    
-	int columns() { 
+    /** 
+     * 水平方向の位置を返す
+     */
+	public int columns() { 
 	    return this.width() / 8; 
 	}
- 
-	int rows() { 
+	/**
+	 * 垂直方向の位置を返す
+	 */
+	public int rows() { 
 	    return this.height() / 8; 
 	}
 }

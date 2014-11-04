@@ -1,3 +1,7 @@
+/**
+ * 加速度センサMMA8451Q
+ * http://cache.freescale.com/files/sensors/doc/data_sheet/MMA8451Q.pdf?fpsp=1
+ */
 package jp.nyatla.mimic.mbedjs.javaapi.driver;
 
 import jp.nyatla.mimic.mbedjs.MbedJsException;
@@ -23,9 +27,9 @@ public class MMA8451Q extends DriverBaseClass
 	}	
 	/**
 	 * 既存のI2Cに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public MMA8451Q(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -36,11 +40,11 @@ public class MMA8451Q extends DriverBaseClass
 	}
 	/**
 	 * Mcuから直接生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public MMA8451Q(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -60,6 +64,11 @@ public class MMA8451Q extends DriverBaseClass
 			this._i2c.dispose();
 		}
 	}
+	/**
+	 * デバイスIDの確認
+	 * @return デバイスID
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public int getWhoAmI() throws MbedJsException
 	{
 		this._i2c.write(this._addr,new byte[]{0x0d},true);
@@ -72,18 +81,38 @@ public class MMA8451Q extends DriverBaseClass
 		I2C.ReadResult ret=this._i2c.read(this._addr,2,false);
 		return toInt14f(ret.data);
 	};
+	/**
+	 * X方向の加速度
+	 * @return X方向の加速度
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public float getAccX() throws MbedJsException
 	{	
 		return this.getXX((byte)0x01);
 	};
+	/**
+	 * Y方向の加速度
+	 * @return Y方向の加速度
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public float getAccY() throws MbedJsException
 	{	
 		return this.getXX((byte)0x03);
 	};
+	/**
+	 * Z方向の加速度
+	 * @return Z方向の加速度
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public float getAccZ() throws MbedJsException
 	{	
 		return this.getXX((byte)0x05);
 	};
+	/**
+	 * 全方位の加速度を取得
+	 * @return 全方位の加速度{x,y,z}
+	 * @throws MbedJsException MbedJS例外
+	 */
 	public Vector3d getAccAllAxis() throws MbedJsException
 	{
 		return new Vector3d(
@@ -92,10 +121,7 @@ public class MMA8451Q extends DriverBaseClass
 			this.getXX((byte)0x05)
 		);
 	}
-	/**
-	 * テストケース
-	 * @param args
-	 */
+	// テストケース
 	public static void main(String args[]){
 		try {
 			Mcu mcu=new Mcu("10.0.0.2");

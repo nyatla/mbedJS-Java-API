@@ -56,7 +56,7 @@ public class TextLCD extends DriverBaseClass
 	/**
 	 * A TextLCD interface for driving 4-bit HD44780-based LCDs
 	 * LCDインスタンスを生成します。
-	 * @param i_mcu
+	 * @param i_mcu MCU instance
 	 * @param i_rs_pin
 	 * Instruction/data control line
 	 * @param i_ee_pin
@@ -70,6 +70,7 @@ public class TextLCD extends DriverBaseClass
 	 * @param i_d3_pin
 	 * Data lines for using as a 4-bit interface(3)
 	 * @param i_lcd_type LCD
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public TextLCD(Mcu i_mcu , int i_rs_pin, int i_ee_pin,
 	int i_d0_pin, int i_d1_pin, int i_d2_pin, int i_d3_pin,int i_lcd_type) throws MbedJsException
@@ -114,9 +115,9 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * キャラクタを1文字表示する
-	 * @param i_ch 文字
-	 * @return
-	 * @throws MbedJsException 
+	 * @param i_ch 入力文字
+	 * @return 入力文字
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	public int putc(int i_ch) throws MbedJsException
 	{
@@ -142,8 +143,8 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * カーソルの位置を移動する
-	 * @param i_column 
-	 * @param i_row
+	 * @param i_column 縦の列
+	 * @param i_row　横の行
 	 */
 	public void locate(int i_column , int i_row){
 		this._column = i_column;
@@ -151,7 +152,7 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * 画面をクリアする
-	 * @throws MbedJsException 
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	public void cls() throws MbedJsException
 	{
@@ -161,8 +162,8 @@ public class TextLCD extends DriverBaseClass
 		
 	}
 	/**
-	 * 行
-	 * @return
+	 * 横の行を返す
+	 * @return 横の行
 	 */
 	public int rows()
 	{
@@ -177,9 +178,8 @@ public class TextLCD extends DriverBaseClass
 		}
 	}
 	/**
-	 * 列
-	 * @return
-	 * @throws MbedJsException 
+	 * 縦の列を返す
+	 * @return 縦の列
 	 */
 	public int columns(){
 		switch(this._lcd_type){
@@ -194,9 +194,9 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * 書き込むアドレスを決定する
-	 * @param i_column
-	 * @param i_row
-	 * @return
+	 * @param i_column 縦の列
+	 * @param i_row 横の行
+	 * @return 書き込むアドレス
 	 */
 	int address(int i_column , int i_row){
 		switch (this._lcd_type){
@@ -221,10 +221,10 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * 文字を表示する
-	 * @param i_column 行 
-	 * @param i_row 列
+	 * @param i_column 縦の列 
+	 * @param i_row 横の行
 	 * @param i_ch 文字
-	 * @throws MbedJsException 
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	protected void character(int i_column , int i_row , int i_ch) throws MbedJsException
 	{
@@ -234,8 +234,8 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * 1バイト書き込み
-	 * @param i_value
-	 * @throws MbedJsException 
+	 * @param i_value 書き込む値
+	 * @throws MbedJsException MbedJS例外 
 	 */
 	protected void writeByte(int i_value) throws MbedJsException
 	{
@@ -257,8 +257,8 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * コマンドを送る
-	 * @param i_command
-	 * @throws MbedJsException 
+	 * @param i_command　送るコマンド
+	 * @throws MbedJsException  MbedJS例外
 	 */
 	protected void writeCommand(int i_command) throws MbedJsException
 	{
@@ -267,8 +267,8 @@ public class TextLCD extends DriverBaseClass
 	}
 	/**
 	 * データを送る
-	 * @param i_data
-	 * @throws MbedJsException 
+	 * @param i_data　送るデータ
+	 * @throws MbedJsException  MbedJS例外
 	 */
 	protected void writeData(int i_data) throws MbedJsException
 	{

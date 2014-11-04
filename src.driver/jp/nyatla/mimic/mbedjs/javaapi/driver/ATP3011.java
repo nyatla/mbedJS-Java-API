@@ -27,9 +27,9 @@ public class ATP3011 extends DriverBaseClass{
 	private final boolean _is_attached;
 	/**
 	 * 既存のI2Cをインスタンスに追加する場合
-	 * @param i_i2c
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_i2c I2Cインスタンス
+	 * @param i_address I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ATP3011(I2C i_i2c,int i_address) throws MbedJsException
 	{
@@ -40,11 +40,11 @@ public class ATP3011 extends DriverBaseClass{
 	}
 	/**
 	 * Mcuから直接インスタンスを生成する場合
-	 * @param i_mcu
-	 * @param sda
-	 * @param scl
-	 * @param i_address
-	 * @throws MbedJsException
+	 * @param i_mcu MCUインスタンス
+	 * @param sda SDAピン
+	 * @param scl SCLピン
+	 * @param i_address　I2Cアドレス
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public ATP3011(Mcu i_mcu, int sda, int scl, int i_address) throws MbedJsException
 	{
@@ -67,9 +67,9 @@ public class ATP3011 extends DriverBaseClass{
 
 	/**
 	 * デバイスの検出
-	 * @param i_timeout_ms
-	 * @return
-	 * @throws MbedJsException
+	 * @param i_timeout_ms タイムアウトする時間[ms]
+	 * @return true:デバイスが存在
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public boolean isActive(int i_timeout_ms) throws MbedJsException
 	{
@@ -86,8 +86,8 @@ public class ATP3011 extends DriverBaseClass{
 	}
     /**
      * 発声
-     * @param i_msg
-     * @throws MbedJsException
+     * @param i_msg 発声する文字列
+     * @throws MbedJsException MbedJS例外
      */
 	public void synthe(byte[] i_msg) throws MbedJsException
 	{
@@ -99,8 +99,8 @@ public class ATP3011 extends DriverBaseClass{
 	}
 	/**
 	 * コマンドの書き込み
-	 * @param i_msg
-	 * @throws MbedJsException
+	 * @param i_msg 書き込む文字列
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public void write(byte[] i_msg) throws MbedJsException
 	{
@@ -109,8 +109,8 @@ public class ATP3011 extends DriverBaseClass{
 	}
 	/**
 	 * ビジー状態のチェック
-	 * @return
-	 * @throws MbedJsException
+	 * @return true:ビジー
+	 * @throws MbedJsException MbedJS例外
 	 */
 	public boolean isBusy() throws MbedJsException
 	{
